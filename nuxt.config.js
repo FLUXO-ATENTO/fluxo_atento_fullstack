@@ -1,3 +1,12 @@
+const dashboardApp = process.env.NUXT_PUBLIC_APP_MODE === 'dashboard'
+const dashboardAccessPages = new Set([
+  '/login',
+  '/auth/callback',
+  '/recuperar-acesso',
+  '/privacy',
+  '/terms'
+])
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-09-26',
   devtools: { enabled: false },
@@ -32,6 +41,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
+      appMode: dashboardApp ? 'dashboard' : 'marketing',
+      marketingUrl: process.env.NUXT_PUBLIC_MARKETING_URL || 'https://fluxoatento.com.br',
       siteUrl: '',
       supabaseUrl: '',
       supabaseKey: '',
@@ -40,11 +51,22 @@ export default defineNuxtConfig({
     }
   },
   nitro: {
-    output: { publicDir: 'dist' },
+    output: { publicDir: dashboardApp ? 'dist-dashboard' : 'dist' },
     prerender: {
       crawlLinks: true,
       failOnError: true,
-      routes: ['/', '/privacy', '/terms', '/login', '/auth/callback', '/recuperar-acesso', '/demo', '/exemplo', '/dashboard', '/dashboard/monitores', '/planos']
+      routes: dashboardApp
+        ? ['/', '/monitores', '/modulos', '/canais', '/configuracoes', '/planos', '/login', '/auth/callback', '/recuperar-acesso', '/privacy', '/terms']
+        : ['/', '/privacy', '/terms', '/login', '/auth/callback', '/recuperar-acesso', '/demo', '/exemplo', '/dashboard', '/dashboard/monitores', '/planos']
+    }
+  },
+  hooks: {
+    'pages:extend'(pages) {
+      if (!dashboardApp) return
+      const dashboardPages = pages.filter(page => page.file.replace(/\\/g, '/').includes('/pages/dashboard/'))
+      const accessPages = pages.filter(page => dashboardAccessPages.has(page.path))
+      for (const page of dashboardPages) page.path = page.path.replace(/^\/dashboard(?=\/|$)/, '') || '/'
+      pages.splice(0, pages.length, ...dashboardPages, ...accessPages)
     }
   }
 })

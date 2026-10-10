@@ -2,12 +2,13 @@
 import { ArrowUpRight, Layers3, Menu } from '@lucide/vue'
 const menuOpen = ref(false)
 const route = useRoute()
+const { isDashboardApp } = useDeployment()
 watch(() => route.fullPath, () => { menuOpen.value = false })
 </script>
 <template>
   <div class="marketing-shell">
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
-    <header class="site-header">
+    <header v-if="!isDashboardApp" class="site-header">
       <div class="container header-inner">
         <NuxtLink to="/" aria-label="Fluxo Atento — início"><BrandLogo /></NuxtLink>
         <div class="header-actions">
@@ -29,7 +30,7 @@ watch(() => route.fullPath, () => { menuOpen.value = false })
       </div>
     </header>
     <main id="conteudo" tabindex="-1"><slot /></main>
-    <footer class="site-footer">
+    <footer v-if="!isDashboardApp" class="site-footer">
       <div class="container footer-main">
         <div><NuxtLink to="/" aria-label="Fluxo Atento — início"><BrandLogo /></NuxtLink><p>Menos pontos cegos.<br>Mais clareza para agir.</p></div>
         <div class="footer-links">

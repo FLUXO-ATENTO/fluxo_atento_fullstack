@@ -1,0 +1,25 @@
+# Dependencies and generated build output
+node_modules/
+.nuxt/
+.output/
+dist/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+.envrc
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials.json
+
+# Local tooling
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*

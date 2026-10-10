@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Fluxo Atento">
+  <rect width="128" height="128" rx="28" fill="#0d0d11"/>
+  <circle cx="64" cy="64" r="34" fill="#f97316" opacity="0.95"/>
+  <circle cx="64" cy="64" r="17" fill="#09090b"/>
+  <path d="M27 88c12-16 27-24 37-24 16 0 27 10 37 24" fill="none" stroke="#f8fafc" stroke-width="6" stroke-linecap="round"/>
+  <path d="M64 8v20" stroke="#f8fafc" stroke-width="6" stroke-linecap="round"/>
+  <path d="M64 100v20" stroke="#f8fafc" stroke-width="6" stroke-linecap="round"/>
+  <path d="M8 64h20" stroke="#f8fafc" stroke-width="6" stroke-linecap="round"/>
+  <path d="M100 64h20" stroke="#f8fafc" stroke-width="6" stroke-linecap="round"/>
+</svg>

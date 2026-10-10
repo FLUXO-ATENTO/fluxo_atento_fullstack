@@ -1,0 +1,85 @@
+# Fluxo Atento
+
+Landing page estática e fundação frontend do Fluxo Atento: uma proposta de inteligência e monitoramento de sites baseada em sinais legitimamente observáveis pelo navegador.
+
+## Estado atual
+
+O projeto contém uma landing em português, uma demonstração visual com dados explicitamente ilustrativos, e páginas estáticas de demonstração, acesso, privacidade e termos. O formulário da landing valida o formato de uma URL no navegador; não envia nem acessa o endereço.
+
+Ainda não existe análise real de sites, monitoramento recorrente, autenticação funcional, armazenamento, pagamentos ou agente conversacional conectado. Os textos legais e a página de acesso são pontos de partida e não substituem revisão jurídica ou integração de autenticação.
+
+## Estrutura incluída neste primeiro envio
+
+```text
+app/
+  app.vue
+  assets/css/main.css
+  components/
+    SignalDashboard.vue
+    UrlAnalyzer.vue
+  composables/
+    useUrlAnalyzer.js
+  pages/
+    index.vue
+    demo.vue
+    login.vue
+    privacy.vue
+    terms.vue
+public/
+  icon.svg
+package.json
+pnpm-lock.yaml
+nuxt.config.js
+pnpm-workspace.yaml
+```
+
+Os documentos de produto já presentes na raiz também fazem parte do material existente do projeto.
+
+## Tecnologias e dependências presentes
+
+- Node.js 22+ e pnpm via Corepack para desenvolvimento local.
+- Nuxt 4 e Vue 3.
+- JavaScript, Vue Single File Components, HTML semântico e CSS próprio.
+- A dependência de aplicação declarada no `package.json` é Nuxt; versões resolvidas ficam registradas em `pnpm-lock.yaml`.
+
+Não há cliente Supabase, serviço de análise, worker de navegador, Playwright ou integração de pagamentos implementados nesta etapa.
+
+### Variáveis de ambiente existentes
+
+O `.env.example` existente contém somente nomes de variáveis públicas de configuração:
+
+- `NUXT_PUBLIC_SITE_URL`: origem pública do site, destinada à configuração do frontend.
+- `NUXT_PUBLIC_SUPABASE_URL`: URL pública do projeto Supabase.
+- `NUXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: chave publicável para uso futuro no cliente Supabase.
+
+Essas variáveis ainda não são lidas pelo código da aplicação, e nenhum cliente Supabase está instalado. O prefixo `NUXT_PUBLIC_` significa que valores reais são expostos ao navegador; não coloque segredos nessas variáveis. Nenhuma variável de Edge Function existe ou é usada neste projeto, portanto não há secrets a configurar no Supabase nesta etapa. Segredos futuros de Edge Functions devem ser configurados no ambiente seguro do Supabase, nunca em arquivos versionados ou variáveis públicas do Nuxt. Não há outras variáveis de ambiente usadas atualmente.
+
+## Executar localmente
+
+```bash
+corepack pnpm install
+corepack pnpm dev
+```
+
+Acesse http://localhost:3000.
+
+Para validar uma build estática:
+
+```bash
+corepack pnpm generate
+```
+
+Os arquivos gerados ficam em `.output/public`. A saída é artefato de build e não deve ser versionada.
+
+## Objetivo e etapas futuras
+
+O objetivo atual é estabelecer e revisar localmente a experiência pública da landing. As próximas etapas poderão planejar análise real, integrações, infraestrutura, configurações de hospedagem, agentes e automações, mas nada disso está conectado nem foi ativado por este primeiro envio. Qualquer etapa futura deverá ser revisada separadamente.
+
+Arquivos de configuração locais de hospedagem/automação e arquivos de agente ou de regras de branch não fazem parte deste primeiro envio, pois a etapa atual não autoriza configurar ou ativar esses serviços. Nenhum deploy ou alteração de configuração no GitHub faz parte deste PR.
+
+## Segurança
+
+- `.env`, variantes locais, tokens, chaves privadas e credenciais não devem ser versionados.
+- Não há credenciais necessárias para executar a landing local.
+- A demonstração não deve ser confundida com observação real de um site.
+- O produto não deve contornar autenticação, CAPTCHA ou controles de acesso.

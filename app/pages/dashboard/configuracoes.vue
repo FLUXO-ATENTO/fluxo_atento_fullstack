@@ -1,35 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'dashboard' })
-useSeoMeta({ title: 'Configurações · Fluxo Atento' })
+useSeoMeta({ title: 'Sua conta · Fluxo Atento', robots: 'noindex, nofollow' })
+const { user, signOut } = useAuth()
+const error = ref('')
+async function exit() { try { await signOut() } catch { error.value = 'Não foi possível sair. Tente novamente.' } }
 </script>
-
-<template>
-  <section class="platform-dashboard-page">
-    <div class="platform-page-heading platform-page-heading-compact">
-      <div>
-        <p class="eyebrow"><span class="eyebrow-line" /> CONTA</p>
-        <h1>Configurações.</h1>
-        <p>Preferências e dados de conta não estão conectados nesta versão local.</p>
-      </div>
-    </div>
-    <div class="platform-settings-list">
-      <article class="platform-panel platform-setting-row">
-        <div><h2>Perfil e organização</h2><p>Dados de usuário e organização</p></div>
-        <span class="platform-status">A DEFINIR</span>
-      </article>
-      <article class="platform-panel platform-setting-row">
-        <div><h2>Notificações</h2><p>Canais e preferências de alerta</p></div>
-        <span class="platform-status">A DEFINIR</span>
-      </article>
-      <article class="platform-panel platform-setting-row">
-        <div><h2>Segurança e sessões</h2><p>Autenticação e gestão de acesso</p></div>
-        <span class="platform-status">PENDENTE DE CONFIGURAÇÃO</span>
-      </article>
-    </div>
-    <FeedbackState
-      kind="empty"
-      title="Configurações somente para consulta"
-      description="Nenhuma preferência pode ser salva: não há backend nem sessão de usuário conectados."
-    />
-  </section>
-</template>
+<template><div><div class="page-heading"><div><p class="eyebrow">SUA CONTA</p><h1>Você no controle do seu acesso.</h1><p>Os monitores deste espaço pertencem à sua conta individual.</p></div></div><section class="panel"><div class="settings-row"><div><h2>E-mail de acesso</h2><p>{{ user?.email || 'Conferindo sua sessão…' }}</p></div><button class="button button-secondary" @click="exit">Sair da conta</button></div><div class="settings-row"><div><h2>Senha</h2><p>Solicite um link de recuperação pelo seu e-mail.</p></div><NuxtLink to="/login" class="text-link">Recuperar acesso</NuxtLink></div></section><p v-if="error" role="alert" class="form-error">{{ error }}</p><InitialState title="Equipe e permissões: próximo passo." description="Nesta etapa, cada conta possui um espaço individual. Convites, cargos e compartilhamento entre pessoas ainda não estão ativos." :next-steps="['Convites por e-mail', 'Permissões por função', 'Gestão de equipe']" /></div></template>

@@ -3,6 +3,11 @@ node_modules/
 .nuxt/
 .output/
 dist/
+.local/
+.netlify/
+test-results/
+playwright-report/
+artifacts/
 
 # Local environment and secrets
 .env

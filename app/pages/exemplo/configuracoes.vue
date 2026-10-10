@@ -1,0 +1,9 @@
+<script setup lang="ts">
+definePageMeta({ layout: 'demo' })
+useSeoMeta({ title: 'Preferências · Fluxo Atento', robots: 'noindex' })
+const { reset } = useDemoWorkspace()
+const toast = useToast()
+const resetOpen = ref(false)
+function resetDemo() { reset(); resetOpen.value = false; toast.add({ title: 'Exemplo restaurado', description: 'As alterações desta sessão foram substituídas pelos dados ilustrativos iniciais.' }) }
+</script>
+<template><div><div class="page-heading"><div><p class="eyebrow">DO SEU JEITO</p><h1>Preferências e acesso.</h1><p>As configurações de uma conta real ainda não estão disponíveis.</p></div></div><div class="settings-list"><article class="settings-row"><div><h2>Dados da conta</h2><p>Perfil, equipe e permissões serão configurados após a autenticação.</p></div><span class="badge-initial">Modo inicial</span></article><article class="settings-row"><div><h2>Refazer a demonstração</h2><p>Restaure os monitores e sinais de exemplo. Isso só afeta esta sessão.</p></div><UModal v-model:open="resetOpen" title="Restaurar a demonstração?" description="Seus monitores e revisões de exemplo nesta sessão serão substituídos pelos dados iniciais."><button class="button button-secondary button-small">Restaurar exemplo</button><template #footer><button class="button button-primary" @click="resetDemo">Sim, restaurar</button><button class="button button-secondary" @click="resetOpen = false">Cancelar</button></template></UModal></article></div><InitialState title="Sua equipe, com os acessos certos." description="Autenticação, convites e permissões estão em modo inicial. A demonstração é pública e nunca deve receber dados reais de clientes." :next-steps="['Autenticação verificada', 'Separação dos dados de cada empresa', 'Convites e permissões por função']" /></div></template>

@@ -1,91 +1,47 @@
 <script setup lang="ts">
+import { ArrowUpRight, Menu, ArrowRight } from '@lucide/vue'
 const menuOpen = ref(false)
-
-function closeMenu() {
-  menuOpen.value = false
-}
-
-function onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') closeMenu()
-}
-
-watch(menuOpen, (isOpen) => {
-  if (import.meta.client) document.body.classList.toggle('menu-open', isOpen)
-})
-
-onMounted(() => window.addEventListener('keydown', onKeydown))
-
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', onKeydown)
-  document.body.classList.remove('menu-open')
-})
+const route = useRoute()
+watch(() => route.fullPath, () => { menuOpen.value = false })
 </script>
-
 <template>
-  <div>
+  <div class="marketing-shell">
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="site-header">
       <div class="container header-inner">
-        <NuxtLink class="wordmark" to="/" aria-label="Fluxo Atento — início" @click="closeMenu">
-          <span class="brand-mark" aria-hidden="true"><span /></span>
-          <span>fluxo<span class="wordmark-light">atento</span></span>
-        </NuxtLink>
-
-        <button
-          class="menu-toggle"
-          type="button"
-          :aria-expanded="menuOpen"
-          aria-controls="main-navigation"
-          aria-label="Alternar menu principal"
-          @click="menuOpen = !menuOpen"
-        >
-          <span /><span />
-        </button>
-
-        <nav id="main-navigation" class="main-navigation" :class="{ 'is-open': menuOpen }" aria-label="Navegação principal">
-          <NuxtLink to="/#modulos" @click="closeMenu">Módulos</NuxtLink>
-          <NuxtLink to="/demo" @click="closeMenu">Demonstração</NuxtLink>
-          <div class="navigation-actions">
-            <NuxtLink class="login-link" to="/login" @click="closeMenu">Entrar</NuxtLink>
-            <NuxtLink class="button button-small button-primary" to="/dashboard" @click="closeMenu">Conhecer plataforma</NuxtLink>
-          </div>
+        <NuxtLink to="/" aria-label="Fluxo Atento — início"><BrandLogo /></NuxtLink>
+        <nav class="desktop-nav" aria-label="Navegação principal">
+          <NuxtLink to="/como-funciona">Como funciona</NuxtLink><NuxtLink to="/planos">Planos</NuxtLink><NuxtLink to="/ajuda">Central de ajuda</NuxtLink>
         </nav>
+        <div class="header-actions">
+          <NuxtLink to="/login" class="login-link">Entrar <ArrowUpRight :size="14" /></NuxtLink>
+          <NuxtLink to="/exemplo" class="button button-small button-primary">Explorar demo <ArrowRight :size="15" /></NuxtLink>
+          <UModal v-model:open="menuOpen" title="Navegação" description="Explore o Fluxo Atento.">
+            <button class="icon-button mobile-menu-button" aria-label="Abrir menu"><Menu :size="22" /></button>
+            <template #body><nav class="mobile-navigation" aria-label="Navegação móvel">
+              <NuxtLink to="/como-funciona" @click="menuOpen = false">Como funciona <ArrowUpRight :size="18" /></NuxtLink>
+              <NuxtLink to="/planos" @click="menuOpen = false">Planos <ArrowUpRight :size="18" /></NuxtLink>
+              <NuxtLink to="/ajuda" @click="menuOpen = false">Central de ajuda <ArrowUpRight :size="18" /></NuxtLink>
+              <NuxtLink to="/contato" @click="menuOpen = false">Contato <ArrowUpRight :size="18" /></NuxtLink>
+              <NuxtLink to="/modulos" @click="menuOpen = false">Módulos <ArrowUpRight :size="18" /></NuxtLink>
+              <NuxtLink to="/exemplo" @click="menuOpen = false">Dashboard demonstrativo <ArrowUpRight :size="18" /></NuxtLink>
+              <NuxtLink to="/login" @click="menuOpen = false">Entrar <ArrowUpRight :size="18" /></NuxtLink>
+            </nav></template>
+          </UModal>
+        </div>
       </div>
     </header>
-
-    <main id="conteudo">
-      <slot />
-    </main>
-
+    <main id="conteudo" tabindex="-1"><slot /></main>
     <footer class="site-footer">
       <div class="container footer-main">
-        <div class="footer-brand">
-          <NuxtLink class="wordmark" to="/">
-            <span class="brand-mark" aria-hidden="true"><span /></span>
-            <span>fluxo<span class="wordmark-light">atento</span></span>
-          </NuxtLink>
-          <p>Uma plataforma. Seis módulos independentes.</p>
-          <p class="footer-note">Informações de produto e integrações ainda em definição.</p>
-        </div>
+        <div><NuxtLink to="/" aria-label="Fluxo Atento — início"><BrandLogo /></NuxtLink><p>Menos pontos cegos.<br>Mais clareza para agir.</p></div>
         <div class="footer-links">
-          <div>
-            <h2>Plataforma</h2>
-            <NuxtLink to="/modulos">Módulos</NuxtLink>
-            <NuxtLink to="/dashboard">Visão demonstrativa</NuxtLink>
-            <NuxtLink to="/dashboard/planos">Planos</NuxtLink>
-          </div>
-          <div>
-            <h2>Informações</h2>
-            <NuxtLink to="/privacy">Privacidade</NuxtLink>
-            <NuxtLink to="/terms">Termos de uso</NuxtLink>
-            <NuxtLink to="/login">Acesso</NuxtLink>
-          </div>
+          <div><h2>Explore</h2><NuxtLink to="/como-funciona">Como funciona</NuxtLink><NuxtLink to="/planos">Planos</NuxtLink><NuxtLink to="/modulos">Recursos previstos</NuxtLink><NuxtLink to="/integracoes">Integrações</NuxtLink></div>
+          <div><h2>Conte com a gente</h2><NuxtLink to="/ajuda">Central de ajuda</NuxtLink><NuxtLink to="/suporte">Suporte</NuxtLink><NuxtLink to="/contato">Contato</NuxtLink><NuxtLink to="/exemplo">Explorar o painel</NuxtLink></div>
+          <div><h2>Transparência</h2><NuxtLink to="/privacy">Privacidade</NuxtLink><NuxtLink to="/terms">Termos de uso</NuxtLink></div>
         </div>
       </div>
-      <div class="container footer-bottom">
-        <span>© {{ new Date().getFullYear() }} Fluxo Atento</span>
-        <span>Versão local demonstrativa · sem serviços conectados</span>
-      </div>
+      <div class="container footer-bottom"><span>© {{ new Date().getFullYear() }} Fluxo Atento</span><span class="mono">PRODUTO EM DESENVOLVIMENTO <span class="status-dot" /></span></div>
     </footer>
   </div>
 </template>

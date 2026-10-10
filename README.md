@@ -1,5 +1,29 @@
 # Fluxo Atento
 
+> **Atualização de validação:** a descrição histórica abaixo está desatualizada.
+> A branch `feat/experience-design-system` contém cliente Supabase, autenticação
+> no cliente, API de monitoramento e migração RLS. A presença dessas camadas
+> não comprova sua ativação. Consulte [docs/FULLSTACK.md](docs/FULLSTACK.md)
+> para o contrato e [VALIDATION.md](VALIDATION.md) para os resultados locais.
+> A demonstração pública está em `/exemplo`; `/dashboard` é a área autenticada.
+
+## Verificação da jornada pública
+
+```bash
+pnpm install --frozen-lockfile
+pnpm test
+pnpm exec nuxt typecheck
+pnpm generate
+pnpm exec playwright install --with-deps chromium
+pnpm test:e2e
+```
+
+Os E2E servem o artefato `dist` em loopback com Python 3, sem iniciar o
+servidor de desenvolvimento. Para testar uma prévia já disponível, informe
+`E2E_BASE_URL`. Essa variável é uma URL, não uma credencial.
+
+## Descrição histórica da primeira entrega
+
 Landing page estática e fundação frontend do Fluxo Atento: uma proposta de inteligência e monitoramento de sites baseada em sinais legitimamente observáveis pelo navegador.
 
 ## Estado atual

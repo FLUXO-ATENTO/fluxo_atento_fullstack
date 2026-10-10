@@ -1,5 +1,10 @@
+<script setup lang="ts">
+import { MotionConfig } from 'motion-v'
+</script>
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <UApp><MotionConfig reduced-motion="user">
+    <NuxtRouteAnnouncer />
+    <NuxtLoadingIndicator color="#eaa176" />
+    <NuxtLayout><NuxtPage /></NuxtLayout>
+  </MotionConfig></UApp>
 </template>

@@ -1,22 +1,6 @@
 <script setup lang="ts">
 import { modules } from '~/data/modules'
-
 definePageMeta({ layout: 'dashboard' })
-useSeoMeta({ title: 'Módulos disponíveis · Fluxo Atento' })
+useSeoMeta({ title: 'Módulos · Seu espaço Fluxo Atento', robots: 'noindex' })
 </script>
-
-<template>
-  <section class="platform-dashboard-page">
-    <div class="platform-page-heading platform-page-heading-compact">
-      <div>
-        <p class="eyebrow"><span class="eyebrow-line" /> CATÁLOGO</p>
-        <h1>Módulos da <span>plataforma.</span></h1>
-        <p>Disponibilidade, recursos e critérios de acesso ainda estão em definição.</p>
-      </div>
-      <span class="platform-status">Disponibilidade: A DEFINIR</span>
-    </div>
-    <div class="platform-module-grid">
-      <ModuleCard v-for="module in modules" :key="module.id" :module="module" />
-    </div>
-  </section>
-</template>
+<template><div><div class="page-heading"><div><p class="eyebrow">FERRAMENTAS PARA A SUA ROTINA</p><h1>Comece pelo que precisa.</h1><p>Conheça os escopos propostos. Os seis módulos estão em modo inicial.</p></div></div><div class="platform-module-grid"><ModuleCard v-for="module in modules" :key="module.id" :module="module" dashboard /></div></div></template>

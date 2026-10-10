@@ -1,36 +1,5 @@
 <script setup lang="ts">
-const message = ref('')
-
-function explainUnavailableAuth() {
-  message.value = 'A autenticação ainda não está conectada. Nenhuma sessão foi criada.'
-}
-
-useSeoMeta({
-  title: 'Entrar · Fluxo Atento',
-  description: 'Prévia local da tela de acesso do Fluxo Atento. Autenticação não conectada.'
-})
+import { ArrowRight, LockKeyhole } from '@lucide/vue'
+useSeoMeta({ title: 'Acesso · Fluxo Atento' })
 </script>
-
-<template>
-  <section class="section platform-auth-section">
-    <div class="container platform-auth-container">
-      <NuxtLink class="platform-back-link" to="/">← Início</NuxtLink>
-      <div class="platform-auth-card">
-        <span class="platform-auth-symbol" aria-hidden="true"><span class="brand-mark"><span /></span></span>
-        <p class="eyebrow"><span class="eyebrow-line" /> ACESSO DEMONSTRATIVO</p>
-        <h1>Entrar no Fluxo Atento</h1>
-        <p class="platform-auth-copy">Esta tela é apenas uma prévia visual. A autenticação está pendente de configuração.</p>
-        <form class="platform-auth-form" @submit.prevent="explainUnavailableAuth">
-          <label for="login-email">E-mail</label>
-          <input id="login-email" type="email" autocomplete="username" placeholder="voce@exemplo.com">
-          <label for="login-password">Senha</label>
-          <input id="login-password" type="password" autocomplete="current-password" placeholder="Digite sua senha">
-          <button class="button button-primary button-full" type="submit">Continuar</button>
-        </form>
-        <p v-if="message" class="platform-inline-feedback" role="status">{{ message }}</p>
-        <p v-else class="platform-inline-feedback">Formulário desativado · nenhuma informação será enviada.</p>
-        <NuxtLink class="platform-auth-footer-link" to="/dashboard">Explorar o dashboard demonstrativo</NuxtLink>
-      </div>
-    </div>
-  </section>
-</template>
+<template><div class="container narrow-content"><p class="eyebrow">SEU ESPAÇO NO FLUXO ATENTO</p><h1>Conheça antes de criar uma conta.</h1><p>A área de acesso está em preparação. Você já pode explorar o exemplo, sem informar e-mail, senha ou dados de clientes.</p><NuxtLink to="/dashboard" class="button button-primary">Entrar na demonstração <ArrowRight :size="16" /></NuxtLink><InitialState title="Acesso real em modo inicial" description="Não estamos recebendo cadastros por esta tela. A integração de autenticação precisa ser concluída e validada antes de abrir contas." :next-steps="['Login e recuperação de acesso', 'Proteção dos dados por empresa', 'Termos e política de privacidade revisados']" /></div></template>

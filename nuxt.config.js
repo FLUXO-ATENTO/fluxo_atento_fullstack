@@ -1,10 +1,12 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-09-26',
   devtools: { enabled: false },
-  css: ['~/assets/css/main.css'],
+  modules: ['@nuxt/ui'],
+  ui: { fonts: false, colorMode: false },
+  css: ['~/assets/css/design.css'],
   app: {
     head: {
-      htmlAttrs: { lang: 'pt-BR' },
+      htmlAttrs: { lang: 'pt-BR', class: 'dark' },
       title: 'Fluxo Atento — Inteligência e monitoramento de sites',
       meta: [
         {
@@ -29,7 +31,10 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      siteUrl: ''
+      siteUrl: '',
+      supabaseUrl: '',
+      supabaseKey: '',
+      supabasePublishableKey: ''
     }
   },
   nitro: {

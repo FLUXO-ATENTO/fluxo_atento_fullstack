@@ -8,19 +8,19 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'pt-BR', class: 'dark' },
-      title: 'Fluxo Atento — Seu site e seus clientes, mais perto',
+      title: 'Fluxo Atento — Seu cliente chegou. O próximo passo funcionou?',
       meta: [
         {
           name: 'description',
-          content: 'Para pequenos negócios que vendem e atendem pelo site e WhatsApp. Explore exemplos de como acompanhar seu site e organizar o contato com clientes.'
+          content: 'Entenda os sinais, encontre o contexto e descubra o que vale conferir em seguida.'
         },
         { name: 'theme-color', content: '#0a0a0b' },
         { name: 'color-scheme', content: 'dark' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:title', content: 'Fluxo Atento — Seu site e seus clientes, mais perto' },
+        { property: 'og:title', content: 'Fluxo Atento — Seu cliente chegou. O próximo passo funcionou?' },
         {
           property: 'og:description',
-          content: 'Conheça a demonstração: entenda o que acontece no site e explore os próximos passos.'
+          content: 'Conheça a demonstração: entenda os sinais e explore o próximo passo.'
         },
         { property: 'og:image', content: '/icon.svg' },
         { name: 'twitter:card', content: 'summary' },

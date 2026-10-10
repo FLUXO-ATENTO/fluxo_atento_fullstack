@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowUpRight, Menu, ArrowRight } from '@lucide/vue'
+import { ArrowUpRight, Layers3, Menu } from '@lucide/vue'
 const menuOpen = ref(false)
 const route = useRoute()
 watch(() => route.fullPath, () => { menuOpen.value = false })
@@ -10,12 +10,9 @@ watch(() => route.fullPath, () => { menuOpen.value = false })
     <header class="site-header">
       <div class="container header-inner">
         <NuxtLink to="/" aria-label="Fluxo Atento — início"><BrandLogo /></NuxtLink>
-        <nav class="desktop-nav" aria-label="Navegação principal">
-          <NuxtLink to="/como-funciona">Como funciona</NuxtLink><NuxtLink to="/planos">Planos</NuxtLink><NuxtLink to="/ajuda">Central de ajuda</NuxtLink>
-        </nav>
         <div class="header-actions">
-          <NuxtLink to="/login" class="login-link">Entrar <ArrowUpRight :size="14" /></NuxtLink>
-          <NuxtLink to="/exemplo" class="button button-small button-primary">Explorar demo <ArrowRight :size="15" /></NuxtLink>
+          <NuxtLink to="/#como-funciona" class="button button-header">Ver demonstração <ArrowUpRight :size="15" /></NuxtLink>
+          <NuxtLink to="/modulos" class="header-icon-link" aria-label="Explorar módulos" title="Explorar módulos"><Layers3 :size="20" /></NuxtLink>
           <UModal v-model:open="menuOpen" title="Navegação" description="Explore o Fluxo Atento.">
             <button class="icon-button mobile-menu-button" aria-label="Abrir menu"><Menu :size="22" /></button>
             <template #body><nav class="mobile-navigation" aria-label="Navegação móvel">

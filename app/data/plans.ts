@@ -29,6 +29,7 @@ export const plans: Plan[] = [
       'Previsto: 1 número de WhatsApp para receber e enviar mensagens de atendimento e campanhas aprovadas.',
       'Previsto: IA para apoiar o atendimento, com limite mensal de respostas.',
       'Previsto: LeadRadar para organizar interessados e AtendeScore para acompanhar o atendimento.',
+      'Previsto: email marketing para contatos que autorizaram o recebimento, com campanhas aprovadas pelo responsável.',
       'Recomendação pela necessidade do negócio, sem precisar escolher um módulo para começar.'
     ],
     limits: [
@@ -44,9 +45,9 @@ export const plans: Plan[] = [
       { label: 'Respostas da IA no atendimento', value: '50/mês' },
       { label: 'Campanhas no WhatsApp', value: '1/mês' },
       { label: 'Envios de campanhas no WhatsApp', value: '50/mês' },
-      { label: 'Contatos de email marketing', value: '0' },
-      { label: 'Campanhas de email marketing', value: '0/mês' },
-      { label: 'Envios de email marketing', value: '0/mês' }
+      { label: 'Contatos de email marketing', value: '50' },
+      { label: 'Campanhas de email marketing', value: '1/mês' },
+      { label: 'Envios de email marketing', value: '100/mês' }
     ],
     cta: 'Explorar demonstração',
     availability: 'Somente demonstração. Recursos e limites planejados, ainda sem operação real. Proposta de assinatura gratuita; eventuais custos de provedores serão informados antes de qualquer ativação.'
@@ -64,6 +65,7 @@ export const plans: Plan[] = [
       'Previsto: 1 número de WhatsApp para receber e enviar mensagens de atendimento e campanhas aprovadas.',
       'Previsto: IA para apoiar o atendimento e acesso compartilhado por até 3 pessoas.',
       'Previsto: LeadRadar, AtendeScore e RecuperaIA para organizar interessados, acompanhar atendimentos e preparar retomadas de contato.',
+      'Previsto: email marketing para contatos que autorizaram o recebimento, com campanhas aprovadas pelo responsável.',
       'Recomendação pela necessidade do negócio, sem precisar escolher um módulo para começar.'
     ],
     limits: [
@@ -79,11 +81,11 @@ export const plans: Plan[] = [
       { label: 'Respostas da IA no atendimento', value: '500/mês' },
       { label: 'Campanhas no WhatsApp', value: '4/mês' },
       { label: 'Envios de campanhas no WhatsApp', value: '1.000/mês' },
-      { label: 'Contatos de email marketing', value: '0' },
-      { label: 'Campanhas de email marketing', value: '0/mês' },
-      { label: 'Envios de email marketing', value: '0/mês' }
+      { label: 'Contatos de email marketing', value: '500' },
+      { label: 'Campanhas de email marketing', value: '4/mês' },
+      { label: 'Envios de email marketing', value: '1.000/mês' }
     ],
-    cta: 'Ver Essencial na demonstração',
+    cta: 'Conhecer proposta',
     availability: 'Somente demonstração. Recursos e limites planejados. R$ 149/mês é sugestão comercial pendente de validação econômica, não preço vigente. Sem contratação ou ativação de serviço.'
   },
   {
@@ -119,7 +121,7 @@ export const plans: Plan[] = [
       { label: 'Campanhas de email marketing', value: '10/mês' },
       { label: 'Envios de email marketing', value: '10.000/mês' }
     ],
-    cta: 'Ver Completo na demonstração',
+    cta: 'Conhecer proposta',
     availability: 'Somente demonstração. Recursos e limites planejados. R$ 399/mês é sugestão comercial pendente de validação econômica, não preço vigente. Sem contratação ou ativação de serviço.'
   }
 ]

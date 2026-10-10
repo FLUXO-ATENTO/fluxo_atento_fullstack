@@ -14,7 +14,7 @@ Texto sugerido para apresentar o produto:
 >
 > Explore a demonstração com dados de exemplo. Monitoramento, atendimento com IA, campanhas e integrações ainda estão em planejamento.
 
-O produto une monitoramento de sites aos seis módulos RecuperaIA, AdsGuard, AtendeScore, ContratoVivo, CompraCerta e LeadRadar. O monitoramento é a base comum dos três planos; não é um sétimo módulo que o cliente precisa escolher ou contratar à parte. WhatsApp para receber e enviar atendimento e campanhas, além de apoio de IA no atendimento, faz parte da proposta de todos os planos, com limites diferentes. Email marketing é previsto apenas no Completo.
+O produto une monitoramento de sites aos seis módulos RecuperaIA, AdsGuard, AtendeScore, ContratoVivo, CompraCerta e LeadRadar. O monitoramento é a base comum dos três planos; não é um sétimo módulo que o cliente precisa escolher ou contratar à parte. WhatsApp para receber e enviar atendimento e campanhas, apoio de IA no atendimento e email marketing fazem parte da proposta de todos os planos, com limites diferentes.
 
 Os documentos antigos contêm públicos, preços e catálogos diferentes. Para esta proposta, a decisão confirmada é a união acima e os três planos abaixo. Os preços em dólar, as nove ferramentas e a exigência de escolher uma ferramenta antes de começar não orientam esta oferta. Os seis nomes de módulos são confirmados, mas seus escopos continuam sendo hipóteses de produto; o catálogo legado ainda os identifica como indefinidos.
 
@@ -24,7 +24,7 @@ Os documentos antigos contêm públicos, preços e catálogos diferentes. Para e
 | --- | --- |
 | Disponível hoje | Interface de demonstração com dados ilustrativos e navegação local para conhecer a proposta. |
 | Sem operação real | Não há backend, análise real de sites, monitoramento recorrente, autenticação funcional, armazenamento em servidor, cobrança, atendimento com IA ou envio e recebimento real de mensagens. Digitar uma URL não significa que ela foi visitada ou analisada. |
-| Planejado | Monitoramento de páginas autorizadas, alertas, histórico, acesso de equipe, conexão de WhatsApp, atendimento com IA, campanhas aprovadas e os escopos dos seis módulos. Email marketing apenas no Completo. |
+| Planejado | Monitoramento de páginas autorizadas, alertas, histórico, acesso de equipe, conexão de WhatsApp, atendimento com IA, campanhas aprovadas e os escopos dos seis módulos. Email marketing nos três planos, com limites diferentes. |
 | Sem compromisso de lançamento | Não há prazo de entrega, integração contratada ou garantia de disponibilidade associada a esta proposta. |
 
 O material comercial não deve prometer aumento de vendas, recuperação de receita, redução de custos, proteção integral, diagnóstico completo ou detecção de toda falha. Uma verificação futura observaria as páginas em determinados momentos; não equivaleria a acompanhamento ininterrupto nem a garantia de funcionamento. Os módulos ajudariam a organizar informações e decisões, sem garantir o resultado dessas decisões.
@@ -63,10 +63,10 @@ A IA de atendimento é um recurso comum aos planos, com franquia compartilhada. 
 | Respostas da IA no atendimento | 50/mês | 500/mês | 2.000/mês |
 | Campanhas no WhatsApp | 1/mês | 4/mês | 10/mês |
 | Envios de campanhas no WhatsApp | 50/mês | 1.000/mês | 5.000/mês |
-| Contatos de email marketing | 0 | 0 | 2.000 |
-| Campanhas de email marketing | 0/mês | 0/mês | 10/mês |
-| Envios de email marketing | 0/mês | 0/mês | 10.000/mês |
-| Botão na interface atual | Explorar demonstração | Ver Essencial na demonstração | Ver Completo na demonstração |
+| Contatos de email marketing | 50 | 500 | 2.000 |
+| Campanhas de email marketing | 1/mês | 4/mês | 10/mês |
+| Envios de email marketing | 100/mês | 1.000/mês | 10.000/mês |
+| Botão na interface atual | Explorar demonstração | Conhecer proposta | Conhecer proposta |
 
 Todos os números são limites propostos por conta do negócio, compartilhados entre pessoas e módulos, e não cotas multiplicadas por usuário. O Essencial pode receber destaque visual por ser a hipótese de entrada para o pequeno negócio; isso não significa “mais vendido” ou recomendação universal. O Gratuito continua sendo uma opção explícita.
 
@@ -88,8 +88,8 @@ Todos os números são limites propostos por conta do negócio, compartilhados e
 2. Perguntar “O que você quer organizar primeiro?” com opções comuns: acompanhar meu site, atender clientes, retomar conversas, cuidar das páginas dos anúncios, lembrar prazos ou comparar compras. Oferecer também “Só quero conhecer”, sem obrigar cadastro ou escolha de módulo.
 3. Recomendar o caminho correspondente e explicar o motivo em uma frase. Exemplo: “Para organizar interessados e acompanhar o atendimento, comece por esta visão.” Os nomes LeadRadar e AtendeScore podem aparecer como informação secundária. Se a pessoa só tem WhatsApp, não exigir uma URL para explorar o atendimento.
 4. Mostrar dados ilustrativos, indicar o próximo passo e permitir mudar a necessidade. O endereço digitado, se houver, só compõe a experiência local; não disparar afirmações de análise, conexão, campanha ou atendimento reais.
-5. Apresentar os planos pela rotina e pelo volume: Gratuito para explorar; Essencial para o pequeno negócio; Completo para equipe, seis módulos e email marketing. Recomendar a partir da necessidade, do número de pessoas e dos limites, deixando a pessoa escolher outra opção. Uma recomendação é uma explicação, não uma contratação.
-6. Na interface atual, os botões dos planos abrem ou destacam a demonstração correspondente. Não abrem pagamento, não pedem conexão real de WhatsApp e não simulam confirmação de assinatura ou de envio. Avisar se a visão específica ainda não existir.
+5. Apresentar os planos pela rotina e pelo volume: Gratuito para explorar; Essencial para o pequeno negócio; Completo para equipe, seis módulos e mais capacidade de atendimento e campanhas. Todos preveem email marketing. Recomendar a partir da necessidade, do número de pessoas e dos limites, deixando a pessoa escolher outra opção. Uma recomendação é uma explicação, não uma contratação.
+6. Na interface atual, “Explorar demonstração” leva a `/dashboard`. Nos planos pagos, “Conhecer proposta” leva a `/contato?assunto=plano-essencial` ou `/contato?assunto=plano-completo`. São links para conhecer a proposta, sem pagamento, conexão real de WhatsApp ou confirmação de assinatura ou envio. A página de contato não representa contratação nem atendimento comercial já conectado.
 
 Na futura operação, conexão dos canais, autorização do responsável, revisão da base de contatos e aprovação de campanhas seriam etapas explícitas. Essa jornada operacional ainda precisa ser implementada e validada.
 
@@ -125,4 +125,6 @@ Estas são regras propostas para a futura operação, não uma declaração de c
 
 `app/data/plans.ts` exporta `plans` e `offerNotice`. Cada plano contém `id` (`free`, `essential` ou `complete`), `name`, `audience`, `price`, `period`, `description`, `featured`, `features`, `limits`, `cta` e `availability`. `features` é uma lista de textos e `limits` é uma lista de objetos com `label` e `value` em texto. `price` é texto numérico sem símbolo monetário; a interface deve apresentar reais, acrescentando `R$`. `period` é `/mês`.
 
-Exibir `offerNotice` junto à comparação, e não apenas no rodapé. Mostrar `availability` próximo do preço e do botão de cada plano. Nenhum destaque visual deve esconder que o preço pago é sugestão pendente de validação econômica e que as capacidades são planejadas. Os botões descrevem exploração de demonstração; este arquivo não cria assinatura, integração, controle de uso ou autorização de acesso.
+Exibir um aviso curto acima dos cartões: hoje há somente demonstração, os recursos e limites são propostas e os preços pagos são sugestões não vigentes, pendentes de validação econômica. Cada preço pago deve ter a indicação “Preço sugerido · não vigente”. Mostrar cinco pontos simples por plano; os limites completos, recursos e `availability` ficam em detalhes expansíveis antes do botão. Exibir `offerNotice` completo em uma área expansível logo abaixo dos cartões, junto às condições de custos e campanhas. Oferecer também um link para `/integracoes`, explicando que WhatsApp, IA e email são previstos.
+
+O componente reutilizável `PricingPlans` aceita `compact?: boolean`: a versão compacta reduz a introdução e usa o público resumido dos cartões, preservando os avisos, detalhes e destinos dos botões. A página pública `/planos` e a página `/dashboard/planos`, com layout de dashboard, usam o mesmo componente. Nenhum destaque visual deve esconder que o preço pago é sugestão pendente de validação econômica e que as capacidades são planejadas. Os botões levam à demonstração ou à página para conhecer a proposta; este arquivo não cria assinatura, integração, controle de uso ou autorização de acesso.

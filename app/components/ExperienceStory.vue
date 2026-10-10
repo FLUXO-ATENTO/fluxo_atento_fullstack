@@ -60,7 +60,7 @@ function togglePlay() {
         <AnimatePresence mode="wait">
           <motion.div :key="scenario.id" :initial="{ opacity: 0, y: 6 }" :animate="{ opacity: 1, y: 0 }" :exit="{ opacity: 0 }" :transition="{ duration: 0.2 }" class="insight-body">
             <h3>{{ scenario.signal }}</h3><p>{{ scenario.insight }}</p>
-            <NuxtLink :to="{ path: '/dashboard', query: { scenario: scenario.id } }" class="insight-action">Ver a próxima ação <ArrowUpRight :size="15" /></NuxtLink>
+            <NuxtLink :to="{ path: '/exemplo', query: { scenario: scenario.id } }" class="insight-action">Ver a próxima ação <ArrowUpRight :size="15" /></NuxtLink>
           </motion.div>
         </AnimatePresence>
         <div class="node-caption"><Check :size="13" /> Evidência antes da conclusão</div>

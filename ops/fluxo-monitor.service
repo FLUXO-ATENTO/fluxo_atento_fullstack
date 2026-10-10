@@ -1,0 +1,29 @@
+# Installation template: adapt User and WorkingDirectory after inspecting the VPS.
+[Unit]
+Description=Fluxo Atento Monitor API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=fluxo-monitor
+Group=fluxo-monitor
+WorkingDirectory=/opt/fluxo-atento
+EnvironmentFile=/etc/fluxo-atento/monitor.env
+ExecStart=/usr/bin/node services/monitor-api/server.mjs
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

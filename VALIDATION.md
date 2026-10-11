@@ -5,6 +5,10 @@ Base: `bc322a82c521d0104e8e259c6db4a40fa0204137`, branch
 Escopo do envio: testes e documentação na mesma branch, sem substituir Nuxt.
 Não houve merge, migração remota ou publicação manual em produção.
 
+> Este é um registro histórico da validação daquela entrega. Em 10/10/2026, a
+> migração `monitor_workspace` foi aplicada ao Supabase; o estado operacional
+> corrente e a evidência correspondente ficam em `docs/STATUS.md`.
+
 ## Resultados executados
 
 | Comando | Resultado |

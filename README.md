@@ -1,5 +1,11 @@
 # Fluxo Atento
 
+> **Estado de produto:** fundação de MVP; não declare o sistema como
+> full-stack funcional antes dos portões de aceite. Veja o
+> [estado factual](docs/STATUS.md), o
+> [plano de implementação](docs/IMPLEMENTATION_PLAN.md) e a
+> [governança de mudanças](docs/GOVERNANCE.md).
+
 > **Atualização de validação:** a descrição histórica abaixo está desatualizada.
 > A branch `feat/experience-design-system` contém cliente Supabase, autenticação
 > no cliente, API de monitoramento e migração RLS. A presença dessas camadas
@@ -28,9 +34,13 @@ Landing page estática e fundação frontend do Fluxo Atento: uma proposta de in
 
 ## Estado atual
 
-O projeto contém uma landing em português, uma demonstração visual com dados explicitamente ilustrativos, e páginas estáticas de demonstração, acesso, privacidade e termos. O formulário da landing valida o formato de uma URL no navegador; não envia nem acessa o endereço.
-
-Ainda não existe análise real de sites, monitoramento recorrente, autenticação funcional, armazenamento, pagamentos ou agente conversacional conectado. Os textos legais e a página de acesso são pontos de partida e não substituem revisão jurídica ou integração de autenticação.
+O FLUXO possui site institucional, dashboard, cliente de autenticação, schema
+Supabase com RLS e código de monitoramento preparados. Em 10/10/2026, a
+migração de monitoramento foi aplicada ao Supabase, mas o fluxo completo ainda
+não foi aceito em produção: a API `/v1` não está implantada na VPS, o
+subdomínio do dashboard ainda precisa de deploy/HTTPS comprovados e a jornada
+com duas contas ainda não foi executada. Consulte `docs/STATUS.md` antes de
+usar qualquer descrição histórica abaixo como estado operacional.
 
 ## Estrutura incluída neste primeiro envio
 
@@ -66,7 +76,9 @@ Os documentos de produto já presentes na raiz também fazem parte do material e
 - JavaScript, Vue Single File Components, HTML semântico e CSS próprio.
 - A dependência de aplicação declarada no `package.json` é Nuxt; versões resolvidas ficam registradas em `pnpm-lock.yaml`.
 
-Não há cliente Supabase, serviço de análise, worker de navegador, Playwright ou integração de pagamentos implementados nesta etapa.
+Esta seção descreve a primeira entrega histórica. O estado canônico atual está
+em `docs/STATUS.md`; há cliente Supabase, testes e código de monitoramento no
+repositório, mas presença de código não substitui validação em produção.
 
 ### Variáveis de ambiente existentes
 
@@ -97,7 +109,10 @@ Os arquivos gerados ficam em `.output/public`. A saída é artefato de build e n
 
 ## Objetivo e etapas futuras
 
-O objetivo atual é estabelecer e revisar localmente a experiência pública da landing. As próximas etapas poderão planejar análise real, integrações, infraestrutura, configurações de hospedagem, agentes e automações, mas nada disso está conectado nem foi ativado por este primeiro envio. Qualquer etapa futura deverá ser revisada separadamente.
+O objetivo atual é ativar de forma verificável o MVP de monitoramento do
+FLUXO. A sequência obrigatória, os critérios de aceite, a governança e a
+evolução dos módulos futuros estão em `docs/IMPLEMENTATION_PLAN.md` e
+`docs/GOVERNANCE.md`.
 
 Arquivos de configuração locais de hospedagem/automação e arquivos de agente ou de regras de branch não fazem parte deste primeiro envio, pois a etapa atual não autoriza configurar ou ativar esses serviços. Nenhum deploy ou alteração de configuração no GitHub faz parte deste PR.
 

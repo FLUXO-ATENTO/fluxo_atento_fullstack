@@ -60,7 +60,10 @@ Após mudar variáveis, gere novo deploy. Preview é público salvo proteção e
 
 ### Supabase
 
-Revise/aplique a migração monitor_workspace. Ela cria objetos novos, sem migrar dados de outros sistemas.
+Em 10/10/2026, a migração `monitor_workspace` foi aplicada no Supabase remoto,
+criando `monitors` e `monitor_checks` com RLS. Não a reaplique. Antes de nova
+mudança de schema, confira o histórico remoto, revise o SQL e registre a
+evidência no PR. O teste de RLS com duas contas ainda é obrigatório.
 Cadastre origens EXATAS de confiança nos Redirect URLs: /auth/callback e /recuperar-acesso em cada ambiente autorizado.
 Não use wildcard para todos os previews. Para produção, configure SMTP e confirme entrega, limites e proteção contra abuso.
 As tabelas não recebem dados de demonstração. Navegadores não têm INSERT, UPDATE, DELETE ou EXECUTE no criador de monitores.

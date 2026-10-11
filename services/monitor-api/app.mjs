@@ -2,6 +2,22 @@ import { ApiError } from './errors.mjs'
 import { normalizeTarget, resolveTarget, checkWebsite } from './probe.mjs'
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+function pageNumber(value) {
+  if (value === null) return 0
+  if (!/^\d{1,5}$/.test(value)) throw new ApiError(400, 'INVALID_PAGE', 'Página inválida.')
+  return Number(value)
+}
+function historyCursor(value) {
+  if (!value) return null
+  try {
+    if (!/^[A-Za-z0-9_-]{1,256}$/.test(value)) throw new Error()
+    const cursor = JSON.parse(Buffer.from(value, 'base64url').toString())
+    if (typeof cursor.id !== 'string' || !uuid.test(cursor.id) || typeof cursor.time !== 'string'
+      || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|\+00:00)$/.test(cursor.time)
+      || !Number.isFinite(Date.parse(cursor.time))) throw new Error()
+    return cursor
+  } catch { throw new ApiError(400, 'INVALID_CURSOR', 'Atualize o histórico para continuar.') }
+}
 async function readJson(request) {
   if (!request.headers['content-type']?.startsWith('application/json')) throw new ApiError(415, 'JSON_REQUIRED', 'Envie os dados em JSON.')
   if (Number(request.headers['content-length'] || 0) > 8192) throw new ApiError(413, 'TOO_LARGE', 'Os dados enviados são grandes demais.')
@@ -38,12 +54,21 @@ export function createHandler({ store, allowedOrigins, probe = checkWebsite, val
         response.setHeader('Access-Control-Max-Age', '600')
         response.writeHead(204); response.end(); return
       }
-      const path = new URL(request.url, 'http://localhost').pathname.replace(/\/$/, '')
+      const requestUrl = new URL(request.url, 'http://localhost')
+      const path = requestUrl.pathname.replace(/\/$/, '')
       if (path === '/v1/health' && request.method === 'GET') return reply(200, { status: 'ok', service: 'fluxo-atento-monitor', contract: 1 })
       if (!path.startsWith('/v1/')) throw new ApiError(404, 'NOT_FOUND', 'Rota não encontrada.')
       const token = /^Bearer ([A-Za-z0-9._-]+)$/.exec(request.headers.authorization || '')?.[1]
       if (!token || token.length > 8192) throw new ApiError(401, 'UNAUTHORIZED', 'Entre na sua conta para continuar.')
       const context = await store.authenticate(token)
+      const now = Date.now()
+      for (const [key, entry] of requests) if (entry.until <= now) requests.delete(key)
+      const rateKey = context.userId + (request.method === 'GET' ? ':read' : ':write')
+      if (!requests.has(rateKey) && requests.size >= 5000) throw new ApiError(503, 'BUSY', 'Tente novamente em instantes.')
+      const counter = requests.get(rateKey) || { count: 0, until: now + 60000 }
+      counter.count++; requests.set(rateKey, counter)
+      if (counter.count > (request.method === 'GET' ? 120 : 30)) throw new ApiError(429, 'RATE_LIMIT', 'Muitas solicitações. Aguarde um minuto e tente novamente.')
+      if (path.startsWith('/v1/admin/')) await store.requirePlatformAdmin(context)
       const requestedTenantId = request.headers['x-fluxo-tenant-id']
       if (requestedTenantId && (typeof requestedTenantId !== 'string' || !uuid.test(requestedTenantId))) throw new ApiError(400, 'INVALID_TENANT', 'O espaço informado não é válido.')
       const workspace = await store.workspace(context, requestedTenantId)
@@ -52,7 +77,23 @@ export function createHandler({ store, allowedOrigins, probe = checkWebsite, val
         tenants: workspace.tenants,
         platform_admin: workspace.platformAdmin
       })
-      if (path === '/v1/admin/tenants' && request.method === 'GET') return reply(200, { tenants: await store.adminTenants(context) })
+      if (path === '/v1/admin/tenants' && request.method === 'GET') return reply(200, await store.adminTenants(context, pageNumber(requestUrl.searchParams.get('page'))))
+      if (path === '/v1/admin/audit' && request.method === 'GET') return reply(200, { events: await store.adminAudit(context) })
+      const memberRoute = /^\/v1\/admin\/tenants\/([^/]+)\/members(?:\/([^/]+))?$/.exec(path)
+      if (memberRoute && uuid.test(memberRoute[1])) {
+        if (!memberRoute[2] && request.method === 'GET') return reply(200, { members: await store.adminMembers(context, memberRoute[1]) })
+        if (memberRoute[2] && uuid.test(memberRoute[2]) && request.method === 'PATCH') {
+          const body = await readJson(request)
+          if (Object.keys(body).some(key => key !== 'role') || !['owner', 'admin', 'member'].includes(body.role)) throw new ApiError(400, 'INVALID_ROLE', 'Escolha uma permissão de tenant válida.')
+          return reply(200, await store.setMemberRole(context, memberRoute[1], memberRoute[2], body.role))
+        }
+      }
+      const providerRoute = /^\/v1\/admin\/providers\/([^/]+)$/.exec(path)
+      if (providerRoute && uuid.test(providerRoute[1]) && request.method === 'PATCH') {
+        const body = await readJson(request)
+        if (Object.keys(body).some(key => key !== 'status') || !['pending', 'disabled'].includes(body.status)) throw new ApiError(400, 'INVALID_STATUS', 'A validação exige um teste real de conexão. Você pode desativar ou devolver à configuração.')
+        return reply(200, await store.setProviderStatus(context, providerRoute[1], body.status))
+      }
       if (path === '/v1/admin/providers' && request.method === 'GET') return reply(200, { providers: await store.adminProviders(context) })
       if (path === '/v1/admin/providers' && request.method === 'POST') {
         const body = await readJson(request)
@@ -79,6 +120,21 @@ export function createHandler({ store, allowedOrigins, probe = checkWebsite, val
         return reply(201, await store.inviteUser(context, { email: body.email.trim().toLowerCase(), name: body.name.trim(), tenantName: body.tenant_name.trim() }))
       }
       const tenantId = workspace.activeTenant.id
+      if (path === '/v1/contacts' && request.method === 'GET') return reply(200, await store.contacts(context, tenantId, pageNumber(requestUrl.searchParams.get('page'))))
+      if (path === '/v1/contacts' && request.method === 'POST') {
+        const body = await readJson(request)
+        const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
+        const phone = typeof body.phone === 'string' ? body.phone.replace(/[\s().-]/g, '') : ''
+        if (Object.keys(body).some(key => !['name', 'email', 'phone'].includes(key))
+          || typeof body.name !== 'string' || body.name.trim().length < 1 || body.name.trim().length > 160
+          || (body.email !== undefined && typeof body.email !== 'string') || (body.phone !== undefined && typeof body.phone !== 'string')
+          || (!email && !phone) || (email && (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254))
+          || (phone && !/^\+[1-9][0-9]{7,14}$/.test(phone))) throw new ApiError(400, 'INVALID_CONTACT', 'Informe nome e e-mail ou telefone com código do país, como +5511999999999.')
+        const contact = await store.saveContact(context, tenantId, { name: body.name.trim(), email, phone })
+        return reply(contact.created ? 201 : 200, contact)
+      }
+      const historyRoute = /^\/v1\/contacts\/([^/]+)\/history$/.exec(path)
+      if (historyRoute && uuid.test(historyRoute[1]) && request.method === 'GET') return reply(200, await store.contactHistory(context, tenantId, historyRoute[1], historyCursor(requestUrl.searchParams.get('before'))))
       if (path === '/v1/integrations' && request.method === 'GET') return reply(200, { connections: await store.integrations(context, tenantId) })
       if (path === '/v1/integrations' && request.method === 'POST') {
         const body = await readJson(request)
@@ -91,12 +147,6 @@ export function createHandler({ store, allowedOrigins, probe = checkWebsite, val
         return reply(201, { connection: await store.requestIntegration(context, workspace, { channel: body.channel, providerId: body.provider_id, accountReference: body.account_reference?.trim() }) })
       }
       if (!path.startsWith('/v1/monitors')) throw new ApiError(404, 'NOT_FOUND', 'Rota não encontrada.')
-      const now = Date.now()
-      for (const [key, entry] of requests) if (entry.until <= now) requests.delete(key)
-      if (!requests.has(context.userId) && requests.size >= 5000) throw new ApiError(503, 'BUSY', 'Tente novamente em instantes.')
-      const counter = requests.get(context.userId) || { count: 0, until: now + 60000 }
-      counter.count++; requests.set(context.userId, counter)
-      if (counter.count > 30) throw new ApiError(429, 'RATE_LIMIT', 'Muitas solicitações. Aguarde um minuto e tente novamente.')
       if (path === '/v1/monitors' && request.method === 'GET') return reply(200, { monitors: await store.list(context, tenantId) })
       if (path === '/v1/monitors' && request.method === 'POST') {
         const body = await readJson(request)

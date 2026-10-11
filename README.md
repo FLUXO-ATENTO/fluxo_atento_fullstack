@@ -1,124 +1,48 @@
-# Fluxo Atento
+# FLUXO
 
-> **Estado de produto:** fundação de MVP; não declare o sistema como
-> full-stack funcional antes dos portões de aceite. Veja o
-> [estado factual](docs/STATUS.md), o
-> [plano de implementação](docs/IMPLEMENTATION_PLAN.md) e a
-> [governança de mudanças](docs/GOVERNANCE.md).
+FLUXO combina site institucional, dashboard multi-tenant e administração global. O login é único; as permissões determinam o painel. A existência de telas ou tabelas não significa que todos os conectores estão ativos.
 
-> **Atualização de validação:** a descrição histórica abaixo está desatualizada.
-> A branch `feat/experience-design-system` contém cliente Supabase, autenticação
-> no cliente, API de monitoramento e migração RLS. A presença dessas camadas
-> não comprova sua ativação. Consulte [docs/FULLSTACK.md](docs/FULLSTACK.md)
-> para o contrato e [VALIDATION.md](VALIDATION.md) para os resultados locais.
-> A demonstração pública está em `/exemplo`; `/dashboard` é a área autenticada.
+## Fontes canônicas
 
-## Verificação da jornada pública
+- [Status e migrações aplicadas](docs/STATUS.md)
+- [Arquitetura e contratos](docs/FULLSTACK.md)
+- [Sequência de implementação](docs/IMPLEMENTATION_PLAN.md)
+- [Governança](docs/GOVERNANCE.md)
+- [Regras dos agentes](AGENTS.md) e [especialista VPS](docs/VPS_AGENT.md)
+- [Site map e rotas](docs/SITE_MAP.md)
+- [Inventário VPS e estrutura](docs/INFRASTRUCTURE.md)
+- [Tarefas futuras e critérios de aceite](docs/BACKLOG.md)
+- [Controle e revisão documental](docs/DOCUMENTATION.md)
+- [Testes e limites da entrega](VALIDATION.md)
+- [Deploy e rollback na VPS](ops/dashboard-vps/README.md)
+
+## Stack e destinos
+
+| Componente | Tecnologia | Destino |
+| --- | --- | --- |
+| Site institucional | Nuxt 4, Vue 3, TypeScript e CSS | Netlify, fluxoatento.com.br |
+| Dashboard e Super Admin | Build estático Nuxt, layouts separados | Nginx na VPS, app.fluxoatento.com.br |
+| API | Node.js HTTP nativo, systemd, journald | VPS, /v1 em api.fluxoatento.com.br |
+| Identidade e banco | Supabase Auth, Postgres e RLS | Projeto qbfmebpzxnzdpalmgtxr |
+
+Não modificar o projeto Supabase Fluxo de Clientes. Não instalar este dashboard no serviço legado de agentes. As versões resolvidas estão no lockfile.
+
+## Desenvolvimento e testes
 
 ```bash
 pnpm install --frozen-lockfile
 pnpm test
 pnpm exec nuxt typecheck
 pnpm generate
-pnpm exec playwright install --with-deps chromium
 pnpm test:e2e
+pnpm generate:dashboard
+pnpm exec playwright test --config playwright.dashboard.config.ts
 ```
 
-Os E2E servem o artefato `dist` em loopback com Python 3, sem iniciar o
-servidor de desenvolvimento. Para testar uma prévia já disponível, informe
-`E2E_BASE_URL`. Essa variável é uma URL, não uma credencial.
+Os E2E servem os arquivos estáticos com Node em loopback. Os testes do dashboard precisam da URL e de uma chave publicável de formato válido no build, mas interceptam Auth/API com fixtures; não utilizam senhas de produção. O CI fornece essa configuração. Os testes reais de banco estão em tests/database/tenant-isolation.sql e desfazem todas as fixtures.
 
-## Descrição histórica da primeira entrega
+## Configuração e segredos
 
-Landing page estática e fundação frontend do Fluxo Atento: uma proposta de inteligência e monitoramento de sites baseada em sinais legitimamente observáveis pelo navegador.
+Somente URL, chave publicável e origens podem usar NUXT_PUBLIC_. Credenciais administrativas, senhas SMTP e tokens WABA ficam exclusivamente no ambiente privado da VPS, fora do Git e dos logs. O build rejeita segredos reconhecidos em variáveis públicas.
 
-## Estado atual
-
-O FLUXO possui site institucional, dashboard, cliente de autenticação, schema
-Supabase com RLS e código de monitoramento preparados. Em 10/10/2026, a
-migração de monitoramento foi aplicada ao Supabase, mas o fluxo completo ainda
-não foi aceito em produção: a API `/v1` não está implantada na VPS, o
-subdomínio do dashboard ainda precisa de deploy/HTTPS comprovados e a jornada
-com duas contas ainda não foi executada. Consulte `docs/STATUS.md` antes de
-usar qualquer descrição histórica abaixo como estado operacional.
-
-## Estrutura incluída neste primeiro envio
-
-```text
-app/
-  app.vue
-  assets/css/main.css
-  components/
-    SignalDashboard.vue
-    UrlAnalyzer.vue
-  composables/
-    useUrlAnalyzer.js
-  pages/
-    index.vue
-    demo.vue
-    login.vue
-    privacy.vue
-    terms.vue
-public/
-  icon.svg
-package.json
-pnpm-lock.yaml
-nuxt.config.js
-pnpm-workspace.yaml
-```
-
-Os documentos de produto já presentes na raiz também fazem parte do material existente do projeto.
-
-## Tecnologias e dependências presentes
-
-- Node.js 22+ e pnpm via Corepack para desenvolvimento local.
-- Nuxt 4 e Vue 3.
-- JavaScript, Vue Single File Components, HTML semântico e CSS próprio.
-- A dependência de aplicação declarada no `package.json` é Nuxt; versões resolvidas ficam registradas em `pnpm-lock.yaml`.
-
-Esta seção descreve a primeira entrega histórica. O estado canônico atual está
-em `docs/STATUS.md`; há cliente Supabase, testes e código de monitoramento no
-repositório, mas presença de código não substitui validação em produção.
-
-### Variáveis de ambiente existentes
-
-O `.env.example` existente contém somente nomes de variáveis públicas de configuração:
-
-- `NUXT_PUBLIC_SITE_URL`: origem pública do site, destinada à configuração do frontend.
-- `NUXT_PUBLIC_SUPABASE_URL`: URL pública do projeto Supabase.
-- `NUXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: chave publicável para uso futuro no cliente Supabase.
-
-Essas variáveis ainda não são lidas pelo código da aplicação, e nenhum cliente Supabase está instalado. O prefixo `NUXT_PUBLIC_` significa que valores reais são expostos ao navegador; não coloque segredos nessas variáveis. Nenhuma variável de Edge Function existe ou é usada neste projeto, portanto não há secrets a configurar no Supabase nesta etapa. Segredos futuros de Edge Functions devem ser configurados no ambiente seguro do Supabase, nunca em arquivos versionados ou variáveis públicas do Nuxt. Não há outras variáveis de ambiente usadas atualmente.
-
-## Executar localmente
-
-```bash
-corepack pnpm install
-corepack pnpm dev
-```
-
-Acesse http://localhost:3000.
-
-Para validar uma build estática:
-
-```bash
-corepack pnpm generate
-```
-
-Os arquivos gerados ficam em `.output/public`. A saída é artefato de build e não deve ser versionada.
-
-## Objetivo e etapas futuras
-
-O objetivo atual é ativar de forma verificável o MVP de monitoramento do
-FLUXO. A sequência obrigatória, os critérios de aceite, a governança e a
-evolução dos módulos futuros estão em `docs/IMPLEMENTATION_PLAN.md` e
-`docs/GOVERNANCE.md`.
-
-Arquivos de configuração locais de hospedagem/automação e arquivos de agente ou de regras de branch não fazem parte deste primeiro envio, pois a etapa atual não autoriza configurar ou ativar esses serviços. Nenhum deploy ou alteração de configuração no GitHub faz parte deste PR.
-
-## Segurança
-
-- `.env`, variantes locais, tokens, chaves privadas e credenciais não devem ser versionados.
-- Não há credenciais necessárias para executar a landing local.
-- A demonstração não deve ser confundida com observação real de um site.
-- O produto não deve contornar autenticação, CAPTCHA ou controles de acesso.
+O site continua encaminhando para o mesmo /login do app. Uma sessão válida volta ao painel correspondente sem novo login. Sair, revogação e expiração continuam sendo respeitados.

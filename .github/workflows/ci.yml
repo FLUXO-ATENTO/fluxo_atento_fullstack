@@ -19,7 +19,13 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
+      - run: bash -n ops/dashboard-vps/deploy-static-dashboard.sh ops/dashboard-vps/rollback-static-dashboard.sh
       - run: pnpm exec nuxt typecheck
       - run: pnpm generate
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
+      - run: pnpm generate:dashboard
+        env:
+          NUXT_PUBLIC_SUPABASE_URL: https://qbfmebpzxnzdpalmgtxr.supabase.co
+          NUXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_fixture
+      - run: pnpm exec playwright test --config playwright.dashboard.config.ts

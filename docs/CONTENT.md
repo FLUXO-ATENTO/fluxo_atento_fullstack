@@ -1,6 +1,6 @@
-# Fluxo Atento — conteúdo canônico
+# FLUXO — conteúdo canônico
 
-Copy proposta para a experiência ilustrativa, baseada na leitura inicial do repositório em 10/10/2026. Este arquivo não registra implantação, funcionalidades entregues ou oferta comercial vigente. A implementação e a verificação das telas cabem ao agente principal.
+Revisado em 10/10/2026. Os textos de exemplo abaixo pertencem à demonstração pública, não à conta real. Auth/API/banco já existem; esta copy não comprova publicação das telas novas nem conectores ativos. Status em [STATUS.md](STATUS.md), destinos em [SITE_MAP.md](SITE_MAP.md).
 
 ## 1. Como usar
 
@@ -24,7 +24,7 @@ Separar sempre: o que o exemplo mostra, o que isso pode significar e o que ainda
 | Tracking / pixel disparando | Registro de compras | Detalhes sobre tags e eventos podem aparecer em expansão técnica. |
 | Request / HTTP 500 | Falha no envio | Código pode complementar o detalhe técnico; não substituir a explicação. |
 | Deploy | Atualização do site | Preservar o termo técnico apenas quando necessário para investigar. |
-| Dashboard | Painel | Manter `/dashboard` na rota; o endereço não define o rótulo público. |
+| Dashboard | Painel | Usar /exemplo para demo; o app é um subdomínio com URLs próprias, conforme SITE_MAP. |
 | Mock / dummy / ambiente sandbox | Demonstração / dados de exemplo | Dizer também que nenhum site foi acessado. |
 | Engine / ecossistema / inteligência de ponta | Contexto / produto / o que conferir | Explicar a ação, não promover a tecnologia. |
 | Monitor, sem explicação | Página acompanhada | Na demo, preferir “Página no exemplo”. |
@@ -69,8 +69,8 @@ O CTA principal aponta para `/#exemplo`; o secundário, para `/como-funciona`, q
 | Cabeçalho | Como funciona | `/como-funciona`. |
 | Cabeçalho | Planos | `/planos`; não implica contratação disponível. |
 | Cabeçalho | Ajuda | `/ajuda`. |
-| CTA geral | Explorar demonstração | `/dashboard`; abre cenário padrão quando não há seleção anterior. |
-| Dentro ou após um exemplo | Ver este exemplo no painel | `/dashboard?scenario=<id>`; preservar a seleção. |
+| CTA geral | Explorar demonstração | `/exemplo`; abre cenário padrão quando não há seleção anterior. |
+| Dentro ou após um exemplo | Ver este exemplo no painel | `/exemplo?scenario=<id>`; preservar a seleção. |
 | Navegação de produto | Módulos | `/modulos`. |
 | Navegação de produto | Integrações | `/integracoes`. |
 | Rodapé | Contato | `/contato`. |
@@ -264,7 +264,7 @@ Copy da página individual, substituindo `{nome}` exclusivamente pelo nome ofici
 - Estado: “Em definição”.
 - Descrição: “As funções do {nome} ainda estão em definição. Esta página apresenta o módulo, mas não oferece recursos em funcionamento.”
 - Nota: “O nome do módulo não confirma suas funções, integrações ou disponibilidade.”
-- Ação principal: “Explorar a demonstração do site”, para `/dashboard`.
+- Ação principal: “Explorar a demonstração do site”, para `/exemplo`.
 - Ação secundária: “Ver todos os módulos”, para `/modulos`.
 
 Na área do painel, usar a mesma descrição e estado, com retorno ao painel. Não mostrar listas de recursos inferidas dos nomes: recuperação de vendas, proteção de anúncios, pontuação de atendimento, gestão de contratos, validação de compras ou prospecção não foram confirmadas pelas fontes lidas.
@@ -277,7 +277,9 @@ Introdução: “Gratuito, Essencial e Completo são os três planos previstos p
 
 Texto comum: “A proposta dos três planos inclui WhatsApp, com uso limitado de inteligência artificial e campanhas. As funções e os limites ainda precisam ser confirmados.”
 
-Texto do Completo: “A proposta do Completo também inclui os seis módulos e e-mail. As funções dos módulos ainda estão em definição.”
+Texto do Completo: “A proposta do Completo inclui os seis módulos. As funções ainda estão em definição.”
+
+A distribuição de e-mail entre planos não é decidida por esta copy: OFFER contém uma hipótese para todos os planos, pendente de validação comercial em FLUXO-10. Não publicar exclusividade sem decisão.
 
 Aviso junto da apresentação: “Esta página apresenta uma proposta. Nenhum plano é ativado e nenhuma cobrança é feita pela demonstração.”
 
@@ -305,7 +307,7 @@ Se a oferta for publicada antes da operação, manter o aviso de indisponibilida
 - Introdução: “Os canais fazem parte da proposta do Fluxo Atento. Nesta demonstração, nenhum deles está conectado.”
 - Site — “Os exemplos mostram situações de um site fictício. Não há análise ou acompanhamento real de endereços.”
 - WhatsApp — “O WhatsApp está previsto nos três planos. Conexões, inteligência artificial e campanhas não estão disponíveis nesta demonstração.”
-- E-mail — “O e-mail está previsto na proposta do plano Completo. Não há envio ou recebimento de mensagens nesta demonstração.”
+- E-mail — “O e-mail faz parte da proposta em validação. Não há envio ou recebimento de mensagens nesta demonstração.”
 - CTA: “Entender a demonstração”, para `/ajuda#demonstracao`.
 
 Não exibir logotipos de parceiros como prova de integração ou aprovação. Não listar provedores, sistemas compatíveis ou funções específicas de mensagens sem confirmação.
@@ -326,14 +328,16 @@ Quando existir um canal verificado, substituir o estado e usar CTA que nomeie o 
 - Orientação: “Tente abrir o exemplo novamente. Se for atualizar a página, lembre que as alterações locais da demonstração podem se perder.”
 - Estado: “O atendimento direto de suporte ainda não está conectado nesta versão.”
 - Ação principal: “Ver orientações”, para `/ajuda#problemas`.
-- Ação secundária: “Voltar à demonstração”, para `/dashboard`.
+- Ação secundária: “Voltar à demonstração”, para `/exemplo`.
 
 Não exibir número de chamado, posição de fila ou prazo de retorno sem operação real.
 
-### `/login` e configurações avançadas
+### Login real e configurações da demonstração
 
-Para `/login`: título “O acesso à conta ainda não está disponível.”; texto “Você pode explorar a demonstração sem criar uma conta.”; CTA “Explorar demonstração”. Não pedir senha em um formulário sem autenticação.
+No /login do app configurado: “Acesse sua conta.”, com Entrar, Criar conta e Recuperar acesso. Sem configuração: “Acesso em configuração”, com saída para o exemplo. Não pedir credencial sem destino funcional. Sessão válida retorna ao painel permitido sem nova senha.
 
-Para `/dashboard/configuracoes`: badge “Modo inicial”; título “As configurações ainda não estão disponíveis.”; texto “Nesta demonstração, não é possível conectar canais ou configurar uma conta real.”; CTA “Voltar ao painel”; apoio “Entender o estado do produto”, para `/ajuda`.
+No console administrativo: “Super Admin”; na operação, mostrar tenant atual e papel. Convite, contato ou configuração só recebem confirmação após sucesso da API. Mensagem não sincronizada não deve aparecer como recuperada.
+
+Para /exemplo/configuracoes: explicar que as preferências são da demonstração; não confundir com /configuracoes da conta no app. O mapa completo é SITE_MAP.md.
 
 Para demais recursos avançados, usar a mesma estrutura com um limite específico. “Modo inicial” é o estado da área, “Em definição” é o estado do escopo de um módulo e “Dados de exemplo” identifica o conteúdo ilustrativo. Não usar os três rótulos como sinônimos.

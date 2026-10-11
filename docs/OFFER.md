@@ -1,6 +1,8 @@
-# Oferta proposta do Fluxo Atento
+# Oferta proposta do FLUXO
 
 Documento de trabalho para oferta e experiência de uso. Todos os escopos, limites e preços desta proposta dependem de validação de produto, técnica e econômica. Não é uma oferta de contratação de serviço ativo.
+
+Revisão: 10/10/2026. [STATUS.md](STATUS.md) registra estado técnico e [SITE_MAP.md](SITE_MAP.md) os destinos. Auth/API/banco já existem, mas não ativam esta oferta. Números e distribuição de recursos abaixo são hipóteses preservadas para decisão humana em FLUXO-10.
 
 ## Público e proposta unificada
 
@@ -22,8 +24,9 @@ Os documentos antigos contêm públicos, preços e catálogos diferentes. Para e
 
 | Situação | O que pode ser apresentado |
 | --- | --- |
-| Disponível hoje | Interface de demonstração com dados ilustrativos e navegação local para conhecer a proposta. |
-| Sem operação real | Não há backend, análise real de sites, monitoramento recorrente, autenticação funcional, armazenamento em servidor, cobrança, atendimento com IA ou envio e recebimento real de mensagens. Digitar uma URL não significa que ela foi visitada ou analisada. |
+| Demonstração pública | Interface com dados ilustrativos e navegação local, sem consultar o site informado na demo. |
+| Base técnica separada | Auth Supabase, API, RLS e armazenamento existem. Esta revisão prepara Super Admin/contatos; publicação e evidências constam em STATUS, não na oferta. |
+| Ainda não ofertável como conjunto ativo | Cobrança, IA, monitoramento recorrente e WABA/e-mail não estão homologados. Verificação HTTP manual não equivale a análise por navegador. Digitar URL na demo não inicia consulta. |
 | Planejado | Monitoramento de páginas autorizadas, alertas, histórico, acesso de equipe, conexão de WhatsApp, atendimento com IA, campanhas aprovadas e os escopos dos seis módulos. Email marketing nos três planos, com limites diferentes. |
 | Sem compromisso de lançamento | Não há prazo de entrega, integração contratada ou garantia de disponibilidade associada a esta proposta. |
 
@@ -89,7 +92,7 @@ Todos os números são limites propostos por conta do negócio, compartilhados e
 3. Recomendar o caminho correspondente e explicar o motivo em uma frase. Exemplo: “Para organizar interessados e acompanhar o atendimento, comece por esta visão.” Os nomes LeadRadar e AtendeScore podem aparecer como informação secundária. Se a pessoa só tem WhatsApp, não exigir uma URL para explorar o atendimento.
 4. Mostrar dados ilustrativos, indicar o próximo passo e permitir mudar a necessidade. O endereço digitado, se houver, só compõe a experiência local; não disparar afirmações de análise, conexão, campanha ou atendimento reais.
 5. Apresentar os planos pela rotina e pelo volume: Gratuito para explorar; Essencial para o pequeno negócio; Completo para equipe, seis módulos e mais capacidade de atendimento e campanhas. Todos preveem email marketing. Recomendar a partir da necessidade, do número de pessoas e dos limites, deixando a pessoa escolher outra opção. Uma recomendação é uma explicação, não uma contratação.
-6. Na interface atual, “Explorar demonstração” leva a `/dashboard`. Nos planos pagos, “Conhecer proposta” leva a `/contato?assunto=plano-essencial` ou `/contato?assunto=plano-completo`. São links para conhecer a proposta, sem pagamento, conexão real de WhatsApp ou confirmação de assinatura ou envio. A página de contato não representa contratação nem atendimento comercial já conectado.
+6. “Explorar demonstração” leva a `/exemplo`; acesso à conta usa /login no subdomínio app. Nos planos pagos, “Conhecer proposta” leva a `/contato?assunto=plano-essencial` ou `/contato?assunto=plano-completo`. São links para conhecer a proposta, sem pagamento, conexão real de WhatsApp ou confirmação de assinatura ou envio. A página de contato não representa contratação nem atendimento comercial já conectado.
 
 Na futura operação, conexão dos canais, autorização do responsável, revisão da base de contatos e aprovação de campanhas seriam etapas explícitas. Essa jornada operacional ainda precisa ser implementada e validada.
 
@@ -125,6 +128,15 @@ Estas são regras propostas para a futura operação, não uma declaração de c
 
 `app/data/plans.ts` exporta `plans` e `offerNotice`. Cada plano contém `id` (`free`, `essential` ou `complete`), `name`, `audience`, `price`, `period`, `description`, `featured`, `features`, `limits`, `cta` e `availability`. `features` é uma lista de textos e `limits` é uma lista de objetos com `label` e `value` em texto. `price` é texto numérico sem símbolo monetário; a interface deve apresentar reais, acrescentando `R$`. `period` é `/mês`.
 
-Exibir um aviso curto acima dos cartões: hoje há somente demonstração, os recursos e limites são propostas e os preços pagos são sugestões não vigentes, pendentes de validação econômica. Cada preço pago deve ter a indicação “Preço sugerido · não vigente”. Mostrar cinco pontos simples por plano; os limites completos, recursos e `availability` ficam em detalhes expansíveis antes do botão. Exibir `offerNotice` completo em uma área expansível logo abaixo dos cartões, junto às condições de custos e campanhas. Oferecer também um link para `/integracoes`, explicando que WhatsApp, IA e email são previstos.
+Exibir um aviso curto acima dos cartões: os planos são propostas, seus recursos/limites não estão contratáveis e os preços pagos são sugestões não vigentes, pendentes de validação econômica. Cada preço pago deve ter a indicação “Preço sugerido · não vigente”. Mostrar cinco pontos simples por plano; os limites completos, recursos e `availability` ficam em detalhes expansíveis antes do botão. Exibir `offerNotice` completo em uma área expansível logo abaixo dos cartões, junto às condições de custos e campanhas. Oferecer também um link para `/integracoes`, explicando que WhatsApp, IA e email são previstos.
 
-O componente reutilizável `PricingPlans` aceita `compact?: boolean`: a versão compacta reduz a introdução e usa o público resumido dos cartões, preservando os avisos, detalhes e destinos dos botões. A página pública `/planos` e a página `/dashboard/planos`, com layout de dashboard, usam o mesmo componente. Nenhum destaque visual deve esconder que o preço pago é sugestão pendente de validação econômica e que as capacidades são planejadas. Os botões levam à demonstração ou à página para conhecer a proposta; este arquivo não cria assinatura, integração, controle de uso ou autorização de acesso.
+O componente reutilizável `PricingPlans` aceita `compact?: boolean`: a versão compacta reduz a introdução e usa o público resumido dos cartões, preservando os avisos, detalhes e destinos dos botões. A página pública `/planos` e a página `/planos` do app (origem no código `/dashboard/planos`), com layout de dashboard, usam o mesmo componente. Nenhum destaque visual deve esconder que o preço pago é sugestão pendente de validação econômica e que as capacidades são planejadas. Os botões levam à demonstração ou à página para conhecer a proposta; este arquivo não cria assinatura, integração, controle de uso ou autorização de acesso.
+
+## Pendência editorial identificada
+
+A distribuição de e-mail em todos os planos é hipótese deste documento, não
+aprovação comercial. CONTENT/UX não devem definir uma distribuição concorrente.
+A copy antiga em app/data/plans.ts que chama o sistema inteiro de demonstração
+precisa de revisão contextual (FLUXO-10), mantendo claro que planos não são
+contratáveis e conectores ainda não estão homologados. Não mudar preços/cotas
+sem decisão do responsável.

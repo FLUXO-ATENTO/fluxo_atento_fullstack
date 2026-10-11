@@ -11,7 +11,11 @@ export default defineNuxtPlugin(() => {
   const user = useState<{ id: string; email?: string } | null>('auth-user', () => null)
   const ready = useState('auth-ready', () => false)
   const recovery = useState('auth-recovery', () => false)
-  const update = (value: { id: string; email?: string } | null) => { user.value = value ? { id: value.id, email: value.email } : null }
+  const workspace = useWorkspaceState()
+  const update = (value: { id: string; email?: string } | null) => {
+    if (user.value?.id !== value?.id) workspace.reset()
+    user.value = value ? { id: value.id, email: value.email } : null
+  }
   const authReady = (async () => {
     try {
       if (!supabase) return

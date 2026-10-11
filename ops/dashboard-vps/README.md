@@ -1,99 +1,74 @@
-# Implantação segura do dashboard do FLUXO na VPS
+# Publicação e rollback do dashboard na VPS
 
-Este procedimento hospeda apenas arquivos estáticos do dashboard em
-`app.fluxoatento.com.br`. Ele não cria um processo Node permanente e não muda
-os blocos Nginx de `api`, `flow` ou `infra`.
+O app é estático: Nginx serve app.fluxoatento.com.br; a API Node usa o serviço separado fluxo-monitor. Não alterar os sites api, flow, infra nem o agente legado como efeito colateral de publicar o frontend.
 
-## Pré-requisitos e decisão de DNS
+## Estado e pré-requisitos
 
-1. O PR que adiciona `pnpm generate:dashboard` e este PR precisam estar
-   mesclados em `main` antes do primeiro deploy de produção.
-2. O subdomínio `app.fluxoatento.com.br` precisa apontar para a VPS, não para
-   a Netlify. Como o DNS é gerenciado pela Netlify, substitua apenas o registro
-   de `app` pelo registro automático/endereçamento que leva à VPS. Não altere
-   `api`, `flow`, `infra`, raiz ou `www`.
-3. Espere a resolução pública de `app.fluxoatento.com.br` para o IP da VPS
-   antes de solicitar o certificado.
-4. Verifique previamente a presença de `nginx`, `certbot`, `git`, `rsync`,
-   Node.js 22+ e pnpm. Não execute atualização ampla do sistema como parte
-   deste deploy.
+A configuração existente já possui HTTPS. Esta revisão prepara os scripts para a próxima publicação, mas não os executa na VPS. Preservar o ambiente cadastrado pelo responsável; não criar um .env vazio sobre um arquivo existente.
 
-## Instalação inicial
+- Checkout e referência Git explicitamente revisados.
+- Node 22+, pnpm, git, rsync, nginx, systemd e flock existentes.
+- /etc/fluxo-atento/dashboard-build.env: root, 0600, apenas variáveis públicas.
+- /etc/fluxo-atento/monitor.env: segredos de servidor, fora do build e do Git.
+- Projeto Supabase esperado: qbfmebpzxnzdpalmgtxr.
+- Versão anterior do frontend e backup da configuração Nginx disponíveis.
 
-Todos os comandos abaixo devem ser executados como root na VPS, depois de
-revisar os valores e sem colar segredos no terminal compartilhado.
+O checkout atual da VPS contém um diretório dist não rastreado. O novo script recusa alterações locais; preservar esse conteúdo e usar um checkout/worktree limpo. Não executar reset --hard ou apagar os arquivos para contornar a proteção.
 
-```bash
-install -d -o root -g root -m 0755 /srv/fluxo-atento-dashboard/releases
-install -d -o root -g root -m 0755 /var/lib/letsencrypt/.well-known/acme-challenge
-git clone https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack.git /srv/fluxo-atento-dashboard/repository
-install -d -o root -g root -m 0700 /etc/fluxo-atento
-install -o root -g root -m 0600 /dev/null /etc/fluxo-atento/dashboard-build.env
-```
+## Sequência para a próxima publicação
 
-Preencha `/etc/fluxo-atento/dashboard-build.env` com base em
-`dashboard-build.env.example`. Inclua somente a URL e a chave **publicável**
-do Supabase; chaves administrativas não pertencem ao build do navegador.
+1. Registrar commit aprovado, release atual e estado da API.
+2. Gerar o dashboard em checkout limpo com o ambiente público existente.
+3. Confirmar dist-dashboard/index.html e dist-dashboard/.nginx-headers.conf.
+4. O arquivo .nginx-headers.conf contém hashes dos scripts inline desta build.
+   Não copiar hashes de outra versão nem habilitar unsafe-inline para scripts.
+5. Na primeira migração para o novo modelo de CSP, preparar também o arquivo
+   de cabeçalhos da release anterior com scripts/dashboard-security.mjs,
+   para permitir rollback. O helper writeDashboardHeaders recebe o diretório.
+6. Conferir o arquivo Nginx realmente habilitado com readlink/nginx -T. Na VPS
+   inspecionada ele é fluxo-atento-dashboard; não criar um segundo virtual host
+   fluxo-atento-app para o mesmo domínio.
+7. Fazer backup desse arquivo antes de adotar nginx-app-https.conf. O include
+   aponta para current/.nginx-headers.conf; a release ativa precisa conter o
+   arquivo antes de instalar/recarregar a configuração.
+8. Publicar via deploy-static-dashboard.sh a referência aprovada, usando
+   REF com o SHA completo de 40 caracteres e REPOSITORY_DIR para o checkout
+   limpo (clone ou worktree). Não usar nome de branch mutável. O script testa,
+   gera a build, prepara
+   staging legível pelo Nginx e troca o symlink. Recusa execução concorrente.
+9. Executar nginx -t e recarregar. Em falha, restaurar o symlink/configuração
+   anterior. Validar HTTPS, CSP, login e a revisão do frontend.
+10. A API é uma implantação separada: preservar env/usuário dedicado, testar
+    arquivos de servidor, reiniciar somente fluxo-monitor e validar saúde,
+    401 sem token, permissão administrativa e consulta de contatos.
 
-Instale primeiro o Nginx HTTP inicial, valide e recarregue:
+A atualização da API não deve ficar implícita no deploy estático. Publicar só
+o frontend novo contra API antiga deixa as novas funções indisponíveis.
 
-```bash
-install -o root -g root -m 0644 ops/dashboard-vps/nginx-app-http.conf /etc/nginx/sites-available/fluxo-atento-app
-ln -s /etc/nginx/sites-available/fluxo-atento-app /etc/nginx/sites-enabled/fluxo-atento-app
-nginx -t && systemctl reload nginx
-```
+## Testes após publicação
 
-Depois que o DNS apontar para a VPS, emita o certificado sem redirecionamento
-automático de configuração:
-
-```bash
-certbot certonly --webroot -w /var/lib/letsencrypt -d app.fluxoatento.com.br
-```
-
-Substitua o arquivo Nginx pela configuração HTTPS e valide novamente:
-
-```bash
-install -o root -g root -m 0644 ops/dashboard-vps/nginx-app-https.conf /etc/nginx/sites-available/fluxo-atento-app
-nginx -t && systemctl reload nginx
-```
-
-Faça o primeiro deploy usando a revisão aprovada de `main`:
-
-```bash
-install -o root -g root -m 0750 ops/dashboard-vps/deploy-static-dashboard.sh /usr/local/sbin/fluxo-dashboard-deploy
-REF=origin/main /usr/local/sbin/fluxo-dashboard-deploy
-```
-
-## Validação obrigatória após o deploy
-
-```bash
-curl --fail --silent --show-error --head https://app.fluxoatento.com.br/
-curl --fail --silent --show-error https://api.fluxoatento.com.br/v1/health
-nginx -t
-```
-
-O primeiro comando confirma HTTPS e arquivos estáticos. O segundo somente deve
-passar depois que a API de monitoramento for implantada separadamente na VPS.
-Não trate a página renderizada como prova de Auth, RLS ou criação de monitores:
-a jornada com duas contas continua obrigatória.
+- /login com sessão de Super Admin abre /admin.
+- Conta comum não acessa rotas administrativas, inclusive por HTTP direto.
+- Retorno site/app preserva sessão válida; Sair realmente encerra acesso.
+- Seleção de tenant mostra apenas o contexto escolhido.
+- Contato pode ser cadastrado/consultado, com teste sintético autorizado.
+- Chrome não aponta violações CSP de scripts nem erro de inicialização Nuxt.
+- Nenhum segredo aparece nos arquivos estáticos ou nos logs.
 
 ## Rollback
 
-Cada deploy cria uma diretório imutável em
-`/srv/fluxo-atento-dashboard/releases`. Para listar releases:
+rollback-static-dashboard.sh recebe uma release existente e valida se fica
+dentro do diretório de releases. HTML e .nginx-headers.conf voltam juntos.
+Deploy e rollback usam o mesmo lock para impedir execução concorrente.
+Não apagar releases anteriores durante a implantação.
 
-```bash
-ls -1 /srv/fluxo-atento-dashboard/releases
-```
+Para a API, restaurar a revisão anterior preservada e reiniciar somente seu
+serviço. As migrações desta entrega são aditivas; não derrubar tabelas de
+contatos/mensagens como rollback de frontend. Mudanças destrutivas no banco
+exigem plano e aprovação próprios.
 
-Para voltar para uma release específica, use o script versionado:
+## Limite de garantia
 
-```bash
-/usr/local/sbin/fluxo-dashboard-rollback <nome-da-release>
-```
-
-Instale o script de rollback junto com o de deploy:
-
-```bash
-install -o root -g root -m 0750 ops/dashboard-vps/rollback-static-dashboard.sh /usr/local/sbin/fluxo-dashboard-rollback
-```
+HTTP 200 prova disponibilidade da rota, não uma integração WABA/SMTP ativa.
+Nenhum conector deve ser declarado funcional sem teste real autorizado de
+envio, recebimento, persistência, duplicatas e isolamento.

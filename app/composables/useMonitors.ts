@@ -56,7 +56,7 @@ export function useMonitors() {
       return false
     } finally { if (current === generation) busy.value = '' }
   }
-  watch(() => auth.user.value?.id, () => {
+  watch(() => [auth.user.value?.id, workspace.activeTenant.value?.id], () => {
     generation++; controller?.abort(); controller = new AbortController()
     monitors.value = []; error.value = ''; loading.value = false; busy.value = ''
     if (auth.ready.value && auth.user.value) void load()

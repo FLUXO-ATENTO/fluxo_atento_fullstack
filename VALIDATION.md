@@ -1,4 +1,56 @@
-# Validação local — entrega parcial
+# Validação do FLUXO
+
+## Super Admin separado e contatos em 10 de outubro de 2026
+
+Branch: fix/superadmin-session-crm. A atualização de código fica em PR para
+revisão humana, sem merge automático. Por solicitação final do responsável,
+esta revisão não foi publicada na VPS. As migrações remotas abaixo já haviam
+sido aplicadas antes dessa restrição de escopo.
+
+| Verificação | Resultado |
+| --- | --- |
+| pnpm test | 22 testes aprovados |
+| pnpm exec nuxt typecheck | Aprovado |
+| pnpm generate | Aprovado, site institucional |
+| pnpm generate:dashboard | Aprovado, app separado e CSP por release |
+| pnpm test:e2e | 8 testes públicos aprovados, desktop e mobile |
+| Playwright dashboard | 6 testes aprovados, desktop e mobile |
+| Revisão documental | 19 documentos Markdown conferidos; 0 links relativos quebrados |
+| Higiene Git | git diff --check aprovado; padrões de segredo privado pesquisados sem ocorrência (não substitui secret scanner completo) |
+| tests/database/tenant-isolation.sql | Aprovado no projeto autorizado, fixtures revertidas integralmente |
+| Supabase security advisor | Aviso: proteção contra senhas vazadas desativada; nenhuma falha de RLS apontada |
+| Supabase performance advisor | Índice de FK corrigido; índices recém-criados sem uso preservados |
+
+O E2E do dashboard usa sessões e respostas controladas para provar destino por
+papel, bloqueio de usuário comum, retorno site/app, logout e execução com CSP.
+Não valida a senha pessoal nem representa um teste autenticado da nova versão
+em produção. O primeiro teste mobile revelou um erro na fixture em about:blank;
+foi corrigido para navegar por uma origem de site real, sem ignorar erros.
+
+Os testes SQL verificam isolamento com RLS, constraints de tenant/conexão,
+deduplicação, conflitos de identidade, mensagens idempotentes, bloqueio de
+autoelevação, proteção do último owner e auditoria. Nenhum convite ou mensagem
+foi enviado pelos testes de banco.
+
+Migrações confirmadas remotamente nesta revisão:
+
+- 20261011013631_superadmin_contacts_history
+- 20261011014130_channel_sync_fk_index
+
+Conta administrativa existente confirmada no banco; senha não lida nem alterada.
+Não foram configurados provedores reais, MFA, backup/restore, Google OAuth ou
+sincronização histórica. Esses limites estão em docs/STATUS.md.
+
+O CI inclui validação de sintaxe dos scripts Bash. Os scripts operacionais
+não foram executados na VPS nesta revisão. Deploy agora exige SHA completo
+aprovado, aceita checkout/worktree limpo, confirma projeto Supabase e divide
+lock com o rollback. A validação operacional final continua no backlog.
+
+## Registro histórico da entrega anterior
+
+Tudo abaixo desta seção descreve aquela execução anterior, não o estado atual.
+Pendências posteriormente tratadas foram reconciliadas em docs/STATUS.md e
+docs/DOCUMENTATION.md; números de testes antigos são preservados como histórico.
 
 Base: `bc322a82c521d0104e8e259c6db4a40fa0204137`, branch
 `feat/experience-design-system`, clone separado em `/tmp/fluxo-atento`.

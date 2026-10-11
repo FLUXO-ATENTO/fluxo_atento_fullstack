@@ -1,9 +1,20 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { publicSupabaseConfig, safeReturnPath } from '../../app/utils/auth-config.ts'
+import { publicSupabaseConfig, safeReturnPath, workspaceDestination } from '../../app/utils/auth-config.ts'
 import { publicErrorMessage } from '../../app/utils/monitor-response.ts'
 import { normalizeWebsiteUrl } from '../../app/utils/website.ts'
 const jwt = role => 'eyJhbGciOiJIUzI1NiJ9.' + Buffer.from(JSON.stringify({ role })).toString('base64url') + '.signature'
+
+test('same login restores the correct role-aware home without redirect loops or open redirects', () => {
+  assert.equal(workspaceDestination(undefined, true, true), '/admin')
+  assert.equal(workspaceDestination('/admin/', true, true), '/admin')
+  assert.equal(workspaceDestination('/admin', true, false), '/')
+  assert.equal(workspaceDestination('/admin/providers', true, false), '/')
+  assert.equal(workspaceDestination('/monitores', true, true), '/monitores')
+  for (const path of ['/login', '/recuperar-acesso', '//evil.test', '/admin?token=x']) assert.equal(workspaceDestination(path, true, true), '/admin')
+  assert.equal(workspaceDestination(undefined, false, true), '/dashboard/admin')
+  assert.equal(workspaceDestination('/dashboard/admin', false, false), '/dashboard')
+})
 test('frontend accepts public keys only; no admin keys, credentials in URL or malformed legacy JWT', () => {
   assert.ok(publicSupabaseConfig('https://project.supabase.co', 'sb_publishable_test'))
   assert.ok(publicSupabaseConfig('https://project.supabase.co', jwt('anon')))

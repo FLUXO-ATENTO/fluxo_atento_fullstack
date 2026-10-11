@@ -1,95 +1,72 @@
-# Full stack — primeira entrega verificável
+# Arquitetura e contratos do FLUXO
 
-## Fonte canônica e estado
+## Separação de responsabilidades
 
-GitHub é a fonte do código, contratos, migrações e evidências. Nenhuma credencial pertence ao repositório.
-O código nesta branch prepara a integração; não afirma que uma revisão foi instalada na VPS.
-O resultado dos testes e os bloqueios de ativação são registrados em VALIDATION.md.
+O site estático fica na Netlify. Dashboard e Super Admin são layouts e rotas distintos no app estático servido pelo Nginx da VPS. A mesma identidade Supabase abre o painel permitido; não há segunda senha nem autorização baseada em endereço de e-mail no código.
 
-## Responsabilidades
+A separação de interface não é a fronteira de segurança. A API valida o token com Supabase getUser, consulta a tabela administrativa e resolve a associação ao tenant. O Postgres mantém RLS, grants restritos e referências compostas. Somente Super Admin tem visão global; administradores de tenant não são administradores da plataforma.
 
-| Camada | Responsabilidade | Limite |
+| Papel | Alcance |
+| --- | --- |
+| Super Admin | Console global, lista paginada de tenants, convites, permissões de membros, provedores e auditoria |
+| Responsável do tenant | Dados do próprio tenant e configuração de conexões |
+| Administrador do tenant | Dados do próprio tenant e configuração de conexões |
+| Membro | Operação e contatos do próprio tenant; sem controles globais/conexões |
+
+A API não expõe uma operação para o usuário conceder a si mesmo o papel Super Admin. Nomeação global permanece procedimento operacional controlado. Abrir um tenant como Super Admin não personifica o usuário; a identidade administrativa é preservada.
+
+## Sessões
+
+/login é a entrada compartilhada. Sessão válida na origem do app é restaurada pelo cliente Supabase, e a API determina o destino: /admin ou painel de tenant. Voltar ao site não executa logout. Tokens nunca são colocados em URLs nem compartilhados com o domínio do site. Logout e mudança de identidade limpam estado; respostas de contexto antigo são descartadas.
+
+Isso segue o modelo de [sessões e renovação do Supabase](https://supabase.com/docs/guides/auth/sessions). Persistência não significa ignorar expiração, revogação ou exigir menos proteção para administradores.
+
+## Banco de contatos e histórico
+
+- contacts representa o cadastro de uma pessoa dentro de um tenant.
+- contact_identities normaliza e-mail e telefone E.164, com unicidade por tenant/tipo/valor.
+- Cadastro repetido retorna o contato existente sem sobrescrever nome ou unir identidades silenciosamente. Identificadores pertencentes a contatos diferentes exigem revisão.
+- conversations vincula contato e conexão ao mesmo tenant.
+- messages usa chave idempotente por tenant/conexão/identificador externo, timestamps do provedor e recebimento, e texto sem renderização HTML.
+- channel_sync_state reserva checkpoints de sincronização; não contém credenciais.
+- platform_audit_events registra alterações administrativas de papel/status, sem corpos de mensagens ou segredos.
+
+Referências compostas impedem associar mensagem, contato e conexão de empresas diferentes. Índices cobrem escopo, ordenação e relações. RLS e grants são complementares: [RLS Supabase](https://supabase.com/docs/guides/database/postgres/row-level-security), [constraints PostgreSQL](https://www.postgresql.org/docs/17/ddl-constraints.html).
+
+Cadastro de contato não é opt-in de marketing. Antes de campanhas, implementar consentimento específico, origem, evidência e revogação.
+
+## Contratos principais
+
+Todas as rotas abaixo exigem bearer válido, exceto /v1/health. X-Fluxo-Tenant-Id é uma seleção sujeita à autorização, nunca uma permissão.
+
+| Rota | Método | Resultado |
 | --- | --- | --- |
-| Nuxt / Netlify | Site estático, autenticação no cliente, dashboard | Não executa verificações nem guarda chave administrativa |
-| Supabase Auth | Cadastro, confirmação, login, recuperação e validação do usuário | Não equivale a autorização sobre todos os dados |
-| Supabase Postgres | Monitores e resultados, RLS e integridade entre proprietário e monitor | Contas individuais nesta etapa; equipes ainda não habilitadas |
-| VPS / monitor-api | Valida token, aplica limites, consulta HTTP e grava resultado | Não faz compras, envios, automação de navegador ou mudanças no site consultado |
-| VPS / Agent Runtime | Serviço existente e independente | Não é usado como substituto de um verificador HTTP |
+| /v1/workspace | GET | Tenant ativo, associações e permissão global |
+| /v1/admin/tenants?page=0 | GET | 25 tenants/página, total |
+| /v1/admin/tenants/:id/members | GET | Até 100 membros com papel e e-mail |
+| /v1/admin/tenants/:id/members/:userId | PATCH | Alteração transacional de papel, proteção do último owner e auditoria |
+| /v1/admin/users | POST | Convite e tenant inicial idempotente |
+| /v1/admin/providers | GET, POST | Metadados globais, registro pendente |
+| /v1/admin/providers/:id | PATCH | Desativar ou devolver à configuração; não simula validação |
+| /v1/admin/audit | GET | Últimas 100 alterações de papel/status |
+| /v1/contacts?page=0 | GET | Contatos e identidades do tenant, 25/página |
+| /v1/contacts | POST | Nome, e-mail/telefone normalizados; cadastro ou identificação de duplicata |
+| /v1/contacts/:id/history?before=cursor | GET | Histórico armazenado, até 50 mensagens, paginação por cursor |
+| /v1/integrations | GET, POST | Conexões do tenant; catálogo privado projetado sem referências de segredos |
+| /v1/monitors | GET, POST | Páginas e verificações |
+| /v1/monitors/:id | PATCH | Ativar/pausar página |
+| /v1/monitors/:id/check | POST | Verificação HTTP limitada e persistida |
 
-Em 10/10/2026, o OpenAPI público da VPS listava GET /health e POST /agent/run, /agent/stream e /agent/resume.
-O contrato expõe um cabeçalho authorization, mas isso não prova como o token é validado no código do serviço existente.
-Não foram executadas chamadas de agentes, aprovações ou ações com custos para inspecionar esse contrato.
+A API usa supabase-js por HTTPS. Não existe conexão Postgres direta na porta 6543 nesta implementação; configurar pool só passa a ser relevante se houver driver SQL direto. Não afirmar que REST está usando uma conexão de pooling mantida pelo processo Node.
 
-## Fluxo entregue no código
+## Recuperação de histórico externo
 
-1. /login autentica diretamente com Supabase; PKCE para links de confirmação e recuperação.
-2. /dashboard exige sessão no cliente. Esse bloqueio é de navegação; a segurança está no backend e no banco.
-3. A API valida o bearer com Supabase getUser e obtém o user_id. Não aceita identidade no corpo da requisição.
-4. GET lê com o token do usuário e RLS. Escritas usam chave exclusivamente de servidor, sempre vinculadas ao usuário verificado.
-5. Cadastro valida URL e DNS. O banco limita atomicamente a duas páginas de um mesmo hostname por conta.
-6. Verificar agora faz HEAD com DNS fixado no socket, timeout, redirects validados e limites de concorrência.
-7. Resultados são gravados pela VPS, não pelo navegador. O dashboard mostra status, horário, duração e histórico recente.
-8. Sair ou trocar de usuário limpa os dados em memória e cancela solicitações pendentes.
+A consulta implementada recupera mensagens já persistidas. Não busca automaticamente mensagens antigas no WhatsApp ou em caixas de e-mail.
 
-A demonstração está em /exemplo e não acessa a API. Erro de produção nunca faz fallback para dados ilustrativos.
+Para Gmail, sincronização inicial seguida de historyId; cursor expirado requer nova sincronização completa, conforme [documentação oficial](https://developers.google.com/workspace/gmail/api/guides/sync). SMTP envia mensagens, não recupera caixa postal. WhatsApp exige definição do produto e fluxo suportado antes de prometer importação.
 
-## Contrato de monitoramento v1
+O contrato futuro de webhook está em ../ops/WEBHOOKS.md: validar e persistir recebimento durável antes do ACK, processar fora da conexão HTTP, repetir com idempotência e não registrar payload sensível em logs.
 
-| Método / rota | Entrada | Saída |
-| --- | --- | --- |
-| GET /v1/health | pública | status, service, contract |
-| GET /v1/monitors | bearer do usuário | monitors com até cinco checks recentes por página |
-| POST /v1/monitors | { url } | id; HTTP 201 |
-| PATCH /v1/monitors/:id | { enabled } | id |
-| POST /v1/monitors/:id/check | bearer; sem URL arbitrária | check salvo |
+## Limites de segurança
 
-Erros têm { error: { code, message } }. 401 sessão inválida; 403 origem não autorizada;
-404 rota/monitor não disponível; 409 duplicado/limite/pausa; 429 limite temporal; 503 indisponibilidade.
-Não há repetição automática de operações de escrita. Nova tentativa é uma ação explícita.
-
-## Configuração e ativação
-
-### Netlify
-
-Build: pnpm generate; publicação: dist; Node 22. As variáveis públicas precisam estar no escopo Builds e no contexto correto.
-NUXT_PUBLIC_SUPABASE_URL e NUXT_PUBLIC_SUPABASE_KEY já foram informadas como cadastradas pelo responsável.
-NUXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY é uma alternativa, com prioridade sobre KEY.
-NUXT_PUBLIC_API_BASE deve apontar para https://api.fluxoatento.com.br.
-Somente chave sb_publishable_ ou anon legada. Nunca service_role, sb_secret_, senha Postgres ou chave de provedor.
-Após mudar variáveis, gere novo deploy. Preview é público salvo proteção específica.
-
-### Supabase
-
-Em 10/10/2026, a migração `monitor_workspace` foi aplicada no Supabase remoto,
-criando `monitors` e `monitor_checks` com RLS. Não a reaplique. Antes de nova
-mudança de schema, confira o histórico remoto, revise o SQL e registre a
-evidência no PR. O teste de RLS com duas contas ainda é obrigatório.
-Cadastre origens EXATAS de confiança nos Redirect URLs: /auth/callback e /recuperar-acesso em cada ambiente autorizado.
-Não use wildcard para todos os previews. Para produção, configure SMTP e confirme entrega, limites e proteção contra abuso.
-As tabelas não recebem dados de demonstração. Navegadores não têm INSERT, UPDATE, DELETE ou EXECUTE no criador de monitores.
-SUPABASE_SECRET_KEY só será cadastrada no ambiente privado da VPS. O código não necessita JWT signing secret.
-Vault pode guardar segredos utilizados pelo banco; isso não injeta segredos automaticamente no processo da VPS.
-Não é necessária Edge Function para este fluxo.
-
-### VPS — implantação pendente de acesso e revisão
-
-Preserve Nginx, Uvicorn, n8n, Redis e Portainer existentes. Não substitua a configuração nem reinicie o servidor.
-Use usuário de serviço sem privilégios e revisão Git específica em diretório próprio. Instale dependências pelo lockfile.
-Guarde monitor.env fora do checkout, com permissão 0600 e dono do serviço. Não cole valores no chat.
-O modelo ops/fluxo-monitor.service supõe Node em /usr/bin/node; confirme o caminho antes de instalar.
-O processo ouve somente 127.0.0.1:8100. Inclua ops/nginx-monitor-location.conf dentro do bloco TLS da API.
-Teste configuração e serviço antes do reload. /agent/* e /health permanecem no serviço original.
-Verifique CORS apenas nas origens listadas e acrescente rate limiting no Nginx para /v1/, inclusive antes de autenticar.
-
-## O que ainda não é uma capacidade ativa
-
-Agendamento, múltiplos membros, cobrança, WhatsApp, email marketing, análises de formulário/pixel, seis módulos avançados,
-política automática de retenção e execução de agentes em nome do usuário. Propostas comerciais não habilitam esses recursos.
-Uma resposta HTTP 200 não demonstra que uma compra ou formulário funciona.
-
-## Referências consultadas
-
-- https://supabase.com/docs/guides/auth/passwords
-- https://supabase.com/docs/guides/database/postgres/row-level-security
-- https://docs.netlify.com/manage/routing/headers/
-- https://docs.netlify.com/build/configure-builds/file-based-configuration/
+Ainda pendem MFA administrativo, proteção contra senhas vazadas, política de revogação imediata para ações sensíveis, auditoria de todos os acessos globais, retenção e testes de carga. A atualização endurece controles concretos, mas não é uma certificação de segurança.

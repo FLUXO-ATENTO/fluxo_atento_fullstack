@@ -14,7 +14,7 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['iPhone 13'], defaultBrowserType: 'chromium' } }
   ],
   webServer: process.env.E2E_BASE_URL ? undefined : {
-    command: 'python3 -m http.server 4173 --bind 127.0.0.1 --directory dist',
+    command: 'node scripts/serve-static.mjs dist 4173',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: !process.env.CI
   }

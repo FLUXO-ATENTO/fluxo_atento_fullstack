@@ -1,72 +1,55 @@
-# Estado operacional do Fluxo Atento
+# Estado operacional do FLUXO
 
-> **Registro factual em 10/10/2026.** Este documento descreve evidências de
-> ambiente, não intenções, telas ou apenas presença de código no repositório.
-> Atualize-o em todo marco de implantação e anexe a evidência de validação ao
-> PR correspondente.
+Registro em 10/10/2026, horário de Brasília; migrações após 21h usam 11/10 em UTC. Fonte autorizada: Supabase qbfmebpzxnzdpalmgtxr. O projeto Fluxo de Clientes não faz parte deste escopo.
 
-## Resumo executivo
+## Situação atual
 
-O Fluxo Atento está em **fundação de MVP**. A experiência pública e o código
-para autenticação, dashboard e monitoramento existem no repositório, mas o
-fluxo completo ainda não foi ativado no ambiente de produção.
+| Área | Evidência | Limite |
+| --- | --- | --- |
+| Dashboard na VPS | HTTPS e build estático ativo em app.fluxoatento.com.br | Nova interface Super Admin nesta revisão não foi publicada, conforme pedido final de atualizar apenas o Git |
+| API na VPS | Serviço fluxo-monitor ativo, usuário dedicado, /v1/health disponível | Saúde do processo não comprova todos os conectores |
+| Identidade | Conta administrativa confirmada e presente em platform_administrators | Senha existente preservada; nenhuma nova conta administrativa criada nesta revisão |
+| Sessão e painel | Testes locais desktop/mobile passam: administrador, usuário comum, retorno site/app e logout | E2E usam respostas controladas, não a senha pessoal do responsável |
+| Isolamento de banco | Testes SQL reais com tenants sintéticos e rollback passaram | Não equivale a auditoria independente ou certificação |
+| Contatos e histórico | Schema aplicado; cadastro, deduplicação e consulta implementados na API/interface desta revisão | Backfill de provedores não implementado |
+| WABA e SMTP | Catálogo e estados de configuração disponíveis | Não há prova de envio/recebimento real; não anunciar integração ativa |
+| Segurança | RLS e testes de escalada/isolamento aprovados | Advisor indica proteção contra senhas vazadas desativada; MFA ainda precisa de implantação |
+| Operação | Releases anteriores preservadas; publicação estática corrigida para carregar CSP por release | Backup restaurado, alertas e teste de carga ainda pendentes |
+| Governança e estrutura | AGENTS, perfis de desenvolvimento/VPS, site map e inventário revisados nesta branch | Instruções não instalam processos nem conferem novas permissões |
+| Próximas tarefas | 11 tarefas com ordem, função responsável e aceite em BACKLOG | Criação de issues no GitHub bloqueada por HTTP 403 da integração; nenhuma criada |
 
-| Área | Estado | Evidência conhecida | Próxima condição para considerar pronta |
-| --- | --- | --- | --- |
-| Site institucional | Operante | `https://fluxoatento.com.br` respondeu HTTP 200 | Manter monitoramento e CI |
-| Dashboard em subdomínio | Em implantação | Projeto Netlify separado e domínio `app.fluxoatento.com.br` cadastrados | Certificado válido, build publicado e teste autenticado |
-| Código do dashboard | Preparado | Rotas, autenticação de cliente e build separado presentes | Deploy a partir de `main` e teste em produção |
-| Supabase | Schema aplicado; jornada ainda não validada | Migração remota `20261010234155_monitor_workspace`; tabelas e RLS ativos; zero linhas iniciais | Testar Auth, RLS e gravação com duas contas |
-| API de monitoramento | Não implantada | `GET /health` responde no serviço de agente; `/v1/health` e `/v1/monitors` retornam 404 | Serviço `monitor-api`, Nginx `/v1/` e CORS ativos |
-| Observabilidade e operação | Não implantadas | Sem evidência de alertas, backup testado ou runbook executado | Alertas, logs, backup e rollback testados |
-| Módulos avançados | Planejados | Telas e proposta de produto não equivalem a integrações ativas | Escopo, dados, integrações e testes por módulo |
+## Migrações realmente aplicadas
 
-## Migrações aplicadas no Supabase
+Histórico consultado no projeto autorizado, não inferido a partir de arquivos locais.
 
-Em 10/10/2026, a migração local de monitoramento foi aplicada e verificada no
-ambiente remoto. A aplicação não inseriu dados de demonstração.
+| Versão UTC | Nome | Efeito |
+| --- | --- | --- |
+| 20261010193511 | monitor_workspace | Monitores e verificações |
+| 20261010235303 | tenant_workspace_and_omnichannel | Tenants, membros e provedores |
+| 20261011000555 | tenant_rls_policy_and_indexes | Políticas e índices |
+| 20261011013631 | superadmin_contacts_history | Autorização global controlada, contatos, identidades, conversas, mensagens, checkpoints e auditoria |
+| 20261011014130 | channel_sync_fk_index | Índice da referência composta de sincronização |
 
-| Fonte | Estado |
-| --- | --- |
-| Repositório Git | Migração `20261010193511_monitor_workspace.sql` versionada |
-| Histórico remoto do Supabase | `20261010234155_monitor_workspace` aplicada |
-| Schema público remoto | `monitors` e `monitor_checks`, ambas com RLS ativo |
-| Dados iniciais | Zero linhas, conforme esperado para ambiente sem contas de teste |
-| Segurança verificada | Consulta de advisories de segurança sem alertas retornados |
-| Pendente | Teste de RLS e jornada real com duas contas autenticadas |
+As duas últimas migrações são aditivas. Não alteram senha nem removem dados existentes. Os testes de banco foram revertidos integralmente, sem envio de convites ou mensagens externas.
 
-## O que pode e o que não pode ser afirmado
+## Resultado de segurança
 
-### Pode ser afirmado
+O teste tests/database/tenant-isolation.sql verificou: deduplicação interna, identificador igual permitido em empresas distintas, rejeição de fusão ambígua, RLS de contatos/mensagens, bloqueio de autoelevação, referências compostas, proteção do último proprietário, idempotência de mensagens e auditoria de mudança de papel.
 
-- O repositório contém o contrato do monitoramento, o cliente Nuxt, a migração
-  RLS, a API Node e modelos de Nginx/systemd.
-- A separação proposta entre site, dashboard, Supabase e VPS reduz exposição de
-  segredos e permite operar cada camada com responsabilidade clara.
-- A interface não usa dados ilustrativos como substituto silencioso de uma
-  resposta real da API.
+A proteção contra senhas comprometidas exige configuração adicional no Auth, conforme disponibilidade do plano. Não foi alterada a senha existente. Referência: [segurança de senhas do Supabase](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
 
-### Não pode ser afirmado sem nova evidência
+Os avisos de índices ainda sem uso não justificam removê-los em tabelas recém-criadas. O aviso de chave estrangeira sem cobertura foi corrigido com a segunda migração.
 
-- Que um usuário consegue concluir cadastro, confirmação por e-mail, login e
-  recuperação de senha em `app.fluxoatento.com.br`.
-- Que monitores ou resultados são persistidos no Supabase.
-- Que a VPS aceita e processa as rotas `/v1` do dashboard.
-- Que dados de uma conta são inacessíveis a outra em produção.
-- Que WhatsApp, e-mail, IA, cobrança, CRM, equipes ou módulos comerciais estão
-  integrados e operantes.
+## Critérios que continuam abertos
 
-## Definição do primeiro produto utilizável
+- Revisar o PR e, em etapa autorizada posterior, publicar esta revisão preservando rollback.
+- Validar com o responsável a entrada real com sua sessão, sem compartilhar senha.
+- Implementar MFA administrativo e política de sessões sensíveis.
+- Conectar e testar WABA/e-mail, fila durável, worker, assinaturas e recuperação de histórico.
+- Definir consentimento, retenção, exclusão, backup/restauração e piloto antes do lançamento comercial.
 
-O MVP não é o conjunto inteiro de propostas comerciais. O primeiro produto
-operante é a jornada abaixo:
-
-1. Uma pessoa cria e confirma uma conta.
-2. A pessoa entra no dashboard individual em `app.fluxoatento.com.br`.
-3. A pessoa cadastra uma página HTTPS pública permitida.
-4. A VPS verifica a página com limites e validações de segurança.
-5. O resultado é gravado no Supabase e aparece somente para a conta dona.
-6. A pessoa consegue repetir a verificação e consultar um histórico limitado.
-
-Somente depois dessa jornada validada o sistema pode ser chamado de MVP
-funcional de monitoramento.
+A sequência detalhada fica em [BACKLOG.md](BACKLOG.md); os ativos além do
+dashboard e lacunas do inventário ficam em [INFRASTRUCTURE.md](INFRASTRUCTURE.md).
+O arquivo de exemplo da API foi corrigido para o projeto autorizado e o retorno
+de convite para recuperação de senha. O env privado existente não foi regravado
+como parte desta correção documental.

@@ -14,8 +14,11 @@ fail() { printf 'ERRO: %s\n' "$*" >&2; exit 1; }
 require_command() { command -v "$1" >/dev/null 2>&1 || fail "Comando ausente: $1"; }
 
 [[ "${EUID}" -eq 0 ]] || fail 'Execute como root.'
-for command in git node pnpm rsync nginx systemctl; do require_command "$command"; done
-[[ -d "$REPOSITORY_DIR/.git" ]] || fail "Checkout Git ausente: $REPOSITORY_DIR"
+for command in git node pnpm rsync nginx systemctl flock; do require_command "$command"; done
+exec 9>/run/lock/fluxo-dashboard-deploy.lock
+flock -n 9 || fail 'Outro deploy está em andamento.'
+[[ -e "$REPOSITORY_DIR/.git" ]] || fail "Checkout Git ausente: $REPOSITORY_DIR"
+git -C "$REPOSITORY_DIR" rev-parse --is-inside-work-tree >/dev/null || fail 'Checkout inválido.'
 [[ -f "$ENV_FILE" ]] || fail "Arquivo de ambiente ausente: $ENV_FILE"
 [[ "$(stat -c '%U' "$ENV_FILE")" == 'root' ]] || fail "$ENV_FILE deve pertencer a root."
 [[ "$(stat -c '%a' "$ENV_FILE")" == '600' ]] || fail "$ENV_FILE deve ter permissão 0600."
@@ -33,39 +36,44 @@ done
 
 [[ "$NUXT_PUBLIC_SITE_URL" == 'https://app.fluxoatento.com.br' ]] || fail 'NUXT_PUBLIC_SITE_URL deve usar o domínio de produção do dashboard.'
 [[ "$NUXT_PUBLIC_API_BASE" == 'https://api.fluxoatento.com.br' ]] || fail 'NUXT_PUBLIC_API_BASE deve usar a API HTTPS de produção.'
+[[ "$NUXT_PUBLIC_SUPABASE_URL" == 'https://qbfmebpzxnzdpalmgtxr.supabase.co' ]] || fail 'Projeto Supabase diferente do FLUXO autorizado.'
+[[ -n "${REF:-}" ]] || fail 'Informe REF com o SHA completo aprovado no PR; não selecionar a versão implicitamente.'
+[[ "$REF" =~ ^[0-9a-fA-F]{40}$ ]] || fail 'REF deve ser o SHA completo aprovado, não uma branch mutável.'
 
 install -d -o root -g root -m 0755 "$RELEASE_ROOT"
 nginx -t
 
 cd "$REPOSITORY_DIR"
+[[ -z "$(git status --porcelain)" ]] || fail 'Checkout contém alterações locais. Preserve-as antes do deploy.'
 git fetch --prune origin
-# A produção sempre parte da referência remota já revisada. Evita usar uma
-# branch local antiga por engano quando a VPS ficou algum tempo sem atualizar.
-ref="${REF:-origin/main}"
+# O responsável escolhe o commit revisado, sem mover automaticamente para main.
+ref="$REF"
 git rev-parse --verify --quiet "${ref}^{commit}" >/dev/null || fail "Referência Git inválida: $ref"
 git switch --detach "$ref"
-git reset --hard "$ref"
 pnpm install --frozen-lockfile
+pnpm test
+pnpm exec nuxt typecheck
 pnpm generate:dashboard
 
 [[ -f dist-dashboard/index.html ]] || fail 'Build não gerou dist-dashboard/index.html.'
+[[ -f dist-dashboard/.nginx-headers.conf ]] || fail 'Cabeçalhos CSP da release ausentes.'
 
 commit="$(git rev-parse --short HEAD)"
 release="$RELEASE_ROOT/$(date -u +%Y%m%dT%H%M%SZ)-$commit"
 staging="$(mktemp -d "$RELEASE_ROOT/.staging.XXXXXX")"
-cleanup() { rm -rf "$staging"; }
-trap cleanup EXIT
+trap 'printf "Staging preservado para diagnóstico: %s\n" "$staging" >&2' ERR
 
-rsync -a --delete --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r dist-dashboard/ "$staging/"
+rsync -a --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r dist-dashboard/ "$staging/"
+chmod 0755 "$staging"
 mv "$staging" "$release"
-trap - EXIT
+trap - ERR
 
 previous=""
 if [[ -L "$LIVE_LINK" ]]; then previous="$(readlink -f "$LIVE_LINK")"; fi
 ln -s "$release" "$LIVE_LINK.next"
 mv -Tf "$LIVE_LINK.next" "$LIVE_LINK"
 
-if ! systemctl reload nginx; then
+if ! nginx -t || ! systemctl reload nginx; then
   rm -f "$LIVE_LINK"
   if [[ -n "$previous" ]]; then ln -s "$previous" "$LIVE_LINK"; fi
   systemctl reload nginx || true

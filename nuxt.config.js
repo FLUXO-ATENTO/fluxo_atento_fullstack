@@ -57,7 +57,7 @@ export default defineNuxtConfig({
       crawlLinks: true,
       failOnError: true,
       routes: dashboardApp
-        ? ['/', '/monitores', '/modulos', '/canais', '/configuracoes', '/planos', '/login', '/auth/callback', '/recuperar-acesso', '/privacy', '/terms']
+        ? ['/', '/admin', '/contatos', '/monitores', '/modulos', '/canais', '/configuracoes', '/planos', '/login', '/auth/callback', '/recuperar-acesso', '/privacy', '/terms']
         : ['/', '/privacy', '/terms', '/login', '/auth/callback', '/recuperar-acesso', '/demo', '/exemplo', '/dashboard', '/dashboard/monitores', '/planos']
     }
   },

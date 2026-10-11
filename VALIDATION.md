@@ -2,8 +2,9 @@
 
 ## Super Admin separado e contatos em 10 de outubro de 2026
 
-Branch: fix/superadmin-session-crm. A atualização de código fica em PR para
-revisão humana, sem merge automático. Por solicitação final do responsável,
+Branch: fix/superadmin-session-crm, enviada ao GitHub para revisão humana.
+A criação do PR foi recusada pela integração (HTTP 403); nenhum PR novo nem
+CI de pull request foi executado. Não houve merge. Por solicitação final do responsável,
 esta revisão não foi publicada na VPS. As migrações remotas abaixo já haviam
 sido aplicadas antes dessa restrição de escopo.
 

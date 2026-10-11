@@ -2,6 +2,18 @@
 
 Registro em 10/10/2026, horário de Brasília; migrações após 21h usam 11/10 em UTC. Fonte autorizada: Supabase qbfmebpzxnzdpalmgtxr. O projeto Fluxo de Clientes não faz parte deste escopo.
 
+## Entrega no GitHub
+
+Código e documentação enviados à branch fix/superadmin-session-crm.
+A integração recusou a criação de PR e issues com HTTP 403
+Resource not accessible by integration. **Nenhum PR desta branch foi aberto
+por esta execução.** A branch está disponível para revisão e abertura manual
+ou após liberar as permissões adequadas da integração. Menções a “este PR”
+nos procedimentos descrevem a proposta preparada, não um merge/deploy ocorrido.
+
+[Abrir comparação para criar o PR](https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack/compare/main...fix/superadmin-session-crm?expand=1).
+CI remoto de pull request ainda não executado porque não há PR criado.
+
 ## Situação atual
 
 | Área | Evidência | Limite |

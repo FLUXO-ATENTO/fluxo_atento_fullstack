@@ -3,6 +3,7 @@ import { publicErrorMessage } from '~/utils/monitor-response'
 
 export function useMonitors() {
   const auth = useAuth()
+  const workspace = useWorkspace()
   const config = useRuntimeConfig().public
   const monitors = ref<Monitor[]>([])
   const loading = ref(false)
@@ -11,6 +12,8 @@ export function useMonitors() {
   let generation = 0
   let controller: AbortController | null = null
   async function request<T>(path: string, method = 'GET', body?: object): Promise<T> {
+    const tenant = await workspace.ensure()
+    if (!tenant) throw new Error('Não foi possível preparar seu espaço agora.')
     const client = auth.client()
     if (!client || !auth.user.value) throw new Error('Entre na sua conta para continuar.')
     const { data } = await client.auth.getSession()
@@ -20,7 +23,7 @@ export function useMonitors() {
     if (url.protocol !== 'https:' && !(import.meta.dev && url.hostname === 'localhost')) throw new Error('A conexão do painel ainda precisa ser configurada.')
     const response = await fetch(`${base}/v1${path}`, {
       method, cache: 'no-store', signal: AbortSignal.any([AbortSignal.timeout(20000), controller!.signal]),
-      headers: { Authorization: `Bearer ${data.session.access_token}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
+      headers: { Authorization: `Bearer ${data.session.access_token}`, 'X-Fluxo-Tenant-Id': tenant.id, ...(body ? { 'Content-Type': 'application/json' } : {}) },
       body: body ? JSON.stringify(body) : undefined
     })
     if (response.status === 401) { await navigateTo('/login'); throw new Error('Sua sessão terminou. Entre novamente.') }

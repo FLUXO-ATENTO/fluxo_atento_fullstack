@@ -43,6 +43,7 @@ export default defineNuxtConfig({
     public: {
       appMode: dashboardApp ? 'dashboard' : 'marketing',
       marketingUrl: process.env.NUXT_PUBLIC_MARKETING_URL || 'https://fluxoatento.com.br',
+      dashboardUrl: process.env.NUXT_PUBLIC_DASHBOARD_URL || 'https://app.fluxoatento.com.br',
       siteUrl: '',
       supabaseUrl: '',
       supabaseKey: '',

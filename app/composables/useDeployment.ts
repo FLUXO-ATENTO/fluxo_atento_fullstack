@@ -6,6 +6,7 @@ export function useDeployment() {
   const config = useRuntimeConfig().public
   const isDashboardApp = computed(() => config.appMode === 'dashboard')
   const marketingUrl = computed(() => config.marketingUrl.replace(/\/$/, ''))
+  const dashboardUrl = computed(() => config.dashboardUrl.replace(/\/$/, ''))
 
   function dashboardPath(path = '/dashboard') {
     if (!isDashboardApp.value) return path
@@ -13,5 +14,10 @@ export function useDeployment() {
     return stripped || '/'
   }
 
-  return { isDashboardApp, marketingUrl, dashboardPath }
+  function dashboardAccessUrl(path = '/login') {
+    const localPath = dashboardPath(path)
+    return isDashboardApp.value ? localPath : `${dashboardUrl.value}${localPath === '/dashboard' ? '/' : localPath}`
+  }
+
+  return { isDashboardApp, marketingUrl, dashboardUrl, dashboardPath, dashboardAccessUrl }
 }

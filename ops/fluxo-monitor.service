@@ -1,4 +1,4 @@
-# Installation template: adapt User and WorkingDirectory after inspecting the VPS.
+# Dedicated service: it does not share /opt/fluxo-atento with the existing agent.
 [Unit]
 Description=Fluxo Atento Monitor API
 After=network-online.target
@@ -8,11 +8,16 @@ Wants=network-online.target
 Type=simple
 User=fluxo-monitor
 Group=fluxo-monitor
-WorkingDirectory=/opt/fluxo-atento
+WorkingDirectory=/opt/fluxo-atento-monitor
 EnvironmentFile=/etc/fluxo-atento/monitor.env
 ExecStart=/usr/bin/node services/monitor-api/server.mjs
 Restart=on-failure
 RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=fluxo-monitor
+LogRateLimitIntervalSec=30s
+LogRateLimitBurst=1000
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict

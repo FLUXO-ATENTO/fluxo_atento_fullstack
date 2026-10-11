@@ -7,15 +7,21 @@ import { ApiError } from '../../services/monitor-api/errors.mjs'
 
 const own = '11111111-1111-4111-8111-111111111111'
 const other = '22222222-2222-4222-8222-222222222222'
+const tenant = '33333333-3333-4333-8333-333333333333'
 async function fixture(t) {
   const saved = []
   const store = {
     authenticate: async token => { if (token !== 'valid.user.token') throw new ApiError(401, 'UNAUTHORIZED', 'Entre na sua conta.'); return { userId: 'owner', token } },
-    list: async context => [{ id: own, user_id: context.userId }],
-    create: async (context, url) => { saved.push({ userId: context.userId, url: url.href }); return { id: own } },
-    setEnabled: async (context, id) => { if (id !== own) throw new ApiError(404, 'NOT_FOUND', 'Não encontrado.'); return { id } },
-    claim: async (context, id) => { if (id !== own) throw new ApiError(404, 'NOT_FOUND', 'Não encontrado.'); return { id, url: 'https://site.com/' } },
-    record: async (context, id, result) => { saved.push({ userId: context.userId, id, result }); return { ...result, monitor_id: id } }
+    workspace: async (_context, requested) => {
+      if (requested && requested !== tenant) throw new ApiError(403, 'TENANT_DENIED', 'Espaço negado.')
+      return { activeTenant: { id: tenant, name: 'Espaço teste', role: 'owner' }, tenants: [{ id: tenant, name: 'Espaço teste', role: 'owner' }], platformAdmin: false }
+    },
+    adminTenants: async () => { throw new ApiError(403, 'ADMIN_REQUIRED', 'Administração necessária.') },
+    list: async (context, tenantId) => [{ id: own, user_id: context.userId, tenant_id: tenantId }],
+    create: async (context, tenantId, url) => { saved.push({ userId: context.userId, tenantId, url: url.href }); return { id: own } },
+    setEnabled: async (_context, tenantId, id) => { if (tenantId !== tenant || id !== own) throw new ApiError(404, 'NOT_FOUND', 'Não encontrado.'); return { id } },
+    claim: async (_context, tenantId, id) => { if (tenantId !== tenant || id !== own) throw new ApiError(404, 'NOT_FOUND', 'Não encontrado.'); return { id, url: 'https://site.com/' } },
+    record: async (context, tenantId, id, result) => { saved.push({ userId: context.userId, tenantId, id, result }); return { ...result, monitor_id: id } }
   }
   const server = createServer(createHandler({
     store, allowedOrigins: ['https://fluxoatento.com.br'], validate: async () => ({}),
@@ -56,6 +62,14 @@ test('CORS denies arbitrary origins and allows only exact configured origins', a
   assert.equal((await request('/v1/monitors', { headers: { Origin: 'https://evil.example' } })).status, 403)
   const allowed = await request('/v1/monitors', { method: 'OPTIONS', headers: { Origin: 'https://fluxoatento.com.br' } })
   assert.equal(allowed.status, 204); assert.equal(allowed.headers.get('access-control-allow-origin'), 'https://fluxoatento.com.br')
+  assert.match(allowed.headers.get('access-control-allow-headers'), /X-Fluxo-Tenant-Id/)
+})
+test('workspace is resolved from verified identity and a forged tenant id is denied', async t => {
+  const { request } = await fixture(t)
+  const workspace = await request('/v1/workspace')
+  assert.equal(workspace.status, 200)
+  assert.equal((await workspace.json()).active_tenant.id, tenant)
+  assert.equal((await request('/v1/monitors', { headers: { 'X-Fluxo-Tenant-Id': other } })).status, 403)
 })
 test('invalid JSON, unsupported media and oversized bodies fail safely', async t => {
   const { request } = await fixture(t)

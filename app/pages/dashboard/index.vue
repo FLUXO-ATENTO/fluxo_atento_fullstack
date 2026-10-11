@@ -2,4 +2,4 @@
 definePageMeta({ layout: 'dashboard' })
 useSeoMeta({ title: 'Seu painel · Fluxo Atento', robots: 'noindex, nofollow' })
 </script>
-<template><LiveMonitors /></template>
+<template><div><WelcomeGuidance /><LiveMonitors /></div></template>

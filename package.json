@@ -10,6 +10,7 @@
     "dev": "nuxt dev",
     "build": "nuxt build",
     "generate": "node scripts/check-public-env.mjs && nuxt generate",
+    "generate:dashboard": "node scripts/check-public-env.mjs && node scripts/generate-dashboard.mjs",
     "preview": "nuxt preview",
     "test": "node --experimental-strip-types --test tests/unit/*.test.mjs",
     "typecheck": "nuxt typecheck",

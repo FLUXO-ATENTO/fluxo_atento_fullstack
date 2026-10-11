@@ -1,0 +1,13 @@
+# Configuration for the independent dashboard project (app.fluxoatento.com.br).
+# In Netlify, set this project to use this file as its configuration path.
+[build]
+  command = "pnpm generate:dashboard"
+  publish = "dist-dashboard"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

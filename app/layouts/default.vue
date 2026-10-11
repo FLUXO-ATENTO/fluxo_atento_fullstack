@@ -1,21 +1,19 @@
 <script setup lang="ts">
-import { ArrowUpRight, Menu, ArrowRight } from '@lucide/vue'
+import { ArrowUpRight, Layers3, Menu } from '@lucide/vue'
 const menuOpen = ref(false)
 const route = useRoute()
+const { isDashboardApp } = useDeployment()
 watch(() => route.fullPath, () => { menuOpen.value = false })
 </script>
 <template>
   <div class="marketing-shell">
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
-    <header class="site-header">
+    <header v-if="!isDashboardApp" class="site-header">
       <div class="container header-inner">
         <NuxtLink to="/" aria-label="Fluxo Atento — início"><BrandLogo /></NuxtLink>
-        <nav class="desktop-nav" aria-label="Navegação principal">
-          <NuxtLink to="/como-funciona">Como funciona</NuxtLink><NuxtLink to="/planos">Planos</NuxtLink><NuxtLink to="/ajuda">Central de ajuda</NuxtLink>
-        </nav>
         <div class="header-actions">
-          <NuxtLink to="/login" class="login-link">Entrar <ArrowUpRight :size="14" /></NuxtLink>
-          <NuxtLink to="/exemplo" class="button button-small button-primary">Explorar demo <ArrowRight :size="15" /></NuxtLink>
+          <NuxtLink to="/#como-funciona" class="button button-header">Ver demonstração <ArrowUpRight :size="15" /></NuxtLink>
+          <NuxtLink to="/modulos" class="header-icon-link" aria-label="Explorar módulos" title="Explorar módulos"><Layers3 :size="20" /></NuxtLink>
           <UModal v-model:open="menuOpen" title="Navegação" description="Explore o Fluxo Atento.">
             <button class="icon-button mobile-menu-button" aria-label="Abrir menu"><Menu :size="22" /></button>
             <template #body><nav class="mobile-navigation" aria-label="Navegação móvel">
@@ -32,7 +30,7 @@ watch(() => route.fullPath, () => { menuOpen.value = false })
       </div>
     </header>
     <main id="conteudo" tabindex="-1"><slot /></main>
-    <footer class="site-footer">
+    <footer v-if="!isDashboardApp" class="site-footer">
       <div class="container footer-main">
         <div><NuxtLink to="/" aria-label="Fluxo Atento — início"><BrandLogo /></NuxtLink><p>Menos pontos cegos.<br>Mais clareza para agir.</p></div>
         <div class="footer-links">

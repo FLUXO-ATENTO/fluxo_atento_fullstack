@@ -14,6 +14,12 @@ test('login return path cannot be used for an open redirect or token forwarding'
   assert.equal(safeReturnPath('/dashboard/monitores'), '/dashboard/monitores')
   for (const path of ['//evil.test', '/dashboard/../evil', 'https://evil.test', '/dashboard?token=x', '/dashboard%2f..', null]) assert.equal(safeReturnPath(path), '/dashboard')
 })
+test('dedicated dashboard accepts only local application paths after login', () => {
+  assert.equal(safeReturnPath('/', true), '/')
+  assert.equal(safeReturnPath('/monitores', true), '/monitores')
+  assert.equal(safeReturnPath('/modulos/recuperaia', true), '/modulos/recuperaia')
+  for (const path of ['//evil.test', '/monitores?token=x', '/modulos/../login', 'https://evil.test', null]) assert.equal(safeReturnPath(path, true), '/')
+})
 test('remote errors are mapped to public text, never printed verbatim', () => {
   assert.doesNotMatch(publicErrorMessage(503, { error: { message: 'password=secret' } }), /secret/)
   assert.match(publicErrorMessage(404, null), /não está disponível/)

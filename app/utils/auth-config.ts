@@ -10,6 +10,10 @@ export function publicSupabaseConfig(urlValue: unknown, keyValue: unknown): { ur
   } catch { return null }
 }
 
-export function safeReturnPath(value: unknown) {
-  return typeof value === 'string' && /^\/dashboard(?:\/[a-z0-9-]+)*$/.test(value) ? value : '/dashboard'
+export function safeReturnPath(value: unknown, dashboardApp = false) {
+  const validPath = dashboardApp
+    ? /^\/(?:[a-z0-9-]+(?:\/[a-z0-9-]+)*)?$/.test(value as string)
+    : /^\/dashboard(?:\/[a-z0-9-]+)*$/.test(value as string)
+  if (typeof value === 'string' && validPath) return value
+  return dashboardApp ? '/' : '/dashboard'
 }

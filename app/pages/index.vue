@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { motion } from 'motion-v'
-import { ArrowRight, ArrowUpRight, Play, ShieldCheck, Layers3, MousePointer2, Bell, Check, ScanLine, Code2 } from '@lucide/vue'
+import { ArrowRight, ArrowUpRight, ShieldCheck, Layers3, MousePointer2, Bell, Check, ScanLine, Code2 } from '@lucide/vue'
 import { modules } from '~/data/modules'
-useSeoMeta({ title: 'Fluxo Atento — Menos pontos cegos. Mais clareza para agir.', description: 'Entenda sinais do seu site, veja o que mudou e descubra a próxima ação. Explore a nova experiência Fluxo Atento em uma demonstração interativa.' })
+useSeoMeta({ title: 'Fluxo Atento — Seu cliente chegou. O próximo passo funcionou?', description: 'Entenda os sinais, encontre o contexto e descubra o que vale conferir em seguida. Explore a experiência Fluxo Atento em uma demonstração interativa.' })
 const problems = [
   { icon: MousePointer2, title: 'O botão está lá. Mas funciona?', description: 'Uma página bonita pode esconder um formulário que não envia ou um checkout com falha.' },
   { icon: Code2, title: 'O pixel existe. Mas dispara?', description: 'A presença de um script é só uma parte da história. O comportamento também importa.' },
@@ -12,11 +12,11 @@ const problems = [
 <template>
   <div>
     <section class="hero container">
-      <div class="hero-topline"><span class="release-tag">NOVA EXPERIÊNCIA</span><span>Um olhar atento. Uma ação mais clara.</span><ArrowUpRight :size="13" /></div>
-      <h1>Seu site parece bem.<br><span class="hero-second-line">Até você <span class="hero-accent">olhar de perto<svg viewBox="0 0 560 16" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M2 13C139 0 330 0 558 9" stroke="currentColor" stroke-width="2" /></svg></span>.</span></h1>
-      <p class="hero-description">Um formulário que não envia. Um pixel que parou. Uma mudança que ninguém viu.<br class="desktop-break"> Transforme sinais escondidos em clareza para agir.</p>
-      <div class="hero-actions"><NuxtLink to="/#como-funciona" class="button button-primary">Veja o fluxo acontecer <ArrowRight :size="17" /></NuxtLink><NuxtLink to="/exemplo" class="button button-secondary"><Play :size="15" /> Explorar dashboard</NuxtLink></div>
-      <p class="hero-reassurance"><span><Check :size="13" /> Sem cadastro para explorar</span><span><Check :size="13" /> Demonstração, sem acessar seu site</span></p>
+      <div class="hero-topline"><span class="release-tag">UM NOVO OLHAR PARA O SEU NEGÓCIO</span></div>
+      <h1>Seu cliente chegou.<br><span class="hero-second-line">O próximo passo <span class="hero-accent">funcionou?<svg viewBox="0 0 560 16" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M2 13C139 0 330 0 558 9" stroke="currentColor" stroke-width="2" /></svg></span></span></h1>
+      <p class="hero-description">Uma página bonita não conta a história toda.<br class="desktop-break"> Entenda os sinais, encontre o contexto e descubra o que vale conferir em seguida.</p>
+      <div class="hero-actions"><NuxtLink to="/#como-funciona" class="button button-primary">Veja o fluxo acontecer <ArrowRight :size="17" /></NuxtLink><NuxtLink to="/exemplo" class="hero-panel-link">Ver o painel <ArrowUpRight :size="16" /></NuxtLink></div>
+      <p class="hero-reassurance"><span><Check :size="13" /> Demonstração guiada, sem cadastro</span><span><Check :size="13" /> Nenhum site real é acessado</span></p>
       <motion.div :initial="{ opacity: 0, y: 18 }" :animate="{ opacity: 1, y: 0 }" :transition="{ duration: 0.65, delay: 0.15 }" class="hero-stage"><ExperienceStory /></motion.div>
       <div class="hero-footnote"><span class="mono">OBSERVAR. ENTENDER. AGIR.</span><span>Um só fluxo, do sinal ao seu próximo passo.</span><span class="mono">↓ CONTINUE EXPLORANDO</span></div>
     </section>

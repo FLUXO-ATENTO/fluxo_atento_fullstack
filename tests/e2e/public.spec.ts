@@ -8,7 +8,7 @@ test('a jornada pública mantém a demonstração separada da API', async ({ pag
   })
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-  await page.getByRole('link', { name: 'Explorar dashboard', exact: true }).click()
+  await page.getByRole('link', { name: 'Ver o painel', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'O que merece sua atenção?' })).toBeVisible()
   await expect(page.getByText('Sem acessar endereços reais', { exact: true })).toBeVisible()
   expect(monitorRequests).toEqual([])

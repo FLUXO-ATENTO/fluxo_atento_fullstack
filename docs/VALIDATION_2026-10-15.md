@@ -108,6 +108,10 @@ O envio efetivo foi concluído pelo Git no commit
 `622bb200db1815c431bcd777668c346797fdedd6`, na branch remota
 `feat/dashboard-guided-workspace`. A suíte completa passou novamente (103/103),
 e a checagem dos 24 documentos também aprovou o mapa de impacto contra a base.
-A criação do PR pela integração retornou o mesmo HTTP 403; a abertura pelo
-navegador autenticado é a próxima etapa. O CI de pull request depende dessa
-abertura. A branch `main` e a produção não foram modificadas.
+A criação do PR pela integração retornou o mesmo HTTP 403. O
+[PR #6](https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack/pull/6) foi então
+aberto pelo navegador autenticado, em rascunho, com base em `main`; sua existência,
+branch e estado foram confirmados também pela API de leitura. O CI foi iniciado.
+O resultado dos checks deve ser consultado no PR para o commit mais recente;
+um resultado de commit anterior não certifica alterações posteriores. A branch
+`main` e a produção não foram modificadas.

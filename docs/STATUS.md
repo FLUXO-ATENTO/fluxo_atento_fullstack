@@ -3,6 +3,10 @@
 Registro factual em **15/10/2026**, substituindo o diagnóstico de 10/10.
 Código nesta branch não é deploy de produção.
 
+Pacote publicado para revisão no [PR #6](https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack/pull/6),
+em rascunho. Conferir os checks do commit mais recente antes de qualquer merge;
+a publicação do PR não libera as integrações nem altera a produção.
+
 | Área | Evidência / estado | Próximo aceite |
 | --- | --- | --- |
 | Site Netlify | Público e acessível | Publicar links, temas e documentação revisados |

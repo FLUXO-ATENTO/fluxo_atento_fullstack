@@ -14,9 +14,9 @@ a publicação do PR não libera as integrações nem altera a produção.
 | API Node /v1 | Health e monitor persistido operantes | Duas contas e cenários de falha/expiração |
 | Supabase | Auth, tenants e dados usados no produto | Advisors atuais sem permissão pelo conector; auditoria não concluída |
 | Superadmin | Consulta administrativa real já validada | Templates, módulos e quotas comerciais ainda pendentes |
-| Login Google/GitHub | Desabilitados no painel Supabase | Código preparado; apps, credenciais e testes pendentes |
-| Google de dados | Frontend + backend OAuth implementados para revisão, desligados por padrão | Migração/RLS em banco isolado, configuração externa e OAuth real HTTPS; ainda sem relatórios |
-| Console Google | 82 serviços observados; Analytics Admin, PageSpeed e BigQuery habilitados | Analytics Data/Search Console não constavam; detalhes OAuth/biblioteca com erro; não atribuir a billing sem diagnóstico |
+| Login Google/GitHub | Google: cliente exclusivo criado no projeto adotado; provedor Supabase desligado na última inspeção. GitHub ainda pendente | Inserção privada do segredo pelo proprietário, ativação e testes antes de liberar o botão |
+| Google de dados | Frontend + backend OAuth em revisão, desligados por padrão; 17 testes PostgreSQL aprovados | Cliente de dados, configuração externa e OAuth real HTTPS; ainda sem relatórios |
+| Console Google | Projeto adotado Fluxo - Google Integration (`empirical-envoy-508802-k0`); cliente de login criado, 28 APIs listadas | Analytics Admin/Data, Search Console e PageSpeed ausentes; branding ainda Fluxo de Clientes. Os 82 serviços vistos pertenciam ao projeto anterior |
 | Meta/WABA | Sem conexão de negócio aceita de ponta a ponta | Consentimento, fontes, sincronização e revisão |
 | Agente IA | Serviço Python existente; chave válida na consulta de modelos | Resposta de bloqueio não prova análise; chat/BFF pendentes |
 | Suporte | Ajuda contextual e orientação na interface | Chat persistente, anexos, áudio e notificações ainda não conectados |
@@ -31,19 +31,26 @@ a publicação do PR não libera as integrações nem altera a produção.
 Foi adicionada a suíte [Database isolation](DATABASE_VALIDATION.md), com
 PostgreSQL 17 descartável no GitHub e sem credenciais do produto. Testa migrações,
 grants explícitos/legados, RLS de duas empresas, RPCs privadas e concorrência.
-O resultado funcional deve ser conferido no check do commit atual. A migração
+O [check executado](https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack/actions/runs/38800297609)
+passou com **17/17 testes**, sem pulados, em PostgreSQL 17.11 no commit `368de636`.
+A migração
 Google pendente foi ajustada para retirar permissões legadas excessivas também
 do serviço interno, mantendo configuração sem exclusão e auditoria append-only.
 
-Local: 104 testes unitários/contrato aprovados; scanner de fonte e referências
-dos Docs aprovados. Não há PostgreSQL/Docker local disponível nesta sessão;
+Local e [CI completo](https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack/actions/runs/38800297483):
+104 testes unitários/contrato aprovados; scanner, tipos, builds de site/dashboard,
+E2E público e referências dos Docs aprovados no commit `368de636`.
+Não há PostgreSQL/Docker local disponível nesta sessão;
 nenhum teste foi redirecionado ao banco de produção. O conector Supabase segue
 recusando consultas por permissão.
 
-O cliente Google antigo foi identificado e recebeu uma tentativa autorizada de
-inclusão do callback atual. O Console respondeu com erro; persistência ainda
-não confirmada. Ver o registro em [GOOGLE_SETUP](GOOGLE_SETUP.md). Isso não libera
-o botão de login e não altera segredos, faturamento ou APIs de dados.
+O cliente Google antigo recebeu uma tentativa autorizada de inclusão do callback;
+a persistência dessa tentativa segue não confirmada. Depois, o proprietário adotou
+**Fluxo - Google Integration** e autorizou um novo cliente **Fluxo Atento - Login**,
+cuja criação foi confirmada. O cliente preexistente Fluxo de Clientes foi preservado.
+A nova credencial precisa ser inserida pelo proprietário no provedor Supabase;
+isso ainda não libera o botão nem comprova login. Ver [GOOGLE_SETUP](GOOGLE_SETUP.md).
+Nenhuma alteração de faturamento, IAM, APIs de dados ou revogação de chave antiga.
 
 ### Pacote anterior
 

@@ -339,9 +339,10 @@ RPCs ainda precisavam de execução/aceite em banco isolado. Não foram executad
 advisors nem lint conectado. Os testes estáticos verificam instruções presentes,
 não comprovam comportamento do Postgres.
 
-Continuidade: foi adicionada a suíte [Database isolation](DATABASE_VALIDATION.md)
-com PostgreSQL 17 descartável no GitHub, todas as migrações, grants legados e
-explícitos, RLS e concorrência real. Conferir o resultado do check no commit atual.
+Continuidade: a suíte [Database isolation](DATABASE_VALIDATION.md) executou
+**17/17 testes com sucesso** em PostgreSQL 17.11 descartável no GitHub, com todas
+as migrações, grants legados e explícitos, RLS e concorrência real. O registro
+vincula o commit e a execução; conferir também o check de qualquer commit posterior.
 A migração Google ainda não aplicada ao produto agora revoga também os grants
 legados de service_role antes de conceder somente as operações necessárias.
 Não há aplicação remota, liberação de flag ou substituição do aceite Supabase/Google.
@@ -366,16 +367,18 @@ com state existente, replays, quota por usuário validado e limite global de
 concorrência antes da validação no banco. Não são testes reais de locks/RLS.
 A rodada focada não executou requests Google reais, credenciais reais, navegador,
 build Nuxt, commit, push, deploy ou aplicação de migração. Depois da integração,
-o responsável executou a suíte completa: **103/103 testes aprovados**, incluindo
-monitoramento e UI. As demais evidências e seus limites estão no
+o responsável executou a suíte completa: **103/103 testes aprovados** naquela
+rodada, incluindo monitoramento e UI. A suíte passou a **104/104** com a proteção
+do ambiente de testes de banco, também aprovada no CI do commit `368de636`.
+As demais evidências e seus limites estão no
 [registro de validação](VALIDATION_2026-10-15.md).
 
 Antes de ativar:
 
-1. Revisar/aplicar a migração em DB isolado; executar como anon/authenticated e
-   provar negação de SELECT/INSERT/UPDATE/DELETE/EXECUTE nos quatro objetos e RPCs.
-2. Executar concorrência e isolamento com dois tenants e duas contas, incluindo
-   remoção de papel durante consentimento/refresh e disconnect versus callback.
+1. Manter verde a validação de migrações/grants/RLS em PostgreSQL descartável,
+   já executada; conferir schema/histórico e advisors no Supabase de teste.
+2. Manter os testes de concorrência e isolamento já aprovados e completar o
+   aceite com duas identidades reais no Supabase. A fixture SQL não valida Auth/JWT.
 3. Configurar cliente de dados, escopos, callback, APIs e consentimento no Google;
    usar cofre privado para as quatro variáveis, nunca formulário frontend.
 4. Testar cookies/CORS com navegador em HTTPS real de revisão. Os fixtures HTTP

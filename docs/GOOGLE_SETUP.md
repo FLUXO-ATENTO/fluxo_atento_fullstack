@@ -1,7 +1,8 @@
 # Google: acesso ao produto e dados por empresa
 
-Registro de 15/10/2026. Este documento acompanha código para revisão; não atesta
-ativação no Google, configuração de segredos ou deploy de produção.
+Registro de 15/10/2026. Código permanece em revisão. O cliente de login abaixo
+foi criado no Google; isso não atesta configuração do segredo no Supabase,
+teste de login, conexão de dados ou deploy de produção.
 
 ## Decisão de arquitetura
 
@@ -9,6 +10,11 @@ O agente do produto continua na VPS. Google Cloud fornece a identidade do app e
 as APIs de dados; não é necessário criar um agente em Vertex/Agent Platform,
 Gemini, Cloud Run ou Agent Engine para esta integração. Não reativar faturamento,
 criar recursos pagos ou excluir recursos antigos como efeito desta entrega.
+
+Projeto adotado expressamente pelo proprietário: **Fluxo - Google Integration**,
+ID **`empirical-envoy-508802-k0`**. Usar esse projeto para os novos clientes de
+login e dados do Fluxo Atento. O projeto anterior `fluxo-atento` permanece
+preservado; não transferir, excluir, revogar nem desligar seus recursos.
 
 | Finalidade | Quem autentica/autoriza | Onde ficam as credenciais | Retorno |
 | --- | --- | --- | --- |
@@ -25,13 +31,60 @@ e registros locais de outros tenants não são apagados. Avaliar projetos separa
 se isolamento de concessões for requisito. Não usar conta de serviço global para
 ter acesso implícito aos ativos de clientes.
 
-## Inventário observado no Console
+## Projeto adotado e cliente de login criado
 
-Projeto confirmado: **Agente Fluxo Atento**, ID `fluxo-atento`. Também foi visto
-um projeto separado chamado “Fluxo - Google Integration”; não foi alterado nem
-adotado como destino sem verificar dependências.
+A lista do projeto adotado continha um cliente **Fluxo de Clientes**, com origens
+e retorno no domínio `fluxodeclientes.com.br`, distinto do produto atual. Esse
+cliente e seu segredo foram preservados. O proprietário autorizou a criação
+de um cliente independente, confirmada pela mensagem **Cliente OAuth criado**:
 
-No projeto atual, a lista completa exibiu **82 APIs/serviços habilitados**:
+| Campo | Configuração do novo cliente |
+| --- | --- |
+| Nome interno | `Fluxo Atento - Login` |
+| Tipo | Aplicativo da Web |
+| Projeto | `empirical-envoy-508802-k0` |
+| Client ID público | `564163280307-ee3l0vo4v49gt1fpf7aohtkd63po8v11.apps.googleusercontent.com` |
+| Origem JavaScript | `https://app.fluxoatento.com.br` |
+| Retorno OAuth | `https://qbfmebpzxnzdpalmgtxr.supabase.co/auth/v1/callback` |
+| Cliente para agente de IA | Não selecionado; este cliente serve somente ao login |
+| Segredo | Gerado no Google; inserção e salvamento no Supabase pelo proprietário, pendentes de confirmação |
+
+O Google informou acesso restrito aos usuários de teste do projeto. A criação
+do cliente não muda o público-alvo nem conclui a verificação da marca. Branding,
+público e escopos são configurações compartilhadas pelo projeto: revisar impacto
+no cliente preexistente antes de alterar. Dois clientes não são dois projetos.
+
+A conferência de Branding mostrou **Fluxo de Clientes**, homepage e links legais
+em `fluxodeclientes.com.br`, além dos domínios autorizados preexistentes. O domínio
+`fluxoatento.com.br` e o host do Supabase atual aparecem na lista após a criação.
+Marca e links não foram alterados: uma atualização atingiria também o cliente
+antigo, usado recentemente segundo o Console. Antes de lançamento, decidir a
+transição da marca compartilhada e verificar os textos/URLs públicos do produto.
+
+Inventário completo do projeto adotado: **28 APIs/serviços**, uma página de 28.
+Analytics Admin, Analytics Data, Search Console e PageSpeed não constavam.
+Google Ads, Chrome UX Report, BigQuery, Gmail, Calendar e YouTube já constavam;
+isso não demonstra acesso aos dados dos clientes nem necessidade de uso desses
+serviços. Nenhuma API foi ativada ou desativada nesta conferência.
+
+A navegação sem a conta Google correta apresentou falta de acesso ao projeto;
+voltar à conta já autorizada restabeleceu a listagem e permitiu criar o cliente.
+Não foi concedido IAM adicional nem alterado faturamento. Esse achado não prova
+a causa de todos os erros anteriores do Console.
+
+No Supabase, o provedor Google ainda estava desligado na inspeção. O campo
+`Client IDs` exibia um e-mail, não um ID OAuth válido; não tratar esse preenchimento
+como configuração correta nem presumir se veio de autofill ou dado salvo.
+O proprietário deve substituir ID/segredo, ativar o provedor e salvar diretamente
+no painel. Não copiar segredo para chat, Git, frontend ou documentação.
+Manter `Skip nonce checks` e `Allow users without an email` desligados.
+
+## Inventário histórico do projeto anterior
+
+Projeto inspecionado anteriormente: **Agente Fluxo Atento**, ID `fluxo-atento`.
+Esse inventário não deve ser atribuído ao novo projeto adotado.
+
+No projeto anterior, a lista completa exibiu **82 APIs/serviços habilitados**:
 
 - Google Analytics Admin API e PageSpeed Insights API já constavam na lista.
 - BigQuery e serviços relacionados já constavam; não foram ativados nesta tarefa.
@@ -65,16 +118,19 @@ deve verificar se o terceiro retorno existe antes de qualquer nova inclusão.
 Paralelamente, o código ganhou [testes PostgreSQL isolados](DATABASE_VALIDATION.md)
 para SQL, RLS, grants e concorrência, sem depender de acesso ao projeto remoto.
 
-## APIs por fase
+## APIs por fase no projeto adotado
+
+O inventário antigo não comprova ativação em `empirical-envoy-508802-k0`.
+Conferir cada API nesse projeto antes de marcar a integração como pronta.
 
 | API | Identificador | Uso | Ação nesta fase |
 | --- | --- | --- | --- |
-| Analytics Admin | `analyticsadmin.googleapis.com` | Descobrir contas/propriedades GA4 autorizadas | Já habilitada; validar leitura |
-| Analytics Data | `analyticsdata.googleapis.com` | Relatórios de visitas/conversões da propriedade | Habilitar e validar antes dos relatórios |
-| Search Console | `searchconsole.googleapis.com` | Sites e resultados de pesquisa autorizados | Habilitar e validar |
-| PageSpeed Insights | `pagespeedonline.googleapis.com` | Diagnóstico público determinístico | API habilitada; endpoint do produto, chave restrita/cache/limites ainda pendentes |
-| Google Ads | `googleads.googleapis.com` | Campanhas, investimento e conversões | Fase separada: developer token, acesso e revisão próprios |
-| BigQuery | `bigquery.googleapis.com` | Exportação e análises detalhadas de eventos GA4 | Já habilitada, mas não necessária para o login ou a descoberta inicial; não criar exportações/jobs agora |
+| Analytics Admin | `analyticsadmin.googleapis.com` | Descobrir contas/propriedades GA4 autorizadas | Ausente na lista; habilitar e validar leitura |
+| Analytics Data | `analyticsdata.googleapis.com` | Relatórios de visitas/conversões da propriedade | Ausente na lista; habilitar e validar antes dos relatórios |
+| Search Console | `searchconsole.googleapis.com` | Sites e resultados de pesquisa autorizados | Ausente na lista; habilitar e validar |
+| PageSpeed Insights | `pagespeedonline.googleapis.com` | Diagnóstico público determinístico | Ausente na lista; endpoint, chave restrita/cache/limites ainda pendentes |
+| Google Ads | `googleads.googleapis.com` | Campanhas, investimento e conversões | API já listada; fase separada: developer token, acesso e revisão próprios |
+| BigQuery | `bigquery.googleapis.com` | Exportação e análises detalhadas de eventos GA4 | Já listada, não necessária para login/descoberta inicial; não criar exportações/jobs agora |
 
 Não habilitar Gmail, Drive, Calendar, YouTube ou serviços de IA para “garantir”
 esta integração. BigQuery pode ter custos de armazenamento e processamento;
@@ -83,8 +139,8 @@ propriedade dos dados antes de conectar exportações de clientes.
 
 ## Login Google — configuração e aceite
 
-1. Revisar o cliente **Fluxo Atento Web** e suas dependências. Não rotacionar ou
-   apagar o segredo usado por outro sistema sem um plano de transição.
+1. Usar **Fluxo Atento - Login** no projeto adotado. Não reutilizar nem rotacionar
+   os clientes **Fluxo de Clientes** ou **Fluxo Atento Web** por conveniência.
 2. Cliente Web de login: callback exato do Supabase acima. Se forem usadas
    origens JavaScript, restringir aos hosts realmente necessários; não usar `*`.
 3. Provedor Google no Supabase: guardar ID/segredo de login ali, nunca no Git,
@@ -146,13 +202,14 @@ sanitizados, nunca por registro do código de autorização.
 
 ## Sequência operacional pendente
 
-- [ ] Restabelecer acesso estável aos detalhes do cliente OAuth/biblioteca.
-- [ ] Confirmar e habilitar somente Analytics Data e Search Console, sem aceitar
+- [x] Confirmar projeto adotado e criar cliente exclusivo do login, preservando antigos.
+- [ ] Confirmar e habilitar as APIs da fase inicial no projeto adotado, sem aceitar
   reativação de faturamento como efeito colateral.
 - [ ] Revisar branding, público de teste, escopos e callbacks exatos.
 - [ ] Configurar/validar o provedor de login no Supabase.
 - [ ] Configurar cliente de integração distinto e segredos privados na VPS.
-- [ ] Validar migração, RLS/grants, dois tenants, rollback e cópia de segurança.
+- [x] Validar migrações, RLS/grants e concorrência em PostgreSQL descartável: 17/17.
+- [ ] Completar aceite Supabase com identidades reais, advisors, rollback e backup.
 - [ ] Publicar backend/frontend aprovados; liberar integração pelo superadmin.
 - [ ] Testar autorização, leitura real, renovação, cancelamento e desconexão.
 - [ ] Registrar resultado real, data e versão em STATUS; só então liberar para clientes.

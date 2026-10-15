@@ -53,6 +53,13 @@ Em 15/10 a UI Supabase mostrou Email habilitado, confirmação de e-mail ligada,
 Google/GitHub desabilitados e acesso anônimo desligado. Nada foi alterado no provedor.
 Facebook fica exclusivamente nas integrações Meta.
 
+Na continuidade, foi criado **Fluxo Atento - Login** no projeto Google adotado
+`empirical-envoy-508802-k0`; o ID público e o retorno estão em GOOGLE_SETUP.
+O proprietário recebeu a etapa de inserir o novo segredo diretamente no Supabase
+e salvar a ativação. Até confirmação e teste real, não tratar o login como ativo.
+O template de build da VPS agora explicita `NUXT_PUBLIC_AUTH_PROVIDERS`, vazio
+por padrão; ID/segredo não pertencem a esse arquivo público.
+
 Código preparado com signInWithOAuth, PKCE, retorno exato /auth/callback e sem
 escopos de anúncios ou repositórios. O SDK compartilhado troca o código ao iniciar;
 a página não o troca duas vezes. Não copiar tokens do provedor para outro storage.

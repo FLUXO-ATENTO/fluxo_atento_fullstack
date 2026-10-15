@@ -1,8 +1,16 @@
 # Validação de banco e isolamento
 
-Etapa de 15/10/2026 para o PR #6. Este documento descreve a suíte; o resultado
-efetivamente executado deve ser conferido no check **Database isolation** do
-commit correspondente. Não é aplicação de migração no Supabase de produção.
+Etapa de 15/10/2026 para o PR #6. **17/17 testes aprovados**, sem falhas nem
+casos pulados, no PostgreSQL **17.11**, para o commit
+`368de636a95912409abdf086054fcc02480d8634`.
+Evidência: [Database isolation, execução 38800297609](https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack/actions/runs/38800297609).
+Não é aplicação de migração no Supabase de produção. Mudanças posteriores
+continuam exigindo o check do seu próprio commit.
+
+No mesmo commit, o [CI completo](https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack/actions/runs/38800297483)
+concluiu com sucesso: scanner de fonte, 104 testes unitários/contrato, tipos,
+build público, E2E público e build do dashboard. A [qualidade documental](https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack/actions/runs/38800297544)
+também passou. Esses checks não executam OAuth real nem liberam produção.
 
 ## Ambiente e proteção
 

@@ -9,12 +9,13 @@ a publicação do PR não libera as integrações nem altera a produção.
 
 | Área | Evidência / estado | Próximo aceite |
 | --- | --- | --- |
-| Site Netlify | Público e acessível | Publicar links, temas e documentação revisados |
+| Site Netlify | Público e acessível; o novo link /acessar atingiu 404 no app ainda antigo | Correção preparada: links públicos usam /login/ até aceite da nova entrada; publicar somente após revisão |
 | Dashboard VPS | HTTPS, login e monitor real verificados | Nova interface ainda não publicada |
 | API Node /v1 | Health e monitor persistido operantes | Duas contas e cenários de falha/expiração |
 | Supabase | Auth, tenants e dados usados no produto | Advisors atuais sem permissão pelo conector; auditoria não concluída |
 | Superadmin | Consulta administrativa real já validada | Templates, módulos e quotas comerciais ainda pendentes |
-| Login Google/GitHub | Google habilitado no Supabase; botão local abriu a escolha oficial de conta com cliente/callback corretos e somente email/profile; GitHub desligado | Escolha/consentimento pelo proprietário, retorno/sessão/papel e publicação da interface; login da VPS ainda sem botão Google |
+| Login Google/GitHub | Google autenticou a conta escolhida pelo proprietário no app local; nome, empresa, sessão após recarga e bloqueio visual de /admin confirmados; retorno temporário removido; GitHub desligado | Aceite HTTPS e duas contas, cancelamento/expiração e publicação da interface; login da VPS ainda sem botão Google |
+| Turnstile | Widget Fluxo Atento — Autenticação criado no Cloudflare, gerenciado, restrito ao app e sem pré-liberação; frontend e envio captchaToken preparados | Deploy da interface/CSP, segredo e ativação no Supabase, teste real HTTPS; não está protegendo a produção ainda |
 | Google de dados | Frontend + backend OAuth em revisão, desligados por padrão; 17 testes PostgreSQL aprovados | Cliente de dados, configuração externa e OAuth real HTTPS; ainda sem relatórios |
 | Console Google | Projeto adotado Fluxo - Google Integration (`empirical-envoy-508802-k0`); cliente de login criado, 28 APIs listadas | Analytics Admin/Data, Search Console e PageSpeed ausentes; branding ainda Fluxo de Clientes. Os 82 serviços vistos pertenciam ao projeto anterior |
 | Meta/WABA | Sem conexão de negócio aceita de ponta a ponta | Consentimento, fontes, sincronização e revisão |
@@ -52,15 +53,53 @@ A nova credencial foi inserida e salva pelo proprietário no Supabase. A releitu
 do provedor confirmou Google habilitado, ID do cliente correto e as opções
 `Skip nonce checks` / `Allow users without an email` desligadas. O segredo não
 foi revelado. Site URL e os dois retornos de produção estão corretos.
-Isso ainda não comprova a troca OAuth: `/login/` publicado na VPS segue na versão
-anterior, sem botão Google. O proprietário autorizou um teste local com sua
-própria conta; foi adicionado temporariamente o retorno exato
-`http://127.0.0.1:4175/auth/callback`, a remover depois do teste. Os dois retornos
-de produção foram preservados. Ver [GOOGLE_SETUP](GOOGLE_SETUP.md).
-O botão local chegou à escolha de conta oficial do Google; o proprietário deve
-concluir a autorização. A abertura dessa tela confirma o início do fluxo, não
-a validade do segredo na troca, o acesso ao painel nem o papel de superadmin.
+O proprietário concluiu a escolha e o consentimento Google. O SDK real retornou
+ao painel local, que mostrou o nome do perfil, a empresa inicial e o papel de
+responsável pela empresa. A sessão persistiu após recarga. O acesso direto a
+`/admin` mostrou a mensagem de acesso reservado, sem conteúdo administrativo.
+Esse teste não promoveu a conta ao superadmin nem alterou permissões. Não
+substitui teste de duas identidades nem uma tentativa direta contra a API.
+O retorno temporário `http://127.0.0.1:4175/auth/callback` foi removido ao concluir;
+a UI confirmou **Total URLs: 2**, mantendo callback e recuperação de produção.
+Ver [GOOGLE_SETUP](GOOGLE_SETUP.md). `/login/` publicado na VPS continua na
+versão anterior, sem botão Google: aceite local não é publicação em HTTPS.
 Nenhuma alteração de faturamento, IAM, APIs de dados ou revogação de chave antiga.
+
+### Correção do botão Entrar e compatibilidade de publicação
+
+O proprietário reportou 404 em
+`https://app.fluxoatento.com.br/acessar?next=%2F&origem=site`. A inspeção confirmou
+a resposta Nginx nessa rota e a tela de login existente em `/login/`. A nova
+entrada estava preparada na branch, mas não publicada no dashboard da VPS.
+O site raiz inspecionado também ainda mostrava a interface anterior; não foi
+confirmado que a origem do clique era o último deploy público, e não uma prévia.
+
+Correção nesta branch: o helper comum dos links de site, docs e agente usa
+`/login/?next=%2F&origem=...` por padrão. Novas rotas de módulos não são encaminhadas
+à versão antiga. Depois do deploy e aceite do dashboard, definir
+`NUXT_PUBLIC_DASHBOARD_ENTRY_MODE=guided` no build do site e reconstruí-lo para
+ativar `/acessar` e os destinos específicos. O dashboard desta revisão mantém
+a entrada guiada local. Isso não altera DNS, cookies, credenciais ou privilégios.
+Procedimento, aceite e rollback: [AUTH_ONBOARDING](AUTH_ONBOARDING.md).
+Não houve deploy nem correção direta do Nginx nesta continuidade; o 404 público
+permanece até a publicação aprovada. O caminho de acesso atual é `/login/`.
+
+### Proteção Turnstile
+
+O adicional de Turnstile usa o mecanismo nativo do Supabase para ações por
+e-mail, sem duplicar validação em Edge Function. Expiração/erro/uso do token
+exigem nova verificação; chave secreta não pertence ao build. A exigência no
+Supabase **não foi ligada**, porque a versão publicada do dashboard é anterior.
+Configuração, aceite, limites do OAuth e rollback em
+[TURNSTILE_SETUP](TURNSTILE_SETUP.md). O widget IDGate preexistente foi preservado.
+
+Validação local final deste adicional: **116/116** testes unitários/contrato,
+tipos e builds sequenciais de site/dashboard aprovados; scanners de 194 arquivos
+de fonte e 174/90 arquivos gerados sem padrões privados detectados; referências
+em 26 documentos aprovadas. QA isolado conferiu sucesso, falha, nova tentativa,
+cadastro/recuperação fictícios, temas e mobile. Os builds concluíram com avisos
+registrados em [VALIDATION](VALIDATION_2026-10-15.md). Conferir CI do commit
+mais recente; nenhuma dessas verificações substitui o aceite HTTPS com Auth real.
 
 ### Pacote anterior
 

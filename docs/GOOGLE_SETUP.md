@@ -2,8 +2,8 @@
 
 Registro de 15/10/2026. Código permanece em revisão. O cliente de login abaixo
 foi criado no Google e o proprietário habilitou o provedor no Supabase. A
-configuração foi relida; isso ainda não atesta troca OAuth bem-sucedida,
-conexão de dados ou deploy da interface nova em produção.
+configuração foi relida e uma conta escolhida pelo proprietário completou o
+login na prévia local. Isso não atesta conexão de dados nem deploy/aceite HTTPS.
 
 ## Decisão de arquitetura
 
@@ -84,9 +84,10 @@ um e-mail. Após orientação e salvamento pelo proprietário, a releitura confi
 - GitHub desligado, confirmação de e-mail ligada e acesso anônimo desligado.
 
 Não copiar segredo para chat, Git, frontend ou documentação. O estado Enabled
-não valida o conteúdo oculto do segredo: somente a troca OAuth poderá fazê-lo.
+não valida sozinho o conteúdo oculto do segredo. A troca OAuth abaixo foi
+concluída sem revelar o segredo.
 
-### Aceite local autorizado, ainda em andamento
+### Aceite local autorizado concluído para uma conta
 
 O `/login/` publicado na VPS foi aberto e ainda não contém os botões sociais
 desta revisão. Não declarar o Google disponível para clientes nem publicar toda
@@ -94,9 +95,10 @@ a branch apenas para testar a credencial.
 
 O proprietário autorizou adicionar temporariamente
 `http://127.0.0.1:4175/auth/callback` e testar com sua própria conta. O Supabase
-confirmou três retornos; os dois de produção foram preservados. O retorno
-temporário deve ser removido ao encerrar o teste, inclusive se ele falhar.
-Uma retomada deve conferir o estado atual antes de adicionar novamente.
+confirmou três retornos; os dois de produção foram preservados. Após a conclusão,
+o retorno temporário foi removido. A UI confirmou **Total URLs: 2**, contendo
+somente callback e recuperação de produção. Qualquer novo teste local precisa
+de autorização própria; não recolocar o endereço automaticamente.
 
 O ambiente local é separado da fixture e da produção, vinculado somente a
 loopback, com o SDK real e somente Google habilitado. Não utiliza chave
@@ -108,14 +110,16 @@ destinos arbitrários, escrita pela API ou registro de tokens. O caminho de
 workspace continua sujeito ao provisionamento idempotente existente para uma
 identidade nova; não elevar papéis nem criar contas de cliente para o teste.
 
-Esta preparação não é evidência de autenticação concluída, autorização Google
-de dados, isolamento entre duas contas ou aceite de produção em HTTPS.
-
-Resultado parcial observado no navegador: **Continuar com Google** abriu a
+Resultado observado no navegador: **Continuar com Google** abriu a
 tela oficial **Escolha uma conta**, em `accounts.google.com`. O Client ID da
 requisição corresponde ao cliente novo, o callback é o Supabase atual e os
-escopos solicitados são somente `email profile`. A escolha/consentimento ficou
-com o proprietário; troca do código, sessão, perfil e papel ainda não validados.
+escopos solicitados são somente `email profile`. O proprietário fez a escolha
+e o consentimento; o retorno `/auth/callback` terminou no painel `/`. O nome
+do perfil apareceu na saudação, a empresa inicial foi carregada e o papel era
+responsável pela empresa, não superadmin. A recarga manteve a sessão e os dados
+de apresentação. O acesso direto a `/admin` mostrou a mensagem de acesso
+reservado, sem expor conteúdo administrativo. Nenhuma promoção de papel foi
+feita; fechar o tour apenas ocultou a janela, sem marcar as etapas concluídas.
 A tela confirmou a pendência de branding **Fluxo de Clientes**, com seus links
 legais antigos. Não incluir e-mails de contas, URL completa da tentativa,
 código, estado OAuth ou screenshot com dados pessoais neste repositório.
@@ -123,8 +127,11 @@ código, estado OAuth ou screenshot com dados pessoais neste repositório.
 Verificações da ponte local: saúde 200, workspace sem sessão 401, tentativa de
 POST 405, origem externa 403 e rota fora da lista 404. Três testes unitários de
 login social passaram; as referências em 25 documentos e o scanner da fonte
-(189 arquivos, zero padrões detectados) passaram. Essas verificações não
-substituem a continuação manual do login nem a validação final em produção.
+(189 arquivos, zero padrões detectados) passaram na preparação anterior.
+Este aceite usa identidade real, mas somente uma conta e interface local com
+ponte restrita. Não prova isolamento entre duas identidades reais, negativa
+direta da API administrativa, cancelamento, expiração, recuperação por e-mail,
+autorização de Analytics/Ads nem funcionamento em produção HTTPS.
 
 ## Inventário histórico do projeto anterior
 
@@ -254,7 +261,8 @@ sanitizados, nunca por registro do código de autorização.
   reativação de faturamento como efeito colateral.
 - [ ] Revisar branding, público de teste, escopos e callbacks exatos.
 - [x] Configurar e reler o provedor Google no Supabase, com proteções e ID corretos.
-- [ ] Completar o login OAuth real e remover o retorno temporário local.
+- [x] Completar login OAuth real de uma conta na prévia local e remover o retorno temporário.
+- [ ] Completar aceite HTTPS e com duas identidades; publicar o botão Google no dashboard.
 - [ ] Configurar cliente de integração distinto e segredos privados na VPS.
 - [x] Validar migrações, RLS/grants e concorrência em PostgreSQL descartável: 17/17.
 - [ ] Completar aceite Supabase com identidades reais, advisors, rollback e backup.

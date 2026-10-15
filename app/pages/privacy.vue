@@ -10,6 +10,8 @@ useSeoMeta({ title: 'Privacidade · Fluxo Atento', description: 'Dados, finalida
     <p>A demonstração usa dados ilustrativos. A busca de ajuda é feita no navegador. O formulário de Contato prepara um texto local: não envia mensagens nem grava esse rascunho em uma conta. Ao copiar, você coloca o texto na área de transferência do seu dispositivo.</p>
     <h2>Onde o serviço funciona</h2>
     <p>O site é publicado no Netlify. A autenticação e o banco de dados usam Supabase; a aplicação e verificações utilizam a VPS. Esses prestadores participam da operação de acordo com os serviços utilizados. Google, Meta, WhatsApp e o copiloto não recebem automaticamente acesso às suas contas só porque você entrou no Fluxo Atento.</p>
+    <h2>Verificação de segurança no acesso</h2>
+    <p>Quando habilitada na autenticação, a verificação Cloudflare Turnstile processa sinais técnicos, como endereço IP, informações do navegador e origem da página, para detectar tentativas automatizadas. A Cloudflare também descreve o uso desses sinais para melhorar a detecção em seu <a class="text-link" href="https://www.cloudflare.com/turnstile-privacy-policy/" target="_blank" rel="noopener noreferrer">aviso de privacidade do Turnstile</a>. O comprovante da verificação é enviado ao Supabase para validação; não o usamos como dado de perfil ou autorização da empresa.</p>
     <h2>Sessão e preferências</h2>
     <p>O navegador mantém informações necessárias à sessão e pode guardar preferências de aparência, navegação recente e demonstração. Sair encerra a sessão na aplicação; apagar preferências não exclui os registros mantidos no servidor. Não use um dispositivo compartilhado sem encerrar sua sessão.</p>
     <h2>Permissões e segurança</h2>

@@ -26,6 +26,17 @@ test('public URLs reject embedded credentials and token query parameters', () =>
   }
 })
 
+test('dashboard entry rollout accepts only the two declared modes', () => {
+  for (const mode of ['login', 'guided']) {
+    assert.deepEqual(publicEnvironmentFindings({ NUXT_PUBLIC_DASHBOARD_ENTRY_MODE: mode }), [])
+  }
+  for (const mode of ['true', '/acessar', 'https://evil.test', 'invalid']) {
+    assert.deepEqual(publicEnvironmentFindings({ NUXT_PUBLIC_DASHBOARD_ENTRY_MODE: mode }), [
+      { name: 'NUXT_PUBLIC_DASHBOARD_ENTRY_MODE', type: 'invalid-dashboard-entry-mode' }
+    ])
+  }
+})
+
 test('artifact findings contain categories and line numbers, never values', () => {
   const secret = fakeKey()
   const findings = sensitiveTextFindings('public line\n' + secret)
@@ -34,4 +45,18 @@ test('artifact findings contain categories and line numbers, never values', () =
   assert.equal(sensitiveTextFindings('sb_publishable_fixture').length, 0)
   assert.equal(sensitiveTextFindings(jwt('anon')).length, 0)
   assert.equal(sensitiveTextFindings(jwt('service_role')).length, 1)
+})
+
+test('Turnstile accepts only a public site key and requires it when enabled', () => {
+  const publicKey = '0x' + 'A'.repeat(22)
+  assert.deepEqual(publicEnvironmentFindings({ NUXT_PUBLIC_TURNSTILE_ENABLED: 'true', NUXT_PUBLIC_TURNSTILE_SITE_KEY: publicKey }), [])
+  assert.equal(publicEnvironmentFindings({ NUXT_PUBLIC_TURNSTILE_ENABLED: 'true' }).length, 1)
+  assert.equal(publicEnvironmentFindings({ NUXT_PUBLIC_TURNSTILE_ENABLED: 'yes' }).length, 1)
+  assert.equal(publicEnvironmentFindings({ NUXT_PUBLIC_TURNSTILE_SITE_KEY: '0x4' + 'A'.repeat(32) }).length, 1)
+  assert.equal(publicEnvironmentFindings({ NUXT_PUBLIC_TURNSTILE_SECRET_KEY: 'anything' }).length, 1)
+  const testKey = '1x' + '0'.repeat(18) + 'AA'
+  assert.deepEqual(publicEnvironmentFindings({ NUXT_PUBLIC_TURNSTILE_SITE_KEY: testKey }), [])
+  assert.equal(publicEnvironmentFindings({ NUXT_PUBLIC_TURNSTILE_SITE_KEY: testKey, NODE_ENV: 'production' }).length, 1)
+  assert.equal(publicEnvironmentFindings({ NUXT_PUBLIC_TURNSTILE_SITE_KEY: testKey, CONTEXT: 'production' }).length, 1)
+  assert.deepEqual(sensitiveTextFindings('0x4' + 'A'.repeat(32)), [{ type: 'turnstile-secret', line: 1 }])
 })

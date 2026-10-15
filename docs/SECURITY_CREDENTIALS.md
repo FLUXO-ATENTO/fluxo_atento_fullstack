@@ -8,6 +8,8 @@ Não copiar chaves em Git, issues, PRs, logs, screenshots ou chat.
 | URL Supabase + chave publicável | Nuxt, build público | Identifica projeto; Auth, grants e RLS protegem dados |
 | Chave Supabase de servidor | API VPS, ambiente privado | Pode contornar RLS; validar usuário, tenant e ação em cada operação |
 | OAuth Google/GitHub de login | Provedores Supabase Auth | Client Secret nunca no Nuxt; apenas identidade básica |
+| Turnstile site key | Build público do dashboard | Chave pública, limitada ao hostname do app |
+| Turnstile secret | Supabase Auth, CAPTCHA | Somente validação no servidor; nunca NUXT_PUBLIC_, Git ou agente IA |
 | OAuth Google de Analytics/Search/Ads | Backend futuro, por tenant | Escopos mínimos separados do login, expiração e revogação |
 | Meta/WABA | Backend futuro, cofre privado | App global separado da autorização de cada empresa |
 | PageSpeed | Endpoint controlado futuro | API/quota restritas, segredo no backend |
@@ -44,7 +46,20 @@ CI verifica fonte; builds verificam dist e dist-dashboard. Manter scanners nativ
 Previews Netlify ficam sem Auth/API de produção. Usar projeto de teste separado
 para futuros previews autenticados. Ocultar chave publicável não substitui RLS.
 
+`NUXT_PUBLIC_DASHBOARD_ENTRY_MODE` é uma preferência pública de publicação,
+limitada a `login` ou `guided`; não é uma credencial nem concede acesso. O padrão
+compatível não enfraquece o login e não transforma 404 em autorização.
+O aceite Google pontual de 15/10 usou uma conta do proprietário com autorização
+específica; o retorno de loopback foi removido ao final. Isso não autoriza
+habilitar dados de produção em previews Netlify. Evidências e limites em
+[GOOGLE_SETUP](GOOGLE_SETUP.md).
+
 ## Regras de isolamento
+
+Ativação do CAPTCHA e recuperação coordenada em
+[TURNSTILE_SETUP](TURNSTILE_SETUP.md). O widget sem validação obrigatória no
+Supabase não protege o endpoint. A atualização do Nginx/CSP e o deploy do
+frontend são pré-requisitos; não ativar antes e bloquear a tela antiga.
 
 1. user_metadata é somente apresentação (nome/telefone/tour/paleta), nunca autorização.
 2. A API valida sessão e associação no servidor. ID enviado pelo cliente não basta.

@@ -4,7 +4,8 @@ import { existsSync } from 'node:fs'
 // Nuxt also reads .env; inspect it before Nuxt can inline public values.
 if (existsSync('.env')) process.loadEnvFile('.env')
 
-const findings = publicEnvironmentFindings(process.env)
+// This script guards publishable builds, even when the caller did not set NODE_ENV.
+const findings = publicEnvironmentFindings({ ...process.env, NODE_ENV: 'production' })
 for (const finding of findings) {
   console.error('Configuração pública bloqueada: ' + finding.name + ' (' + finding.type + '). Valor omitido.')
 }

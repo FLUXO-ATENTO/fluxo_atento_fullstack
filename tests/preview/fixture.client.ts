@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { displayProfile, type AuthProfile } from '../../app/utils/workspace-ui'
+import { captchaIsEnabled } from '../../app/utils/auth-captcha'
 
 /** Synthetic account only. No request is made to Supabase or any production API. */
 export default defineNuxtPlugin(() => {
@@ -20,7 +21,9 @@ export default defineNuxtPlugin(() => {
     resetPasswordForEmail: async () => ({ error: null })
   }
   const banner = document.createElement('div')
-  banner.textContent = 'AMBIENTE DE TESTE · conta e dados fictícios · sem envio externo'
+  banner.textContent = captchaIsEnabled(useRuntimeConfig().public.turnstileEnabled)
+    ? 'AMBIENTE DE TESTE · conta fictícia · Turnstile de teste · sem Supabase/produção'
+    : 'AMBIENTE DE TESTE · conta e dados fictícios · sem envio externo'
   banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:1000;padding:5px;text-align:center;font:11px sans-serif;background:#6c3518;color:white;pointer-events:none'
   document.body.append(banner)
   return { provide: { supabase: { auth } as unknown as SupabaseClient, authReady: Promise.resolve() } }

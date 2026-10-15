@@ -1,4 +1,4 @@
-import { entryDestination, entrySource } from '~/utils/entry-flow'
+import { dashboardEntryRoute } from '~/utils/entry-flow'
 /**
  * Keeps navigation independent of the hostname used to publish the app.
  * The public website uses /dashboard; the dedicated dashboard host uses /.
@@ -22,9 +22,9 @@ export function useDeployment() {
   }
 
   function dashboardEntryUrl(path = '/', source: 'site' | 'docs' | 'agente' = 'site') {
-    const destination = entryDestination(path.replace(/^\/dashboard(?=\/|$)/, '') || '/')
-    const query = new URLSearchParams({ next: destination, origem: entrySource(source) })
-    return `${isDashboardApp.value ? '' : dashboardUrl.value}/acessar?${query}`
+    const guided = isDashboardApp.value || config.dashboardEntryMode === 'guided'
+    const route = dashboardEntryRoute(path.replace(/^\/dashboard(?=\/|$)/, '') || '/', source, guided)
+    return `${isDashboardApp.value ? '' : dashboardUrl.value}${route}`
   }
 
   return { isDashboardApp, marketingUrl, dashboardUrl, dashboardPath, dashboardAccessUrl, dashboardEntryUrl }

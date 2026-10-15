@@ -46,11 +46,15 @@ export default defineNuxtConfig({
       appMode: dashboardApp ? 'dashboard' : 'marketing',
       marketingUrl: process.env.NUXT_PUBLIC_MARKETING_URL || 'https://fluxoatento.com.br',
       dashboardUrl: process.env.NUXT_PUBLIC_DASHBOARD_URL || 'https://app.fluxoatento.com.br',
+      // Opt in on public hosts only after /acessar is deployed and accepted on the app.
+      dashboardEntryMode: process.env.NUXT_PUBLIC_DASHBOARD_ENTRY_MODE || 'login',
       siteUrl: '',
       supabaseUrl: '',
       supabaseKey: '',
       supabasePublishableKey: '',
       authProviders: '',
+      turnstileEnabled: 'false',
+      turnstileSiteKey: '',
       apiBase: 'https://api.fluxoatento.com.br'
     }
   },

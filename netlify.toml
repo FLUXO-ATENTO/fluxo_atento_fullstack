@@ -16,6 +16,8 @@
 # Public keys are not secrets, but previews must not use the production account.
 # Non-production authentication stays off until a separate test project is set up.
 [context.deploy-preview.environment]
+  NUXT_PUBLIC_TURNSTILE_ENABLED = "false"
+  NUXT_PUBLIC_TURNSTILE_SITE_KEY = ""
   NUXT_PUBLIC_AUTH_PROVIDERS = ""
   NUXT_PUBLIC_SUPABASE_URL = ""
   NUXT_PUBLIC_SUPABASE_KEY = ""
@@ -23,6 +25,8 @@
   NUXT_PUBLIC_API_BASE = ""
 
 [context.branch-deploy.environment]
+  NUXT_PUBLIC_TURNSTILE_ENABLED = "false"
+  NUXT_PUBLIC_TURNSTILE_SITE_KEY = ""
   NUXT_PUBLIC_AUTH_PROVIDERS = ""
   NUXT_PUBLIC_SUPABASE_URL = ""
   NUXT_PUBLIC_SUPABASE_KEY = ""

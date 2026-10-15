@@ -120,9 +120,10 @@ humana baseada em evidência; não há geração automática de artigos nesta ve
 - O menu móvel é uma expansão dentro da página, com botão, estado anunciado,
   Escape e retorno de foco. Escolher um guia leva o foco ao título. Não é um
   modal e não deve prender o teclado.
-- O CTA de autenticação usa `dashboardAccessUrl('/login')`. A centralização do
-  destino em `/acessar` pertence ao helper compartilhado, não a URLs duplicadas
-  no catálogo ou na página de Docs.
+- O CTA de autenticação usa o helper compartilhado `dashboardEntryUrl`. Por
+  padrão, aponta para o login já publicado; `/acessar` só é anunciado pelos
+  hosts públicos após `NUXT_PUBLIC_DASHBOARD_ENTRY_MODE=guided` e aceite da VPS.
+  Essa política pertence ao helper, não a URLs duplicadas no catálogo ou na página.
 
 ## Separação pública e privada
 

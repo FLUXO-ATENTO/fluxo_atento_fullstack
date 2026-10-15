@@ -9,13 +9,14 @@ referências operacionais, nunca senhas, tokens ou dados de contas de clientes.
 | app.fluxoatento.com.br | Dashboard Nuxt servido na VPS | Privado, HTTPS, login e monitor persistido verificados |
 | api.fluxoatento.com.br | API Node de workspace e monitoramento | /v1/health e operação autenticada verificados |
 | Supabase do produto | Auth, Postgres, associações e RLS | Base de identidade e persistência; não autoriza integrações automaticamente |
+| Cloudflare Turnstile | Widget Fluxo Atento — Autenticação para app.fluxoatento.com.br | Criado em modo gerenciado sem pré-liberação; ativação do backend ainda pendente. Ver TURNSTILE_SETUP |
 | Agente Python na VPS | IA e ferramentas | Serviço existe; chat do produto ainda não conectado de ponta a ponta |
 | docs.fluxoatento.com.br | Documentação pública e futura área restrita | Solicitado; destino, DNS e TLS pendentes. Rota /docs preparada nesta revisão |
 | agente.fluxoatento.com.br | Página dedicada ao especialista | Nome confirmado; /agente preparada com acesso comum ao app; DNS/TLS e chat real pendentes |
 | flow.fluxoatento.com.br | n8n auto-hospedado | Interface acessada; uso adiado pelo proprietário |
 | infra.fluxoatento.com.br | Portainer/Docker | Operação interna; não é uma área de tenant |
 | GitHub FLUXO-ATENTO/fluxo_atento_fullstack | Código, decisões, CI e documentação canônica | Repositório oficial; PR, CI, revisão e deploy controlado |
-| Google Cloud / empirical-envoy-508802-k0 | Projeto adotado: Fluxo - Google Integration; OAuth do login e integrações de dados | Cliente Fluxo Atento - Login criado e provedor Google habilitado no Supabase; aceite OAuth e botão em produção pendentes. Ver GOOGLE_SETUP |
+| Google Cloud / empirical-envoy-508802-k0 | Projeto adotado: Fluxo - Google Integration; OAuth do login e integrações de dados | Cliente Fluxo Atento - Login autenticou uma conta real na prévia local; retorno temporário removido. Aceite HTTPS e botão em produção pendentes. Ver GOOGLE_SETUP |
 | Google Cloud / fluxo-atento | Projeto anterior: Agente Fluxo Atento | Inventário histórico de 82 serviços; preservado, sem exclusão/migração automática; não hospeda o agente do produto por decisão atual |
 
 ## Distinções importantes

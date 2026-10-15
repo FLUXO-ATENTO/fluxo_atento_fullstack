@@ -4,7 +4,11 @@ Esta entrega é **código para revisão**, não publicação nem aceite de produ
 Os fatos anteriores de produção estão em [STATUS](STATUS.md). Nenhum resultado
 de fixture comprova permissões de contas reais ou comportamento do banco.
 
-## Ambiente e escopo
+## Ambiente e escopo do pacote inicial
+
+Este bloco registra a primeira entrega. As continuidades abaixo e em
+[STATUS](STATUS.md) registram testes/configurações posteriores; não confundir
+o aceite inicial com o estado atual das contas e do login.
 
 - Base remota conferida: `882ba47d7e82e59e035827e9742d1570989261f2`.
 - Nuxt 4.6.1, Vue 3.5.43, Nuxt UI 4.11.3; dependências mantidas.
@@ -12,7 +16,7 @@ de fixture comprova permissões de contas reais ou comportamento do banco.
 - Conta de QA sintética, sem tráfego Supabase/Google/produção na prévia isolada.
 - Nenhum deploy, DNS, billing, segredo, conta real ou migração remota alterado.
 
-## Conferências locais
+## Conferências locais do pacote inicial
 
 | Conferência | Resultado observado | Limite |
 | --- | --- | --- |
@@ -72,7 +76,8 @@ Uma queda de processo pode deixar uma tentativa consumida exigindo reconciliaç�
 operacional; não há desbloqueio automático por relógio nem recuperação pela UI.
 As regressões simuladas não substituem testes de concorrência no banco real.
 
-Mesmo com regressões sintéticas aprovadas, **continuam pendentes**:
+Ao encerrar esse pacote inicial, **permaneciam pendentes** (ver as atualizações
+de banco e login em STATUS):
 
 1. Aplicar SQL em banco isolado e executar grants/RLS/RPCs como cada papel.
 2. Concorrência em Postgres e entre processos, com duas contas e dois tenants.
@@ -115,3 +120,80 @@ branch e estado foram confirmados também pela API de leitura. O CI foi iniciado
 O resultado dos checks deve ser consultado no PR para o commit mais recente;
 um resultado de commit anterior não certifica alterações posteriores. A branch
 `main` e a produção não foram modificadas.
+
+## Continuidade — login Google real e botão Entrar
+
+O proprietário concluiu o consentimento Google com uma conta própria na prévia
+local autorizada, usando o SDK real e a ponte restrita descrita em
+[GOOGLE_SETUP](GOOGLE_SETUP.md), sem credencial administrativa no frontend.
+Foram observados o retorno ao painel, nome do perfil, empresa inicial e papel
+de responsável pela empresa. Uma recarga manteve a sessão. A visita direta a
+`/admin` mostrou acesso reservado, sem conteúdo de plataforma. Não se realizou
+promoção de papel nem negativa direta por chamada manual à API.
+
+O retorno local temporário foi removido do Supabase; a UI voltou a **2 URLs**,
+mantendo os dois retornos de produção. E-mails privados, UUIDs, código OAuth,
+tokens, segredo e screenshots com dados pessoais não foram enviados ao Git.
+
+O botão Entrar informado pelo proprietário chegou a um 404 Nginx em `/acessar`
+no host público do app. `/login/` abriu a versão anterior do autenticador, ainda
+sem Google. O site raiz inspecionado também estava na versão anterior; a origem
+exata do clique (público ou preview) não foi presumida. A correção no helper
+comum mantém os links de site/docs/agente no login compatível até liberação
+explícita do modo guiado. O destino inicial também fica em `/` para não encaminhar
+a pessoa a um módulo ausente na versão antiga. A nova configuração tem validação
+de valores, regressões unitárias e expectativas de E2E público atualizadas.
+
+Verificação já executada nesta continuidade: **107/107** testes unitários e de
+contrato; referências em **25 documentos**; scanner de fonte em **189 arquivos**,
+sem padrões reconhecidos de segredo. Tipos, builds e navegador do artefato
+corrigido concluíram: typecheck aprovado; site e dashboard gerados sequencialmente
+com código 0; scanners de 173/89 arquivos sem achados. Houve avisos de tempo de
+plugins, resolução Nitro e timeout de ícones no prerender, sem falha de build.
+Na prévia estática do site, clicar Entrar abriu `/login/?next=%2F&origem=site`
+na VPS, sem 404. Docs e agente exibiram o mesmo caminho compatível com suas origens.
+Isso valida o artefato local e o destino existente, não publica os novos links.
+O aceite real de uma conta local não valida duas identidades reais, cadastro,
+recuperação, cancelamento/expiração, integrações de dados ou produção HTTPS.
+
+## Adicional — Turnstile
+
+Widget Cloudflare criado: **Fluxo Atento — Autenticação**, um hostname (app),
+gerenciado, sem pré-liberação. Widget preexistente preservado. Nenhum segredo
+enviado ao Git; a proteção obrigatória no Supabase não foi ativada.
+
+Após incluir o componente, contrato dos três métodos por e-mail, política pública
+e CSP: **116/116 testes unitários/contrato aprovados**, typecheck aprovado,
+scanner de fonte **194 arquivos / 0 achados**, referências em **26 documentos**.
+A inspeção de ciclo de vida em unidade é estática e os métodos Auth usam mocks;
+não confundir com validação real pelo servidor. Guia de operação em
+[TURNSTILE_SETUP](TURNSTILE_SETUP.md).
+
+QA no navegador, camada `tests/preview`, usando chaves oficiais de teste:
+
+- Widget de sucesso carregado; botão por e-mail inicialmente bloqueado e depois
+  liberado. Cadastro e recuperação fictícios devolveram suas mensagens esperadas
+  e uma nova verificação. Nenhum e-mail real enviado, conta criada ou senha real usada.
+- Troca login/cadastro/recuperação e claro/escuro conferida. Em viewport de 390 px,
+  documento e área útil mediram 375 px, sem overflow horizontal.
+- Com a chave de falha, apareceu orientação e **Verificar novamente**; o botão
+  Entrar no painel ficou desabilitado. Retry renovou o widget e manteve o bloqueio
+  diante de nova falha. Não foi resolvido ou contornado desafio real.
+- Ajustado idioma do widget para `pt-br`, conforme o aviso do provedor na primeira
+  inspeção. A compilação inicial da prévia foi lenta; isso não é medição de produção.
+- UI Supabase → Attack Protection confirmou CAPTCHA desligado; nenhuma alteração
+  foi salva ali. Não houve teste remoto de token inválido/reutilizado com Auth real.
+
+A validação final após o adicional concluiu com código 0: tipos Nuxt/TypeScript,
+`pnpm generate` (76 rotas) e `pnpm generate:dashboard` (36 rotas), executados
+sequencialmente. Scanners dos artefatos: **174 arquivos do site** e **90 do
+dashboard**, sem padrões privados detectados. Builds usaram CAPTCHA desligado
+e entrada pública compatível; o comportamento habilitado foi conferido na
+prévia isolada descrita acima. Nenhuma chave real foi incluída nesses builds.
+
+A suíte completa passou novamente (**116/116**), assim como scanner da fonte
+(194 arquivos), referências dos 26 documentos e whitespace do diff. Persistiram
+avisos de tempo dos plugins, resolução externa Nitro e timeout de ícones no
+prerender público; não houve falha de build. CI/E2E do novo commit devem ser
+conferidos no PR. Os resultados locais não ativam o CAPTCHA no servidor nem
+certificam o login de produção.

@@ -6,7 +6,7 @@ const waitForApp = (page: Page) => page.waitForFunction(() => Boolean((document.
 test('Docs search and deep links preserve a readable article and the common app entry', async ({ page }) => {
   await page.goto('/docs')
   await waitForApp(page)
-  await expect(page.getByRole('link', { name: 'Acessar meu painel', exact: true })).toHaveAttribute('href', 'https://app.fluxoatento.com.br/acessar?next=%2F&origem=docs')
+  await expect(page.getByRole('link', { name: 'Acessar meu painel', exact: true })).toHaveAttribute('href', 'https://app.fluxoatento.com.br/login/?next=%2F&origem=docs')
   await page.getByRole('searchbox', { name: 'O que você quer fazer?', exact: true }).fill('integracoes')
   const results = page.locator('#product-docs-search-results')
   await expect(results).toBeVisible()
@@ -22,9 +22,10 @@ test('Docs search and deep links preserve a readable article and the common app 
 test('public agent and site explain availability and share the same entry without automatic login', async ({ page }) => {
   await page.goto('/')
   await expect(page.getByRole('link', { name: 'Fale com a IA', exact: true }).first()).toHaveAttribute('href', '/agente')
+  await expect(page.getByRole('link', { name: 'Entrar', exact: true }).first()).toHaveAttribute('href', 'https://app.fluxoatento.com.br/login/?next=%2F&origem=site')
   await page.goto('/agente')
   const entry = page.getByRole('link', { name: 'Entrar no meu espaço', exact: true })
-  await expect(entry.first()).toHaveAttribute('href', /https:\/\/app\.fluxoatento\.com\.br\/acessar\?next=%2Fassistente&origem=agente/)
+  await expect(entry.first()).toHaveAttribute('href', 'https://app.fluxoatento.com.br/login/?next=%2F&origem=agente')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   await expect(page).toHaveURL(/\/agente\/?$/)
 })

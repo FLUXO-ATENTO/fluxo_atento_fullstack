@@ -45,8 +45,25 @@ A página inicial, a lista de APIs e a lista de credenciais carregaram. Detalhes
 cliente OAuth e partes da biblioteca retornaram erro/carregamento incompleto;
 Cloud Shell perdeu conexão. Isso **não identifica faturamento como causa**.
 Nenhuma API, chave, permissão, cobrança ou recurso Google foi alterado durante
-essa conferência. Não registrar identificadores de sessões, códigos OAuth,
+essa conferência inicial. Não registrar identificadores de sessões, códigos OAuth,
 valores de chaves ou e-mails privados do operador neste documento.
+
+### Continuidade em 15/10 — cliente OAuth antigo identificado
+
+Os detalhes de **Fluxo Atento Web** voltaram a abrir e mostraram somente dois
+retornos: um projeto Supabase anterior e o host `auth.fluxoatento.com.br`.
+O retorno do projeto atual `qbfmebpzxnzdpalmgtxr` não estava cadastrado. O usuário
+autorizou adicionar o callback atual preservando os dois anteriores e a chave.
+
+A tentativa de salvar o terceiro endereço retornou **“A ação falhou, tente
+novamente”**. Reabrir o cliente e usar “Tentar novamente” retornou **“Falha ao
+carregar”**. Persistência **não confirmada**; não declarar login corrigido nem
+repetir a escrita sem reler o estado. Não foi criada/rotacionada chave, não foram
+removidos retornos e não houve alteração de faturamento. A próxima conferência
+deve verificar se o terceiro retorno existe antes de qualquer nova inclusão.
+
+Paralelamente, o código ganhou [testes PostgreSQL isolados](DATABASE_VALIDATION.md)
+para SQL, RLS, grants e concorrência, sem depender de acesso ao projeto remoto.
 
 ## APIs por fase
 

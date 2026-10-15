@@ -75,6 +75,7 @@ não invente comandos ausentes nem edite esses arquivos fora da atribuição.
 | Verificação | Comando / evidência | Quando aplicar |
 | --- | --- | --- |
 | Unidade e contratos | `pnpm test` | Mudança de comportamento; observar cobertura real dos casos afetados |
+| SQL, grants, RLS e concorrência | `pnpm test:database` | No job Database isolation com PostgreSQL descartável; localmente somente com as proteções de [DATABASE_VALIDATION](DATABASE_VALIDATION.md) |
 | Tipos Nuxt/Vue | `pnpm typecheck` | Alterações de aplicação, contratos e componentes |
 | Exposição em fonte | `pnpm security:source` | Mudanças de aplicação/configuração e preparação de entrega |
 | Site público | `pnpm generate` | Build público autorizado; valida ambiente público e examina `dist` |

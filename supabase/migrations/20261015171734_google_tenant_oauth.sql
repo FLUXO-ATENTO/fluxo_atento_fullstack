@@ -59,7 +59,9 @@ alter table public.google_oauth_attempts force row level security;
 alter table public.google_tenant_connections enable row level security;
 alter table public.google_tenant_connections force row level security;
 revoke all on public.google_data_configuration, public.google_data_configuration_audit,
-  public.google_oauth_attempts, public.google_tenant_connections from public, anon, authenticated;
+  public.google_oauth_attempts, public.google_tenant_connections from public, anon, authenticated, service_role;
+-- Clear legacy default grants for the service too before granting the exact
+-- operations below (configuration is not deletable; audit is append-only).
 grant select, update on public.google_data_configuration to service_role;
 grant select, insert on public.google_data_configuration_audit to service_role;
 grant select, insert, update, delete on public.google_oauth_attempts, public.google_tenant_connections to service_role;

@@ -334,10 +334,17 @@ Criada com a CLI oficial Supabase **2.117.0**:
 
 Arquivo: [20261015171734_google_tenant_oauth.sql](../supabase/migrations/20261015171734_google_tenant_oauth.sql).
 A consulta `supabase migration list --local` falhou com conexão recusada em
-`127.0.0.1:54322`. **Não aplicada** local ou remotamente; SQL, RLS, grants, locks e
-RPCs ainda precisam de execução/aceite em banco isolado. Não foram executados
+`127.0.0.1:54322`. **Não aplicada** local ou remotamente naquela rodada; SQL, RLS, grants, locks e
+RPCs ainda precisavam de execução/aceite em banco isolado. Não foram executados
 advisors nem lint conectado. Os testes estáticos verificam instruções presentes,
 não comprovam comportamento do Postgres.
+
+Continuidade: foi adicionada a suíte [Database isolation](DATABASE_VALIDATION.md)
+com PostgreSQL 17 descartável no GitHub, todas as migrações, grants legados e
+explícitos, RLS e concorrência real. Conferir o resultado do check no commit atual.
+A migração Google ainda não aplicada ao produto agora revoga também os grants
+legados de service_role antes de conceder somente as operações necessárias.
+Não há aplicação remota, liberação de flag ou substituição do aceite Supabase/Google.
 
 Testes focados Node:
 

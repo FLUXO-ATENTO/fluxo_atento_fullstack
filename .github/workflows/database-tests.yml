@@ -1,0 +1,46 @@
+name: Database isolation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  postgres:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: fluxo-ci-disposable-only
+          POSTGRES_DB: fluxo_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Public, disposable CI fixture, not a project secret or production URL.
+      FLUXO_TEST_DATABASE_URL: postgresql://postgres@127.0.0.1:5432/fluxo_test
+      PGPASSWORD: fluxo-ci-disposable-only
+      FLUXO_TEST_DATABASE_ALLOW_CREATE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:database

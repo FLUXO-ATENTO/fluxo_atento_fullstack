@@ -26,6 +26,27 @@ a publicação do PR não libera as integrações nem altera a produção.
 
 ## Esta revisão
 
+### Continuidade: validação do banco
+
+Foi adicionada a suíte [Database isolation](DATABASE_VALIDATION.md), com
+PostgreSQL 17 descartável no GitHub e sem credenciais do produto. Testa migrações,
+grants explícitos/legados, RLS de duas empresas, RPCs privadas e concorrência.
+O resultado funcional deve ser conferido no check do commit atual. A migração
+Google pendente foi ajustada para retirar permissões legadas excessivas também
+do serviço interno, mantendo configuração sem exclusão e auditoria append-only.
+
+Local: 104 testes unitários/contrato aprovados; scanner de fonte e referências
+dos Docs aprovados. Não há PostgreSQL/Docker local disponível nesta sessão;
+nenhum teste foi redirecionado ao banco de produção. O conector Supabase segue
+recusando consultas por permissão.
+
+O cliente Google antigo foi identificado e recebeu uma tentativa autorizada de
+inclusão do callback atual. O Console respondeu com erro; persistência ainda
+não confirmada. Ver o registro em [GOOGLE_SETUP](GOOGLE_SETUP.md). Isso não libera
+o botão de login e não altera segredos, faturamento ou APIs de dados.
+
+### Pacote anterior
+
 Navegação empresa/plataforma separada, tour de três passos, Home orientada,
 Ctrl+K, perfil, temas claro/escuro/sistema, ajuda oficial, docs públicos e rotas
 legais iniciais. CTAs distinguem exemplo e painel.

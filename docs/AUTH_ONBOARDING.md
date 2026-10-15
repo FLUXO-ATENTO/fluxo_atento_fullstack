@@ -79,6 +79,11 @@ Não mesclar contas por e-mail informado pelo cliente. Supabase controla víncul
 de identidades verificadas; e-mails diferentes podem gerar usuários diferentes.
 Vinculação manual não foi ativada. Testar duas contas reais e MFA antes de clientes.
 
+A suíte [de banco isolado](DATABASE_VALIDATION.md) exercita RLS entre empresas,
+negação de promoção pelo navegador e criação concorrente idempotente do tenant.
+Ela usa identidades fictícias em PostgreSQL: não substitui cadastro/login reais,
+validação de JWT pelo Supabase nem aceite operacional em HTTPS.
+
 Fontes: [Google](https://supabase.com/docs/guides/auth/social-login/auth-google),
 [GitHub](https://supabase.com/docs/guides/auth/social-login/auth-github),
 [identidades](https://supabase.com/docs/guides/auth/auth-identity-linking).

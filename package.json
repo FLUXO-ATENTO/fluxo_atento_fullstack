@@ -8,11 +8,14 @@
   },
   "scripts": {
     "dev": "nuxt dev",
-    "build": "nuxt build",
-    "generate": "node scripts/check-public-env.mjs && nuxt generate",
-    "generate:dashboard": "node scripts/check-public-env.mjs && node scripts/generate-dashboard.mjs",
+    "build": "node scripts/check-public-env.mjs && nuxt build",
+    "generate": "node scripts/check-public-env.mjs && nuxt generate && node scripts/check-secret-exposure.mjs dist",
+    "generate:dashboard": "node scripts/check-public-env.mjs && node scripts/generate-dashboard.mjs && node scripts/check-secret-exposure.mjs dist-dashboard",
+    "security:source": "node scripts/check-secret-exposure.mjs --source",
+    "docs:check": "node scripts/check-docs.mjs",
     "preview": "nuxt preview",
     "test": "node --experimental-strip-types --test tests/unit/*.test.mjs",
+    "test:database": "node --test --test-concurrency=1 tests/database/*.test.mjs",
     "typecheck": "nuxt typecheck",
     "test:e2e": "playwright test",
     "monitor:serve": "node --env-file=services/monitor-api/.env services/monitor-api/server.mjs"
@@ -35,6 +38,7 @@
     "@iconify-json/lucide": "1.2.142",
     "@playwright/test": "1.64.0",
     "fontkit": "2.0.4",
+    "pg": "8.23.1",
     "typescript": "5.9.3",
     "vue-tsc": "3.3.13"
   }

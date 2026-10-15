@@ -1,0 +1,5 @@
+<script setup lang="ts">
+const open = defineModel<boolean>('open', { default: false })
+const { dashboardPath } = useDeployment()
+</script>
+<template><USlideover v-model:open="open" title="Suporte Fluxo Atento" description="Ajuda da equipe responsável pela plataforma." :ui="{ content: 'workspace-drawer' }"><template #body><div class="copilot-empty"><span class="feature-icon"><UIcon name="i-lucide-life-buoy" /></span><h2>Vamos encontrar uma direção.</h2><p>A central de ajuda já reúne instruções para as ações disponíveis no painel.</p><NuxtLink :to="dashboardPath('/dashboard/ajuda')" class="button button-primary" @click="open = false">Abrir central de ajuda <UIcon name="i-lucide-arrow-right" /></NuxtLink><div class="note-box"><span class="ui-status ui-status-pending">Chat humano em preparação</span><p>Mensagens, anexos e áudio ainda não podem ser enviados por este painel. Nenhum chamado foi aberto. Quando o canal estiver conectado, o histórico será privado para sua empresa e para a equipe autorizada de suporte.</p></div></div></template></USlideover></template>

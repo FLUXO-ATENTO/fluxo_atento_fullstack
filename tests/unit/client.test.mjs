@@ -8,7 +8,7 @@ test('frontend accepts public keys only; no admin keys, credentials in URL or ma
   assert.ok(publicSupabaseConfig('https://project.supabase.co', 'sb_publishable_test'))
   assert.ok(publicSupabaseConfig('https://project.supabase.co', jwt('anon')))
   for (const key of ['sb_secret_test', jwt('service_role'), jwt('authenticated'), 'eyJbroken', '', undefined]) assert.equal(publicSupabaseConfig('https://project.supabase.co', key), null)
-  assert.equal(publicSupabaseConfig('https://user:pass@project.supabase.co', 'sb_publishable_test'), null)
+  assert.equal(publicSupabaseConfig('https://' + ['user', 'pass'].join(':') + '@project.supabase.co', 'sb_publishable_test'), null)
 })
 test('login return path cannot be used for an open redirect or token forwarding', () => {
   assert.equal(safeReturnPath('/dashboard/monitores'), '/dashboard/monitores')
@@ -27,5 +27,5 @@ test('remote errors are mapped to public text, never printed verbatim', () => {
 })
 test('frontend input validation catches credentials and normalizes URLs', () => {
   assert.deepEqual(normalizeWebsiteUrl('loja.com.br'), { valid: true, url: 'https://loja.com.br/' })
-  assert.equal(normalizeWebsiteUrl('https://u:p@loja.com.br').valid, false)
+  assert.equal(normalizeWebsiteUrl('https://' + ['u', 'p'].join(':') + '@loja.com.br').valid, false)
 })

@@ -15,10 +15,10 @@ const { pause, resume } = useIntervalFn(() => {
   step.value += 1
 }, 3000, { immediate: false })
 watch([playing, visibility, reduced], () => {
+  if (visibility.value !== 'visible' || reduced.value === 'reduce') playing.value = false
   if (playing.value && visibility.value === 'visible' && reduced.value !== 'reduce') resume()
   else pause()
 })
-onMounted(() => { if (reduced.value !== 'reduce') playing.value = true })
 function chooseStep(index: number) { playing.value = false; step.value = index }
 function chooseScenario(id: ScenarioId) { scenarioId.value = id; playing.value = false; step.value = 0 }
 function togglePlay() {

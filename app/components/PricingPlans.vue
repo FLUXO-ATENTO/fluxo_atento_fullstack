@@ -8,13 +8,14 @@ withDefaults(defineProps<{ compact?: boolean }>(), { compact: false })
 type Plan = (typeof plans)[number]
 
 const sectionId = useId()
+const { dashboardAccessUrl } = useDeployment()
 const introductions: Record<Plan['id'], string> = {
   free: 'Para explorar e começar.',
   essential: 'Para o seu pequeno negócio.',
   complete: 'Para a rotina da equipe.'
 }
 const destinations: Record<Plan['id'], string> = {
-  free: '/login',
+  free: dashboardAccessUrl('/login'),
   essential: '/contato?assunto=plano-essencial',
   complete: '/contato?assunto=plano-completo'
 }
@@ -55,7 +56,7 @@ const cards = plans.map(plan => ({
     </header>
 
     <p :id="`${sectionId}-notice`" class="pricing-notice">
-      Hoje, só demonstração. Recursos e limites são propostas; os preços pagos são sugestões
+      O painel já oferece acesso autenticado e verificação HTTP de páginas. Os recursos e limites destes planos ainda são propostas; os preços pagos são sugestões
       pendentes de validação econômica, não preços vigentes. Não há contratação ou cobrança aqui.
     </p>
 

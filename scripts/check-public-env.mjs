@@ -1,9 +1,13 @@
-const entries = Object.entries(process.env).filter(([name]) => name.startsWith('NUXT_PUBLIC_'))
-for (const [name, value] of entries) {
-  let forbidden = /SECRET|SERVICE_ROLE|PASSWORD|PRIVATE_KEY/.test(name) || /sb_secret_|-----BEGIN .*PRIVATE KEY-----/.test(value || '')
-  if (value?.startsWith('eyJ')) {
-    try { forbidden ||= JSON.parse(Buffer.from(value.split('.')[1], 'base64url').toString()).role === 'service_role' } catch { /* Other public values are not JWTs. */ }
-  }
-  if (forbidden) { console.error('Configuração insegura em ' + name + '. Mova a credencial para o servidor. O valor não foi exibido.'); process.exit(1) }
+import { publicEnvironmentFindings } from './security-policy.mjs'
+import { existsSync } from 'node:fs'
+
+// Nuxt also reads .env; inspect it before Nuxt can inline public values.
+if (existsSync('.env')) process.loadEnvFile('.env')
+
+// This script guards publishable builds, even when the caller did not set NODE_ENV.
+const findings = publicEnvironmentFindings({ ...process.env, NODE_ENV: 'production' })
+for (const finding of findings) {
+  console.error('Configuração pública bloqueada: ' + finding.name + ' (' + finding.type + '). Valor omitido.')
 }
-console.log('Variáveis públicas: nenhuma credencial administrativa reconhecida.')
+if (findings.length) process.exit(1)
+console.log('Configuração pública aprovada pela política de nomes e tipos. Isso não substitui RLS nem a inspeção do artefato.')

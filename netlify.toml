@@ -2,6 +2,37 @@
   command = "pnpm generate"
   publish = "dist"
 
+# Preserve previously used public legal URLs when the reviewed site is deployed.
+[[redirects]]
+  from = "/privacidade"
+  to = "/privacy"
+  status = 301
+
+[[redirects]]
+  from = "/termos"
+  to = "/terms"
+  status = 301
+
+# Public keys are not secrets, but previews must not use the production account.
+# Non-production authentication stays off until a separate test project is set up.
+[context.deploy-preview.environment]
+  NUXT_PUBLIC_TURNSTILE_ENABLED = "false"
+  NUXT_PUBLIC_TURNSTILE_SITE_KEY = ""
+  NUXT_PUBLIC_AUTH_PROVIDERS = ""
+  NUXT_PUBLIC_SUPABASE_URL = ""
+  NUXT_PUBLIC_SUPABASE_KEY = ""
+  NUXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = ""
+  NUXT_PUBLIC_API_BASE = ""
+
+[context.branch-deploy.environment]
+  NUXT_PUBLIC_TURNSTILE_ENABLED = "false"
+  NUXT_PUBLIC_TURNSTILE_SITE_KEY = ""
+  NUXT_PUBLIC_AUTH_PROVIDERS = ""
+  NUXT_PUBLIC_SUPABASE_URL = ""
+  NUXT_PUBLIC_SUPABASE_KEY = ""
+  NUXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = ""
+  NUXT_PUBLIC_API_BASE = ""
+
 [[headers]]
   for = "/*"
   [headers.values]

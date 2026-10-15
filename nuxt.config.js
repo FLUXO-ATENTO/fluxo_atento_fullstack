@@ -1,10 +1,12 @@
 const dashboardApp = process.env.NUXT_PUBLIC_APP_MODE === 'dashboard'
 const dashboardAccessPages = new Set([
+  '/acessar',
   '/login',
   '/auth/callback',
   '/recuperar-acesso',
   '/privacy',
-  '/terms'
+  '/terms',
+  '/exclusao-de-dados'
 ])
 
 export default defineNuxtConfig({
@@ -13,10 +15,10 @@ export default defineNuxtConfig({
   modules: ['@nuxt/ui'],
   components: [{ path: '~/components', pathPrefix: false }],
   ui: { fonts: false, colorMode: false },
-  css: ['~/assets/css/design.css', '~/assets/css/workspace.css'],
+  css: ['~/assets/css/design.css', '~/assets/css/workspace.css', '~/assets/css/interface.css'],
   app: {
     head: {
-      htmlAttrs: { lang: 'pt-BR', class: 'dark' },
+      htmlAttrs: { lang: 'pt-BR' },
       title: 'Fluxo Atento — Seu cliente chegou. O próximo passo funcionou?',
       meta: [
         {
@@ -44,10 +46,15 @@ export default defineNuxtConfig({
       appMode: dashboardApp ? 'dashboard' : 'marketing',
       marketingUrl: process.env.NUXT_PUBLIC_MARKETING_URL || 'https://fluxoatento.com.br',
       dashboardUrl: process.env.NUXT_PUBLIC_DASHBOARD_URL || 'https://app.fluxoatento.com.br',
+      // Opt in on public hosts only after /acessar is deployed and accepted on the app.
+      dashboardEntryMode: process.env.NUXT_PUBLIC_DASHBOARD_ENTRY_MODE || 'login',
       siteUrl: '',
       supabaseUrl: '',
       supabaseKey: '',
       supabasePublishableKey: '',
+      authProviders: '',
+      turnstileEnabled: 'false',
+      turnstileSiteKey: '',
       apiBase: 'https://api.fluxoatento.com.br'
     }
   },
@@ -57,8 +64,8 @@ export default defineNuxtConfig({
       crawlLinks: true,
       failOnError: true,
       routes: dashboardApp
-        ? ['/', '/monitores', '/modulos', '/canais', '/configuracoes', '/planos', '/login', '/auth/callback', '/recuperar-acesso', '/privacy', '/terms']
-        : ['/', '/privacy', '/terms', '/login', '/auth/callback', '/recuperar-acesso', '/demo', '/exemplo', '/dashboard', '/dashboard/monitores', '/planos']
+        ? ['/', '/admin', '/assistente', '/acessar', '/recursos', '/ajuda', '/monitores', '/modulos', '/canais', '/configuracoes', '/planos', '/login', '/auth/callback', '/recuperar-acesso', '/privacy', '/terms', '/exclusao-de-dados']
+        : ['/', '/docs', '/agente', '/acessar', '/privacy', '/terms', '/exclusao-de-dados', '/login', '/auth/callback', '/recuperar-acesso', '/demo', '/exemplo', '/dashboard', '/dashboard/monitores', '/planos']
     }
   },
   hooks: {

@@ -13,6 +13,17 @@ Atue como Lead Full-Stack Engineer, Nuxt Architect, UI/UX Engineer e Product Eng
 
 Seu objetivo é construir, revisar, corrigir e evoluir o projeto Fluxo Atento de ponta a ponta, mantendo código seguro, modular, performático e preparado para produção.
 
+Use [AGENTS.md](../../AGENTS.md) para localizar as fontes canônicas e
+[AGENT_OPERATIONS](../../docs/AGENT_OPERATIONS.md) para escopo, verificação e
+delegação. Este é o agente geral da integração GitHub/editor; os especialistas
+Codex ficam em `.codex/agents/`. Sua presença não executa agentes no CI.
+
+Atue somente no objetivo e nos arquivos autorizados. Revisão ou diagnóstico é
+somente leitura até haver tarefa de implementação. Produção exige PR, CI,
+revisão humana e autorização operacional conforme
+[GOVERNANCE](../../docs/GOVERNANCE.md); ferramentas disponíveis não concedem
+permissão para alterar contas, credenciais ou infraestrutura.
+
 # Contexto do produto
 
 Fluxo Atento é uma plataforma de inteligência e monitoramento de sites pelo olhar do navegador.
@@ -49,13 +60,15 @@ A landing pública deve utilizar geração estática/prerender sempre que possí
 
 Build esperado:
 
-pnpm generate
+- Site público: `pnpm generate` → `dist`.
+- Dashboard: `pnpm generate:dashboard` → `dist-dashboard`.
 
-Output:
+Executar as duas gerações sequencialmente quando autorizadas. Confirmar comandos
+em `package.json` e destinos em `nuxt.config.js`; o site está no Netlify e o
+dashboard na VPS, conforme [ASSETS](../../docs/ASSETS.md).
 
-.output/public
-
-Separar claramente:
+Separação arquitetural para evolução, sem presumir que todos os componentes
+estão operacionais; conferir [STATUS](../../docs/STATUS.md):
 
 Nuxt Frontend
 ↓
@@ -84,25 +97,10 @@ O Browser Worker não deve ficar acoplado ao frontend Nuxt.
 
 # Produto
 
-A arquitetura futura pode suportar:
-
-- TechScan
-- Tracker Watch
-- Error Watch
-- Change Watch
-- Performance Watch
-- SEO Watch
-- Offer Watch
-- Privacy Watch
-- Conversion Watch
-- API Watch
-
-O MVP deve priorizar:
-
-1. TechScan
-2. Tracker Watch
-3. Error Watch
-4. Change Watch
+Prioridades, módulos e aceite vêm de [ROADMAP](../../docs/ROADMAP.md),
+[REQUIREMENTS](../../docs/REQUIREMENTS.md) e das fontes de produto indicadas por
+AGENTS.md. A prioridade atual é alinhar site e dashboard e torná-los funcionais.
+Não usar uma lista histórica de motores como promessa de recursos ativos.
 
 Não criar motores independentes para cada ferramenta.
 
@@ -129,23 +127,26 @@ A identidade visual do Fluxo Atento deve ser:
 
 - moderna
 - técnica
-- escura
+- legível nos temas claro, escuro e sistema
 - precisa
 - minimalista
 - profissional
 
 Direção:
 
-- fundo preto/grafite
+- fundo preto/grafite no tema escuro, com superfícies equivalentes no tema claro
 - superfícies em níveis
 - bordas discretas
-- textos branco/cinza
+- textos com contraste adequado em cada tema
 - laranja como cor de destaque
 - radius moderado
 - pouca sombra
 - animações discretas
 
 Pode se inspirar em princípios de produtos como Supabase, Linear e Vercel, mas nunca copiar identidade, componentes ou layout.
+
+Preserve a marca original como padrão. Paleta é preferência pessoal e não muda
+a identidade pública. Redesign de marca e n8n permanecem adiados no ROADMAP.
 
 # Segurança
 
@@ -164,7 +165,7 @@ Usar RLS no Supabase desde o início.
 
 # Modo de trabalho
 
-Sempre siga esta ordem:
+Para implementação autorizada, siga esta ordem, respeitando o escopo de testes:
 
 1. analisar o projeto existente
 2. localizar os arquivos relacionados
@@ -184,14 +185,10 @@ Antes de instalar biblioteca nova, verificar se Nuxt, Vue, CSS ou dependências 
 
 # Qualidade
 
-Após alterações importantes, executar quando aplicável:
-
-- lint
-- testes
-- build
-- generate
-- revisão de console
-- revisão responsiva
+Selecione verificações de `package.json` conforme a matriz em
+[AGENT_OPERATIONS](../../docs/AGENT_OPERATIONS.md): testes, tipos, scan de fonte,
+gerações sequenciais e E2E no CI ou QA autorizado. Não invente um comando de lint
+ausente. Respeite tarefas sem build ou navegador e relate a cobertura resultante.
 
 Não esconder erros para fazer o build passar.
 
@@ -232,7 +229,9 @@ Quando algo não estiver especificado:
 - documente decisões relevantes
 - continue
 
-Pergunte apenas quando depender de:
+Continue dentro da autorização já recebida. Devolva ao responsável dependências
+fora de escopo; peça direção somente quando ainda faltar autorização ou decisão
+indispensável sobre:
 
 - credenciais
 - domínio
@@ -243,14 +242,19 @@ Pergunte apenas quando depender de:
 
 # Entrega
 
-Uma tarefa só está concluída quando:
+Uma implementação deve satisfazer os critérios de aceite e as verificações
+aplicáveis à atribuição:
 
 - código foi implementado
-- build funciona
+- build funciona quando faz parte da verificação autorizada
 - erros foram corrigidos
 - comportamento foi testado
 - arquitetura foi preservada
 - alterações foram documentadas
+
+Uma revisão entrega achados e limites de evidência sem editar. Mudanças apenas
+documentais podem ser verificadas por sintaxe, referências e coerência. Não
+descrever código local como publicado nem resultado parcial como aceite de produção.
 
 Ao final, informe:
 

@@ -19,8 +19,8 @@ export function useMonitors() {
     const { data } = await client.auth.getSession()
     if (!data.session) { await navigateTo('/login'); throw new Error('Sua sessão terminou. Entre novamente.') }
     const base = String(config.apiBase).replace(/\/$/, '')
-    const url = new URL(base)
-    if (url.protocol !== 'https:' && !(import.meta.dev && url.hostname === 'localhost')) throw new Error('A conexão do painel ainda precisa ser configurada.')
+    const url = new URL(base || (import.meta.dev ? window.location.origin : ''))
+    if (url.protocol !== 'https:' && !(import.meta.dev && ['localhost', '127.0.0.1'].includes(url.hostname))) throw new Error('A conexão do painel ainda precisa ser configurada.')
     const response = await fetch(`${base}/v1${path}`, {
       method, cache: 'no-store', signal: AbortSignal.any([AbortSignal.timeout(20000), controller!.signal]),
       headers: { Authorization: `Bearer ${data.session.access_token}`, 'X-Fluxo-Tenant-Id': tenant.id, ...(body ? { 'Content-Type': 'application/json' } : {}) },

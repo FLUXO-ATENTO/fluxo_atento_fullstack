@@ -91,8 +91,8 @@ function selectText() {
   <div class="container">
     <header class="page-hero">
       <p class="eyebrow">CONTATO · PREPARAÇÃO LOCAL</p>
-      <h1>Organize seu pedido.</h1>
-      <p>Escreva o que você precisa e prepare um texto para copiar. Este formulário não envia mensagens, não escolhe um destinatário e não abre um atendimento.</p>
+      <h1>Fale com o Fluxo Atento.</h1>
+      <p>Nosso contato público é <a class="text-link" href="mailto:contato@fluxoatento.com.br">contato@fluxoatento.com.br</a>. O link abre seu aplicativo de e-mail; você revisa e envia a mensagem por lá. Se preferir, prepare um rascunho abaixo. O formulário não envia mensagens nem abre um atendimento.</p>
     </header>
 
     <div class="contact-layout">
@@ -101,7 +101,7 @@ function selectText() {
           <span class="feature-icon mb-5"><FileText :size="22" aria-hidden="true" /></span>
           <h2 id="contact-guidance-title">O texto fica com você.</h2>
           <p>Conte o que tentou fazer, o que esperava e o que apareceu. Se a dúvida for sobre a proposta do produto, descreva o que você gostaria de entender.</p>
-          <p class="mt-4">Depois de preparar, revise o texto e escolha copiar. Você decide onde guardar ou colar; nenhum canal de atendimento está conectado nesta versão.</p>
+          <p class="mt-4">Depois de preparar, revise e copie o texto para seu e-mail. O chat interno ainda não está conectado; preparar ou copiar o pedido não avisa nossa equipe.</p>
         </div>
         <p>Não inclua senhas, códigos de acesso, documentos ou informações de clientes. Estes campos não são gravados em uma conta nem no armazenamento local do navegador. Ao sair ou atualizar a página, o rascunho pode se perder.</p>
         <div class="mt-6 flex flex-wrap gap-4">

@@ -26,7 +26,7 @@ export const helpArticles: HelpArticle[] = [
     title: 'O que dá para explorar hoje?',
     summary: 'Conheça a demonstração e entenda de onde vêm os exemplos.',
     paragraphs: [
-      'Hoje, o Fluxo Atento é uma demonstração com dados ilustrativos. Você pode explorar situações de um site fictício, ver o contexto e continuar no painel. Não é preciso criar uma conta para conhecer essa experiência.',
+      'A demonstração pública do Fluxo Atento usa dados ilustrativos e não exige conta. O painel autenticado é separado e já permite verificações HTTP de páginas. Os exemplos desta ajuda não são resultados do seu negócio.',
       'Nenhum resultado vem de uma análise do seu site. Os endereços, comparações e horários dos exemplos não representam verificações reais. A demonstração não envia mensagens, não faz cobranças e não corrige páginas.',
       'Comece por uma situação próxima da sua rotina: um registro de compra que não aparece, um formulário com falha no envio ou uma oferta que mudou. Os detalhes ajudam a entender o que conferir, sem afirmar que isso aconteceu no seu negócio.'
     ],
@@ -78,9 +78,9 @@ export const helpArticles: HelpArticle[] = [
   {
     id: 'planos', aliases: [], category: 'produto',
     title: 'Gratuito, Essencial e Completo: proposta e disponibilidade',
-    summary: 'Como entender os planos enquanto a experiência ainda é demonstrativa.',
+    summary: 'Entenda a proposta comercial e o que ainda depende de implementação.',
     paragraphs: [
-      'Os três planos previstos são Gratuito, Essencial e Completo. Todos contemplam WhatsApp na proposta, com limites para inteligência artificial e campanhas. O Completo também contempla os seis módulos e e-mail.',
+      'Os três planos previstos são Gratuito, Essencial e Completo. A proposta contempla sites, WhatsApp, respostas de IA e e-mail marketing em quantidades diferentes. O Completo prevê acesso aos seis conjuntos de ferramentas. A proposta não comprova que esses serviços já estão ativos.',
       'Preços, quantidades e condições apresentados na área de planos são propostas, não uma assinatura em funcionamento. Consulte essa área para ver a definição comercial atual, sem usar este artigo como tabela de valores ou cotas.',
       'Explorar a demonstração não contrata um plano, não conecta um número e não autoriza cobrança. O eventual custo de provedores e as condições de ativação precisam ser informados antes de qualquer contratação real.'
     ],
@@ -104,27 +104,27 @@ export const helpArticles: HelpArticle[] = [
   },
   {
     id: 'email', aliases: [], category: 'canais',
-    title: 'E-mail na proposta do Completo',
+    title: 'E-mail marketing: proposta e disponibilidade',
     summary: 'Campanhas por e-mail ainda não estão conectadas.',
     paragraphs: [
-      'O e-mail faz parte da proposta do plano Completo. A demonstração não envia nem recebe e-mails, não importa listas e não confirma entregas. Uma página de apresentação não equivale a um serviço de mensagens ativo.',
+      'E-mail marketing está previsto nos três planos, com limites diferentes. A demonstração não envia nem recebe e-mails, não importa listas e não confirma entregas. Uma página de apresentação não equivale a um serviço de campanhas ativo.',
       'Antes de uma operação real, será necessário definir o provedor, validar o domínio de envio e estabelecer os limites. A proposta considera contatos que autorizaram o recebimento e uma forma de sair das campanhas. Essas etapas ainda não estão disponíveis aqui.',
       'O formulário de Contato apenas prepara um texto local para você copiar. Preencher um e-mail nesse formulário não envia um pedido e não cadastra você em campanhas.'
     ],
-    steps: ['Veja o estado do e-mail em Integrações.', 'Consulte a proposta do Completo na área de planos.', 'Use dados de exemplo ao explorar; não carregue listas de contatos.'],
+    steps: ['Veja o estado do e-mail em Integrações.', 'Compare as propostas na área de planos.', 'Use dados de exemplo ao explorar; não carregue listas de contatos.'],
     keywords: ['email', 'e-mail', 'marketing', 'completo', 'domínio', 'envio', 'newsletter'],
     link: { label: 'Entender as integrações', to: '/integracoes' }
   },
   {
     id: 'acesso', aliases: [], category: 'conta',
     title: 'Preciso entrar ou criar uma conta?',
-    summary: 'A demonstração é aberta; o acesso a uma conta real ainda não está disponível.',
+    summary: 'A demonstração é aberta; o painel com dados reais exige sua conta.',
     paragraphs: [
-      'Você pode abrir os exemplos e o painel sem cadastro. O painel usa dados de demonstração, não informações de uma conta sua. A página de acesso não representa autenticação funcional.',
-      'Não existe recuperação de senha, convite de equipe ou perfil real disponível nesta etapa. Se você chegou procurando essas funções, volte à demonstração ou consulte o estado do produto na ajuda.',
-      'Nunca informe senha de e-mail, WhatsApp ou outro serviço para explorar a demo. Em uma operação futura, as condições de acesso e de conta precisam estar implementadas e explicadas antes do uso.'
+      'A demonstração em /exemplo é aberta e usa dados fictícios. O painel em app.fluxoatento.com.br é separado: nele você entra com sua conta para acessar os dados autorizados da sua empresa.',
+      'Use Entrar para abrir o acesso real. O link de recuperação fica na tela de login. A chegada de mensagens de confirmação e recuperação depende da configuração de e-mail; se tiver dificuldade, consulte o contato público.',
+      'Login identifica você; não conecta automaticamente Google, Meta ou WhatsApp. Nunca informe senhas desses serviços à demonstração, ao chat ou ao agente.'
     ],
-    steps: ['Abra o painel diretamente.', 'Leia o aviso de dados ilustrativos.', 'Use a ajuda para entender qualquer área em modo inicial.'],
+    steps: ['Escolha Entrar no site para abrir o painel real.', 'Use sua própria conta e confira a empresa selecionada.', 'Para explorar sem conta, escolha a demonstração.'],
     keywords: ['login', 'entrar', 'acesso', 'senha', 'cadastro', 'conta', 'equipe'],
     link: { label: 'Abrir a demonstração', to: '/exemplo' }
   },

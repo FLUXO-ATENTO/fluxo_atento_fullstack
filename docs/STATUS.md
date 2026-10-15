@@ -14,7 +14,7 @@ a publicação do PR não libera as integrações nem altera a produção.
 | API Node /v1 | Health e monitor persistido operantes | Duas contas e cenários de falha/expiração |
 | Supabase | Auth, tenants e dados usados no produto | Advisors atuais sem permissão pelo conector; auditoria não concluída |
 | Superadmin | Consulta administrativa real já validada | Templates, módulos e quotas comerciais ainda pendentes |
-| Login Google/GitHub | Google: cliente exclusivo criado no projeto adotado; provedor Supabase desligado na última inspeção. GitHub ainda pendente | Inserção privada do segredo pelo proprietário, ativação e testes antes de liberar o botão |
+| Login Google/GitHub | Google habilitado no Supabase; botão local abriu a escolha oficial de conta com cliente/callback corretos e somente email/profile; GitHub desligado | Escolha/consentimento pelo proprietário, retorno/sessão/papel e publicação da interface; login da VPS ainda sem botão Google |
 | Google de dados | Frontend + backend OAuth em revisão, desligados por padrão; 17 testes PostgreSQL aprovados | Cliente de dados, configuração externa e OAuth real HTTPS; ainda sem relatórios |
 | Console Google | Projeto adotado Fluxo - Google Integration (`empirical-envoy-508802-k0`); cliente de login criado, 28 APIs listadas | Analytics Admin/Data, Search Console e PageSpeed ausentes; branding ainda Fluxo de Clientes. Os 82 serviços vistos pertenciam ao projeto anterior |
 | Meta/WABA | Sem conexão de negócio aceita de ponta a ponta | Consentimento, fontes, sincronização e revisão |
@@ -48,8 +48,18 @@ O cliente Google antigo recebeu uma tentativa autorizada de inclusão do callbac
 a persistência dessa tentativa segue não confirmada. Depois, o proprietário adotou
 **Fluxo - Google Integration** e autorizou um novo cliente **Fluxo Atento - Login**,
 cuja criação foi confirmada. O cliente preexistente Fluxo de Clientes foi preservado.
-A nova credencial precisa ser inserida pelo proprietário no provedor Supabase;
-isso ainda não libera o botão nem comprova login. Ver [GOOGLE_SETUP](GOOGLE_SETUP.md).
+A nova credencial foi inserida e salva pelo proprietário no Supabase. A releitura
+do provedor confirmou Google habilitado, ID do cliente correto e as opções
+`Skip nonce checks` / `Allow users without an email` desligadas. O segredo não
+foi revelado. Site URL e os dois retornos de produção estão corretos.
+Isso ainda não comprova a troca OAuth: `/login/` publicado na VPS segue na versão
+anterior, sem botão Google. O proprietário autorizou um teste local com sua
+própria conta; foi adicionado temporariamente o retorno exato
+`http://127.0.0.1:4175/auth/callback`, a remover depois do teste. Os dois retornos
+de produção foram preservados. Ver [GOOGLE_SETUP](GOOGLE_SETUP.md).
+O botão local chegou à escolha de conta oficial do Google; o proprietário deve
+concluir a autorização. A abertura dessa tela confirma o início do fluxo, não
+a validade do segredo na troca, o acesso ao painel nem o papel de superadmin.
 Nenhuma alteração de faturamento, IAM, APIs de dados ou revogação de chave antiga.
 
 ### Pacote anterior

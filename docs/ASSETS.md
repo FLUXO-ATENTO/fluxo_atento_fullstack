@@ -15,7 +15,7 @@ referências operacionais, nunca senhas, tokens ou dados de contas de clientes.
 | flow.fluxoatento.com.br | n8n auto-hospedado | Interface acessada; uso adiado pelo proprietário |
 | infra.fluxoatento.com.br | Portainer/Docker | Operação interna; não é uma área de tenant |
 | GitHub FLUXO-ATENTO/fluxo_atento_fullstack | Código, decisões, CI e documentação canônica | Repositório oficial; PR, CI, revisão e deploy controlado |
-| Google Cloud / empirical-envoy-508802-k0 | Projeto adotado: Fluxo - Google Integration; OAuth do login e integrações de dados | Cliente Fluxo Atento - Login criado; Supabase e aceite ainda pendentes. Ver GOOGLE_SETUP |
+| Google Cloud / empirical-envoy-508802-k0 | Projeto adotado: Fluxo - Google Integration; OAuth do login e integrações de dados | Cliente Fluxo Atento - Login criado e provedor Google habilitado no Supabase; aceite OAuth e botão em produção pendentes. Ver GOOGLE_SETUP |
 | Google Cloud / fluxo-atento | Projeto anterior: Agente Fluxo Atento | Inventário histórico de 82 serviços; preservado, sem exclusão/migração automática; não hospeda o agente do produto por decisão atual |
 
 ## Distinções importantes

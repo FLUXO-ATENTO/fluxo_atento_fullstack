@@ -49,16 +49,26 @@ Configuração detalhada, inventário e divisão entre login e dados estão em
 [GOOGLE_SETUP](GOOGLE_SETUP.md). O botão de login e a liberação do provedor de
 dados no superadmin são independentes.
 
-Em 15/10 a UI Supabase mostrou Email habilitado, confirmação de e-mail ligada,
-Google/GitHub desabilitados e acesso anônimo desligado. Nada foi alterado no provedor.
-Facebook fica exclusivamente nas integrações Meta.
+Na primeira inspeção de 15/10, a UI Supabase mostrou Google/GitHub desligados.
+Após o proprietário salvar a credencial nova, a releitura confirmou Google
+habilitado e GitHub ainda desligado. Email e confirmação de e-mail continuam
+ligados; acesso anônimo e vinculação manual continuam desligados. Facebook fica
+exclusivamente nas integrações Meta.
 
 Na continuidade, foi criado **Fluxo Atento - Login** no projeto Google adotado
 `empirical-envoy-508802-k0`; o ID público e o retorno estão em GOOGLE_SETUP.
-O proprietário recebeu a etapa de inserir o novo segredo diretamente no Supabase
-e salvar a ativação. Até confirmação e teste real, não tratar o login como ativo.
+O proprietário inseriu o novo segredo diretamente no Supabase e salvou a ativação.
+O ID público foi conferido sem revelar o segredo; `Skip nonce checks` e
+`Allow users without an email` estão desligados. Isso confirma a configuração
+do provedor, não o funcionamento completo do login.
 O template de build da VPS agora explicita `NUXT_PUBLIC_AUTH_PROVIDERS`, vazio
 por padrão; ID/segredo não pertencem a esse arquivo público.
+
+O login publicado na VPS ainda é anterior a esta revisão e não possui botão
+Google. O teste local foi autorizado pelo proprietário, com retorno temporário
+exato `http://127.0.0.1:4175/auth/callback`. Não usar wildcard nem confundir esse
+teste com deploy ou aceite em HTTPS. Remover o retorno ao encerrar o teste e
+registrar o resultado em GOOGLE_SETUP/STATUS.
 
 Código preparado com signInWithOAuth, PKCE, retorno exato /auth/callback e sem
 escopos de anúncios ou repositórios. O SDK compartilhado troca o código ao iniciar;

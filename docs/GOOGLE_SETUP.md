@@ -1,8 +1,9 @@
 # Google: acesso ao produto e dados por empresa
 
 Registro de 15/10/2026. Código permanece em revisão. O cliente de login abaixo
-foi criado no Google; isso não atesta configuração do segredo no Supabase,
-teste de login, conexão de dados ou deploy de produção.
+foi criado no Google e o proprietário habilitou o provedor no Supabase. A
+configuração foi relida; isso ainda não atesta troca OAuth bem-sucedida,
+conexão de dados ou deploy da interface nova em produção.
 
 ## Decisão de arquitetura
 
@@ -47,7 +48,7 @@ de um cliente independente, confirmada pela mensagem **Cliente OAuth criado**:
 | Origem JavaScript | `https://app.fluxoatento.com.br` |
 | Retorno OAuth | `https://qbfmebpzxnzdpalmgtxr.supabase.co/auth/v1/callback` |
 | Cliente para agente de IA | Não selecionado; este cliente serve somente ao login |
-| Segredo | Gerado no Google; inserção e salvamento no Supabase pelo proprietário, pendentes de confirmação |
+| Segredo | Inserido e salvo pelo proprietário no Supabase; campo mantido oculto na conferência, sem cópia para o repositório |
 
 O Google informou acesso restrito aos usuários de teste do projeto. A criação
 do cliente não muda o público-alvo nem conclui a verificação da marca. Branding,
@@ -72,12 +73,58 @@ voltar à conta já autorizada restabeleceu a listagem e permitiu criar o client
 Não foi concedido IAM adicional nem alterado faturamento. Esse achado não prova
 a causa de todos os erros anteriores do Console.
 
-No Supabase, o provedor Google ainda estava desligado na inspeção. O campo
-`Client IDs` exibia um e-mail, não um ID OAuth válido; não tratar esse preenchimento
-como configuração correta nem presumir se veio de autofill ou dado salvo.
-O proprietário deve substituir ID/segredo, ativar o provedor e salvar diretamente
-no painel. Não copiar segredo para chat, Git, frontend ou documentação.
-Manter `Skip nonce checks` e `Allow users without an email` desligados.
+Na inspeção inicial do Supabase, Google estava desligado e `Client IDs` exibia
+um e-mail. Após orientação e salvamento pelo proprietário, a releitura confirmou:
+
+- Google **Enabled**, com o Client ID público registrado acima;
+- `Skip nonce checks` e `Allow users without an email` **desligados**;
+- segredo oculto, sem uso da ação Reveal;
+- Site URL `https://app.fluxoatento.com.br`;
+- retornos exatos de produção `/auth/callback` e `/recuperar-acesso` no host app;
+- GitHub desligado, confirmação de e-mail ligada e acesso anônimo desligado.
+
+Não copiar segredo para chat, Git, frontend ou documentação. O estado Enabled
+não valida o conteúdo oculto do segredo: somente a troca OAuth poderá fazê-lo.
+
+### Aceite local autorizado, ainda em andamento
+
+O `/login/` publicado na VPS foi aberto e ainda não contém os botões sociais
+desta revisão. Não declarar o Google disponível para clientes nem publicar toda
+a branch apenas para testar a credencial.
+
+O proprietário autorizou adicionar temporariamente
+`http://127.0.0.1:4175/auth/callback` e testar com sua própria conta. O Supabase
+confirmou três retornos; os dois de produção foram preservados. O retorno
+temporário deve ser removido ao encerrar o teste, inclusive se ele falhar.
+Uma retomada deve conferir o estado atual antes de adicionar novamente.
+
+O ambiente local é separado da fixture e da produção, vinculado somente a
+loopback, com o SDK real e somente Google habilitado. Não utiliza chave
+administrativa nem segredo Google. A consulta direta da API a partir dessa
+origem recebeu 403; não foi alterado o CORS da VPS. A ponte local de aceite
+permite apenas GETs explicitamente listados, ao host fixo da API do produto,
+mantendo o Bearer do próprio usuário e a autorização no backend. Sem cookies,
+destinos arbitrários, escrita pela API ou registro de tokens. O caminho de
+workspace continua sujeito ao provisionamento idempotente existente para uma
+identidade nova; não elevar papéis nem criar contas de cliente para o teste.
+
+Esta preparação não é evidência de autenticação concluída, autorização Google
+de dados, isolamento entre duas contas ou aceite de produção em HTTPS.
+
+Resultado parcial observado no navegador: **Continuar com Google** abriu a
+tela oficial **Escolha uma conta**, em `accounts.google.com`. O Client ID da
+requisição corresponde ao cliente novo, o callback é o Supabase atual e os
+escopos solicitados são somente `email profile`. A escolha/consentimento ficou
+com o proprietário; troca do código, sessão, perfil e papel ainda não validados.
+A tela confirmou a pendência de branding **Fluxo de Clientes**, com seus links
+legais antigos. Não incluir e-mails de contas, URL completa da tentativa,
+código, estado OAuth ou screenshot com dados pessoais neste repositório.
+
+Verificações da ponte local: saúde 200, workspace sem sessão 401, tentativa de
+POST 405, origem externa 403 e rota fora da lista 404. Três testes unitários de
+login social passaram; as referências em 25 documentos e o scanner da fonte
+(189 arquivos, zero padrões detectados) passaram. Essas verificações não
+substituem a continuação manual do login nem a validação final em produção.
 
 ## Inventário histórico do projeto anterior
 
@@ -206,7 +253,8 @@ sanitizados, nunca por registro do código de autorização.
 - [ ] Confirmar e habilitar as APIs da fase inicial no projeto adotado, sem aceitar
   reativação de faturamento como efeito colateral.
 - [ ] Revisar branding, público de teste, escopos e callbacks exatos.
-- [ ] Configurar/validar o provedor de login no Supabase.
+- [x] Configurar e reler o provedor Google no Supabase, com proteções e ID corretos.
+- [ ] Completar o login OAuth real e remover o retorno temporário local.
 - [ ] Configurar cliente de integração distinto e segredos privados na VPS.
 - [x] Validar migrações, RLS/grants e concorrência em PostgreSQL descartável: 17/17.
 - [ ] Completar aceite Supabase com identidades reais, advisors, rollback e backup.

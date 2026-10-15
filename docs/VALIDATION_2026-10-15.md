@@ -103,3 +103,11 @@ foram revalidados. Essa simulação não comprova publicação; o envio efetivo 
 PR devem ser conferidos pelos respectivos objetos remotos. Nenhuma credencial
 nova, mudança de TLS ou permissão global foi necessária. Merge e deploy não
 fazem parte desta publicação de revisão.
+
+O envio efetivo foi concluído pelo Git no commit
+`622bb200db1815c431bcd777668c346797fdedd6`, na branch remota
+`feat/dashboard-guided-workspace`. A suíte completa passou novamente (103/103),
+e a checagem dos 24 documentos também aprovou o mapa de impacto contra a base.
+A criação do PR pela integração retornou o mesmo HTTP 403; a abertura pelo
+navegador autenticado é a próxima etapa. O CI de pull request depende dessa
+abertura. A branch `main` e a produção não foram modificadas.

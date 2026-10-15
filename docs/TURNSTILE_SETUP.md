@@ -1,8 +1,12 @@
 # Turnstile na autenticação
 
-Registro de 15/10/2026. Implementação para revisão no PR #6; **não ativada no
-Supabase nem publicada no dashboard**. A página atual da VPS não envia o token:
-ligar a exigência do servidor antes do frontend compatível pode bloquear o acesso.
+Registro atualizado após o merge de 15/10/2026. Código do PR #6 **publicado no
+dashboard, mas desligado**: `NUXT_PUBLIC_TURNSTILE_ENABLED=false`. O segredo não
+foi instalado e o Supabase não foi alterado na janela de publicação. A CSP ativa
+foi ajustada para os scripts Nuxt, não para carregar o desafio Cloudflare.
+Ligar a exigência do servidor agora pode bloquear ações por e-mail. Seguir a
+sequência abaixo em nova janela aprovada; evidência da publicação em
+[DEPLOYMENT_2026-10-15](DEPLOYMENT_2026-10-15.md).
 
 ## Escopo e responsabilidades
 

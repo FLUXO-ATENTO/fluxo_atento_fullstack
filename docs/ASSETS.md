@@ -6,7 +6,7 @@ referências operacionais, nunca senhas, tokens ou dados de contas de clientes.
 | Ativo | Responsabilidade | Estado / acesso |
 | --- | --- | --- |
 | fluxoatento.com.br e www | Site Nuxt no Netlify, projeto fluxo-atento | Público; exemplo separado da operação real |
-| app.fluxoatento.com.br | Dashboard Nuxt servido na VPS | Privado, HTTPS, login e monitor persistido verificados |
+| app.fluxoatento.com.br | Dashboard Nuxt servido na VPS | Nova interface do merge 5721c71 publicada; sessão existente, monitor e Superadmin verificados. Ver DEPLOYMENT_2026-10-15 |
 | api.fluxoatento.com.br | API Node de workspace e monitoramento | /v1/health e operação autenticada verificados |
 | Supabase do produto | Auth, Postgres, associações e RLS | Base de identidade e persistência; não autoriza integrações automaticamente |
 | Cloudflare Turnstile | Widget Fluxo Atento — Autenticação para app.fluxoatento.com.br | Criado em modo gerenciado sem pré-liberação; ativação do backend ainda pendente. Ver TURNSTILE_SETUP |
@@ -16,7 +16,7 @@ referências operacionais, nunca senhas, tokens ou dados de contas de clientes.
 | flow.fluxoatento.com.br | n8n auto-hospedado | Interface acessada; uso adiado pelo proprietário |
 | infra.fluxoatento.com.br | Portainer/Docker | Operação interna; não é uma área de tenant |
 | GitHub FLUXO-ATENTO/fluxo_atento_fullstack | Código, decisões, CI e documentação canônica | Repositório oficial; PR, CI, revisão e deploy controlado |
-| Google Cloud / empirical-envoy-508802-k0 | Projeto adotado: Fluxo - Google Integration; OAuth do login e integrações de dados | Cliente Fluxo Atento - Login autenticou uma conta real na prévia local; retorno temporário removido. Aceite HTTPS e botão em produção pendentes. Ver GOOGLE_SETUP |
+| Google Cloud / empirical-envoy-508802-k0 | Projeto adotado: Fluxo - Google Integration; OAuth do login e integrações de dados | Cliente de login validado localmente; botão publicado na VPS. Nova troca HTTPS e integrações de dados pendentes. Ver GOOGLE_SETUP |
 | Google Cloud / fluxo-atento | Projeto anterior: Agente Fluxo Atento | Inventário histórico de 82 serviços; preservado, sem exclusão/migração automática; não hospeda o agente do produto por decisão atual |
 
 ## Distinções importantes
@@ -41,8 +41,11 @@ consultada. New project estava bloqueado por licença. Não foram criados projet
 pasta ou assinatura. Uso futuro requer revisão de licença, isolamento, versões,
 criptografia, filas, retenção e recuperação.
 
-A sessão do terminal da VPS expirou. Firewall, variáveis privadas, bindings e
-restauração ainda exigem inspeção operacional. A UI do Portainer não os comprova.
+A sessão do terminal foi reaberta para a publicação autorizada do dashboard.
+Versões de Node/pnpm, espaço, arquivo público de build, Nginx e rollback do app
+foram conferidos em [DEPLOYMENT_2026-10-15](DEPLOYMENT_2026-10-15.md).
+Isso não conclui auditoria de firewall, ambientes privados, bindings nem backup
+restaurado de banco. A UI do Portainer também não os comprova.
 
 ## Responsabilidade pelos dados
 

@@ -1,31 +1,37 @@
 # Estado operacional do Fluxo Atento
 
-Registro factual em **15/10/2026**, substituindo o diagnóstico de 10/10.
-Código nesta branch não é deploy de produção.
-
-Pacote publicado para revisão no [PR #6](https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack/pull/6),
-em rascunho. Conferir os checks do commit mais recente antes de qualquer merge;
-a publicação do PR não libera as integrações nem altera a produção.
+Registro factual em **15/10/2026**, atualizado após a publicação autorizada.
+O proprietário fez merge do [PR #6](https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack/pull/6)
+às 19h50 BRT. O commit `5721c716501aea4ed2074b609b9b78108f7db7d6` foi publicado
+no site pelo Netlify e, com autorização operacional separada, no dashboard da VPS.
+O primeiro aceite de navegador falhou e a versão anterior foi restaurada;
+após corrigir os hashes CSP, a publicação foi repetida e a interface abriu.
+Registro, limites e rollback em [DEPLOYMENT_2026-10-15](DEPLOYMENT_2026-10-15.md).
+Merge e publicação da interface não ativam integrações ou CAPTCHA.
 
 | Área | Evidência / estado | Próximo aceite |
 | --- | --- | --- |
-| Site Netlify | Público e acessível; o novo link /acessar atingiu 404 no app ainda antigo | Correção preparada: links públicos usam /login/ até aceite da nova entrada; publicar somente após revisão |
-| Dashboard VPS | HTTPS, login e monitor real verificados | Nova interface ainda não publicada |
+| Site Netlify | Commit do merge publicado automaticamente; Entrar usa /login/ e não apresentou 404 no teste | Modo guided ainda não ativado no site; manter a separação entre publicação e aceite completo |
+| Dashboard VPS | Nova interface publicada; login com botão Google, sessão existente, consulta de monitor e Superadmin verificados por HTTPS | Aceite OAuth novo em HTTPS, duas contas, cadastro/recuperação e regressões de hidratação |
 | API Node /v1 | Health e monitor persistido operantes | Duas contas e cenários de falha/expiração |
 | Supabase | Auth, tenants e dados usados no produto | Advisors atuais sem permissão pelo conector; auditoria não concluída |
 | Superadmin | Consulta administrativa real já validada | Templates, módulos e quotas comerciais ainda pendentes |
-| Login Google/GitHub | Google autenticou a conta escolhida pelo proprietário no app local; nome, empresa, sessão após recarga e bloqueio visual de /admin confirmados; retorno temporário removido; GitHub desligado | Aceite HTTPS e duas contas, cancelamento/expiração e publicação da interface; login da VPS ainda sem botão Google |
-| Turnstile | Widget Fluxo Atento — Autenticação criado no Cloudflare, gerenciado, restrito ao app e sem pré-liberação; frontend e envio captchaToken preparados | Deploy da interface/CSP, segredo e ativação no Supabase, teste real HTTPS; não está protegendo a produção ainda |
-| Google de dados | Frontend + backend OAuth em revisão, desligados por padrão; 17 testes PostgreSQL aprovados | Cliente de dados, configuração externa e OAuth real HTTPS; ainda sem relatórios |
+| Login Google/GitHub | Google já validado com uma conta na prévia local; botão publicado na VPS com authProviders=google; sessão existente do app preservada; GitHub desligado | Nova troca OAuth em HTTPS e duas contas, cancelamento/expiração; botão visível não comprova esse aceite |
+| Turnstile | Código publicado, mas flag da UI false; widget criado e segredo não instalado nesta operação; Supabase não alterado | Homologação negativa, flag/chave pública/CSP Cloudflare, segredo e ativação coordenada; produção ainda não protegida pelo CAPTCHA |
+| Google de dados | Código OAuth incorporado no merge; frontend publicado, backend de integração não implantado nesta janela; recurso desligado; 17 testes PostgreSQL aprovados | Cliente de dados, configuração externa e OAuth real HTTPS; ainda sem relatórios |
 | Console Google | Projeto adotado Fluxo - Google Integration (`empirical-envoy-508802-k0`); cliente de login criado, 28 APIs listadas | Analytics Admin/Data, Search Console e PageSpeed ausentes; branding ainda Fluxo de Clientes. Os 82 serviços vistos pertenciam ao projeto anterior |
 | Meta/WABA | Sem conexão de negócio aceita de ponta a ponta | Consentimento, fontes, sincronização e revisão |
 | Agente IA | Serviço Python existente; chave válida na consulta de modelos | Resposta de bloqueio não prova análise; chat/BFF pendentes |
 | Suporte | Ajuda contextual e orientação na interface | Chat persistente, anexos, áudio e notificações ainda não conectados |
 | Planos/licenciamento | Proposta de capacidades | Sem cobrança/quotas comerciais completas |
-| Docs/agente | /docs com 12 guias pesquisáveis e /agente público preparados | Subdomínios, TLS, documentos privados e chat real pendentes |
+| Docs/agente | Rotas públicas /docs e /agente incluídas no deploy Netlify do merge | Rever avisos editoriais após publicação; subdomínios, TLS, documentos privados e chat real pendentes |
 | n8n/Portainer | Inventário e interfaces vistos | n8n adiado, sem projeto/pasta/contratação |
 
-## Esta revisão
+## Histórico da preparação do PR #6
+
+As seções abaixo descrevem a preparação anterior ao merge. Afirmações de
+"não publicado" nesse histórico são substituídas pelo quadro atual e pelo
+registro de publicação acima; limites de integração e testes continuam válidos.
 
 ### Continuidade: validação do banco
 
@@ -157,5 +163,6 @@ e seus limites](VALIDATION_2026-10-15.md) registram builds, testes e inspeção 
 interface; o resultado do CI deve acompanhar o PR. O [checklist](LAUNCH_CHECKLIST.md) exige
 também backup restaurado, permissões, entrega de e-mail e revisão jurídica.
 
-Nesta revisão não houve alteração de senha, rotação de chave, contratação,
-deploy de produção nem criação de DNS docs/agente.
+Durante a preparação do PR não houve deploy. A publicação autorizada posterior
+está registrada acima. Não houve alteração de senha, rotação de chave,
+contratação ou criação de DNS docs/agente nessa publicação.

@@ -1,9 +1,11 @@
 # Google: acesso ao produto e dados por empresa
 
-Registro de 15/10/2026. Código permanece em revisão. O cliente de login abaixo
-foi criado no Google e o proprietário habilitou o provedor no Supabase. A
-configuração foi relida e uma conta escolhida pelo proprietário completou o
-login na prévia local. Isso não atesta conexão de dados nem deploy/aceite HTTPS.
+Registro atualizado após o merge de 15/10/2026. O cliente de login foi criado e
+o provedor Supabase configurado; uma conta completou o OAuth na prévia local.
+O botão Google agora está publicado no dashboard da VPS. A sessão existente
+do app foi preservada, mas **uma nova troca OAuth em HTTPS ainda não foi
+concluída nesta publicação**. Integrações de dados continuam desligadas e sem
+aceite. Ver [DEPLOYMENT_2026-10-15](DEPLOYMENT_2026-10-15.md).
 
 ## Decisão de arquitetura
 
@@ -89,9 +91,9 @@ concluída sem revelar o segredo.
 
 ### Aceite local autorizado concluído para uma conta
 
-O `/login/` publicado na VPS foi aberto e ainda não contém os botões sociais
-desta revisão. Não declarar o Google disponível para clientes nem publicar toda
-a branch apenas para testar a credencial.
+Antes do merge, o `/login/` da VPS não continha os botões sociais. O relato
+abaixo é o aceite local anterior à publicação. A disponibilidade posterior do
+botão não substitui teste novo em HTTPS nem revisão do público-alvo Google.
 
 O proprietário autorizou adicionar temporariamente
 `http://127.0.0.1:4175/auth/callback` e testar com sua própria conta. O Supabase
@@ -262,7 +264,8 @@ sanitizados, nunca por registro do código de autorização.
 - [ ] Revisar branding, público de teste, escopos e callbacks exatos.
 - [x] Configurar e reler o provedor Google no Supabase, com proteções e ID corretos.
 - [x] Completar login OAuth real de uma conta na prévia local e remover o retorno temporário.
-- [ ] Completar aceite HTTPS e com duas identidades; publicar o botão Google no dashboard.
+- [x] Publicar o botão Google no dashboard após merge e autorização operacional.
+- [ ] Completar nova troca OAuth HTTPS e aceite com duas identidades.
 - [ ] Configurar cliente de integração distinto e segredos privados na VPS.
 - [x] Validar migrações, RLS/grants e concorrência em PostgreSQL descartável: 17/17.
 - [ ] Completar aceite Supabase com identidades reais, advisors, rollback e backup.

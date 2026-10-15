@@ -1,8 +1,16 @@
 # Identidade, acesso e primeiros passos
 
+Atualização após merge em 15/10: interface publicada na VPS, botão Google
+habilitado e sessão existente preservada. A entrada guiada abriu, pausou e
+continuou para `/admin` com a conta proprietária já autenticada. O site continua
+no modo compatível `login`; nova troca Google em HTTPS e duas contas ainda
+precisam de aceite. Evidência e incidente de publicação corrigido em
+[DEPLOYMENT_2026-10-15](DEPLOYMENT_2026-10-15.md). Os relatos locais abaixo
+permanecem históricos; não representam novos testes de OAuth em produção.
+
 | Endereço | Finalidade |
 | --- | --- |
-| https://app.fluxoatento.com.br/acessar | Entrada comum com orientação de cinco segundos, em revisão |
+| https://app.fluxoatento.com.br/acessar | Entrada comum publicada; orientação de cinco segundos e pausa |
 | https://app.fluxoatento.com.br/login | Autenticador único |
 | https://app.fluxoatento.com.br/admin | Administração global, somente conta proprietária autorizada |
 | https://app.fluxoatento.com.br/ | Espaço privado da empresa |
@@ -50,10 +58,11 @@ sistema é uma preferência de aparência deste navegador e host.
 
 ## Proteção contra tentativas automatizadas
 
-A proteção de robôs por e-mail/cadastro/recuperação usa o widget Turnstile e a
-validação do Supabase, conforme [TURNSTILE_SETUP](TURNSTILE_SETUP.md). Nesta
-revisão o código está preparado e o widget foi criado; a exigência do servidor
-aguarda o deploy compatível. CAPTCHA não concede papéis nem substitui OAuth/MFA.
+O código de proteção por e-mail/cadastro/recuperação usa o widget Turnstile e a
+validação do Supabase, conforme [TURNSTILE_SETUP](TURNSTILE_SETUP.md). O código
+foi publicado, mas a flag do formulário permanece false e a exigência no
+Supabase não foi ativada nesta janela. CAPTCHA não concede papéis nem substitui
+OAuth/MFA; código publicado e widget criado não significam proteção ativa.
 
 ## Login Google/GitHub
 
@@ -76,8 +85,9 @@ do provedor; a continuidade do aceite real está registrada abaixo.
 O template de build da VPS agora explicita `NUXT_PUBLIC_AUTH_PROVIDERS`, vazio
 por padrão; ID/segredo não pertencem a esse arquivo público.
 
-O login publicado na VPS ainda é anterior a esta revisão e não possui botão
-Google. O teste local foi autorizado pelo proprietário, com retorno temporário
+Antes do deploy, o login publicado na VPS era anterior e não tinha botão Google.
+A publicação posterior habilitou o botão, sem substituir o aceite OAuth HTTPS.
+O teste local foi autorizado pelo proprietário, com retorno temporário
 exato `http://127.0.0.1:4175/auth/callback`. Não usar wildcard nem confundir esse
 teste com deploy ou aceite em HTTPS. O proprietário concluiu o Google: nome,
 empresa e papel de responsável foram exibidos; a sessão persistiu após recarga.
@@ -108,8 +118,8 @@ em produção existe. Não trocar chaves nem adicionar wildcards para corrigir 4
 O modelo Nginx serve rotas estáticas existentes; um fallback genérico para
 `index.html` não adiciona páginas ausentes à versão anterior. Não considerar
 um HTTP 200 genérico como aceite da nova entrada. O URL novo já compartilhado
-continua dependente da publicação do dashboard; a mudança dos links não cria
-retroativamente a rota antiga em produção.
+passou a abrir após a publicação registrada em DEPLOYMENT_2026-10-15; a correção
+anterior dos links, sozinha, não criava a rota em produção.
 
 Código preparado com signInWithOAuth, PKCE, retorno exato /auth/callback e sem
 escopos de anúncios ou repositórios. O SDK compartilhado troca o código ao iniciar;

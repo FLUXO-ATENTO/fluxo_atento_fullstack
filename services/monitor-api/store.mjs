@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { ApiError } from './errors.mjs'
+import { createGoogleStore } from './google-store.mjs'
 
 const fields = 'id,name,url,hostname,enabled,created_at,last_requested_at'
 const options = { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
@@ -25,6 +26,7 @@ export function createStore({ supabaseUrl, publicKey, secretKey, authRedirectUrl
     if (!admin.data) throw new ApiError(403, 'ADMIN_REQUIRED', 'Esta área é exclusiva da administração do FLUXO.')
   }
   return {
+    google: createGoogleStore(writer),
     async authenticate(token) {
       const { data, error } = await auth.auth.getUser(token)
       if (error || !data.user || data.user.is_anonymous) {

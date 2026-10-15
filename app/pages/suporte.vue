@@ -2,7 +2,7 @@
 import { ArrowRight, BookOpen, FileText, MousePointer2 } from '@lucide/vue'
 
 useSeoMeta({
-  title: 'Suporte à demonstração · Fluxo Atento',
+  title: 'Ajuda e suporte · Fluxo Atento',
   description: 'Encontre orientações para explorar a demonstração, consultar a ajuda e preparar um relato sem enviar uma mensagem.',
   robots: 'index, follow'
 })
@@ -19,16 +19,16 @@ const questions = [
   { question: 'Posso usar a explicação sem acompanhar a animação?', answer: 'Sim. A página Como funciona explica sinal, contexto e ação também em texto. Os controles permitem escolher etapas. Você pode usar Tab para percorrer a página e Enter ou Espaço para acionar botões.' },
   { question: 'Copiei um pedido. Ele foi enviado para alguém?', answer: 'Não. Copiar coloca o texto na área de transferência do seu dispositivo. Você decide onde colar. O formulário não escolhe um destinatário, não envia mensagem e não abre atendimento.' },
   { question: 'O navegador não deixou copiar. Vou perder o texto?', answer: 'O pedido preparado continua visível em um campo de texto na página de Contato. Use Selecionar texto e o comando Copiar do seu dispositivo. Salve o que precisar antes de sair ou atualizar a página.' },
-  { question: 'Há atendimento por WhatsApp ou prazo de resposta?', answer: 'Nenhum canal de atendimento está conectado nesta versão e não há prazo de resposta definido. O WhatsApp faz parte da proposta do produto, mas não está disponível para enviar ou receber mensagens nesta demonstração.' }
+  { question: 'Há atendimento por WhatsApp ou prazo de resposta?', answer: 'O chat e o WhatsApp de suporte ainda não estão conectados. O contato público por e-mail é contato@fluxoatento.com.br. Não há prazo de resposta garantido; preparar ou copiar um relato nesta página não envia o e-mail automaticamente.' }
 ]
 </script>
 
 <template>
   <div class="container">
     <header class="page-hero">
-      <p class="eyebrow">SUPORTE À DEMONSTRAÇÃO</p>
+      <p class="eyebrow">AJUDA E SUPORTE</p>
       <h1>Encontre um caminho para continuar.</h1>
-      <p>Consulte uma orientação, entenda um exemplo ou organize sua dúvida. O atendimento direto ainda não está conectado nesta versão.</p>
+      <p>Consulte uma orientação, entenda um exemplo ou organize sua dúvida. Chat e WhatsApp de suporte ainda estão em preparação.</p>
     </header>
 
     <section class="page-section" aria-label="Caminhos de ajuda">
@@ -55,7 +55,7 @@ const questions = [
       </div>
       <div class="flex flex-wrap gap-3">
         <NuxtLink class="button button-primary" to="/contato">Preparar um pedido <ArrowRight :size="16" aria-hidden="true" /></NuxtLink>
-        <NuxtLink class="button button-secondary" to="/dashboard">Voltar à demonstração</NuxtLink>
+        <NuxtLink class="button button-secondary" to="/exemplo">Voltar à demonstração</NuxtLink>
       </div>
     </section>
   </div>

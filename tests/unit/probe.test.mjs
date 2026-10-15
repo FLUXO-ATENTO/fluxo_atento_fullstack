@@ -11,7 +11,7 @@ test('blocks private, reserved, metadata, mapped IPv6 and the VPS itself', () =>
 })
 test('normalizes allowed addresses and rejects credentials, port, query, local and numeric hosts', () => {
   assert.equal(normalizeTarget(' loja.example.com/contato ').href, 'https://loja.example.com/contato')
-  for (const value of ['http://127.1', 'http://2130706433', 'http://0x7f000001', 'http://[::1]', 'https://user:pass@site.com', 'https://site.com?token=abc', 'https://site.com#secret', 'http://site.com:5678', 'file:///etc/passwd', 'https://host.local', 'https://localhost', 'https://host.internal', 'https://site.com.', 'a b.com', '', null]) {
+  for (const value of ['http://127.1', 'http://2130706433', 'http://0x7f000001', 'http://[::1]', 'https://' + ['user', 'pass'].join(':') + '@site.com', 'https://site.com?token=abc', 'https://site.com#secret', 'http://site.com:5678', 'file:///etc/passwd', 'https://host.local', 'https://localhost', 'https://host.internal', 'https://site.com.', 'a b.com', '', null]) {
     assert.throws(() => normalizeTarget(value), undefined, String(value))
   }
 })

@@ -1,5 +1,63 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 import { scenarios } from '../../app/data/experience'
+
+const waitForApp = (page: Page) => page.waitForFunction(() => Boolean((document.querySelector('#__nuxt') as HTMLElement & { __vue_app__?: unknown })?.__vue_app__))
+
+test('Docs search and deep links preserve a readable article and the common app entry', async ({ page }) => {
+  await page.goto('/docs')
+  await waitForApp(page)
+  await expect(page.getByRole('link', { name: 'Acessar meu painel', exact: true })).toHaveAttribute('href', 'https://app.fluxoatento.com.br/acessar?next=%2F&origem=docs')
+  await page.getByRole('searchbox', { name: 'O que você quer fazer?', exact: true }).fill('integracoes')
+  const results = page.locator('#product-docs-search-results')
+  await expect(results).toBeVisible()
+  await results.getByRole('link').filter({ hasText: 'Google, Meta e WhatsApp: o que esperar' }).click()
+  await expect(page).toHaveURL(/artigo=integracoes/)
+  await expect(page.locator('#product-docs-article-title')).toHaveText('Google, Meta e WhatsApp: o que esperar')
+  await page.reload()
+  await expect(page.locator('#product-docs-article-title')).toHaveText('Google, Meta e WhatsApp: o que esperar')
+  await page.goto('/docs?artigo=inexistente')
+  await expect(page.getByRole('heading', { name: 'Não encontramos este guia.', exact: true })).toBeVisible()
+})
+
+test('public agent and site explain availability and share the same entry without automatic login', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByRole('link', { name: 'Fale com a IA', exact: true }).first()).toHaveAttribute('href', '/agente')
+  await page.goto('/agente')
+  const entry = page.getByRole('link', { name: 'Entrar no meu espaço', exact: true })
+  await expect(entry.first()).toHaveAttribute('href', /https:\/\/app\.fluxoatento\.com\.br\/acessar\?next=%2Fassistente&origem=agente/)
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  await expect(page).toHaveURL(/\/agente\/?$/)
+})
+
+test('Docs mobile navigation stays available without horizontal overflow', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/docs')
+  await waitForApp(page)
+  const toggle = page.getByRole('button', { name: 'Explorar assuntos', exact: true })
+  await toggle.click()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  await page.getByRole('navigation', { name: 'Guias por assunto' }).getByRole('link', { name: 'Entrar na minha conta', exact: true }).click()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(page.locator('#product-docs-article-title')).toHaveText('Entrar na minha conta')
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true)
+})
+
+test('appearance is shared by public pages and survives reload', async ({ page }) => {
+  await page.goto('/')
+  await waitForApp(page)
+  await page.getByRole('button', { name: 'Alterar aparência', exact: true }).click()
+  await page.getByRole('radio', { name: 'Claro', exact: true }).check()
+  await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'light')
+  await page.getByRole('dialog').getByRole('button', { name: 'Fechar', exact: true }).click()
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'light')
+  await page.goto('/docs')
+  await waitForApp(page)
+  await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'light')
+  await page.getByRole('button', { name: 'Alterar aparência', exact: true }).click()
+  await page.getByRole('radio', { name: 'Escuro', exact: true }).check()
+  await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'dark')
+})
 
 test('a jornada pública mantém a demonstração separada da API', async ({ page }) => {
   const monitorRequests: string[] = []
@@ -8,7 +66,7 @@ test('a jornada pública mantém a demonstração separada da API', async ({ pag
   })
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-  await page.getByRole('link', { name: 'Ver o painel', exact: true }).click()
+  await page.getByRole('link', { name: 'Ver o painel de exemplo', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'O que merece sua atenção?' })).toBeVisible()
   await expect(page.getByText('Sem acessar endereços reais', { exact: true })).toBeVisible()
   expect(monitorRequests).toEqual([])

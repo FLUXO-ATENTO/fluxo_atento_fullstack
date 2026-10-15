@@ -13,7 +13,7 @@ type Plan = {
 }
 
 export const offerNotice: string =
-  'Hoje o Fluxo Atento é uma demonstração com dados ilustrativos, sem serviços conectados ou cobrança. Os recursos e limites abaixo são propostas. Os preços pagos, em reais por mês, são sugestões comerciais pendentes de validação econômica, não preços vigentes. Custos de provedores de WhatsApp e email não estão incluídos nesta proposta e poderão existir inclusive no Gratuito; qualquer cobrança dependerá de informação e aceite prévios.'
+  'O painel autenticado possui monitoramento HTTP básico. A demonstração pública usa dados ilustrativos. Os recursos e limites dos planos abaixo são propostas, não um pacote já ativado. Os preços pagos são sugestões pendentes de validação econômica, não preços vigentes. Custos de provedores de WhatsApp e email poderão existir inclusive no Gratuito; qualquer cobrança dependerá de informação e aceite prévios.'
 
 export const plans: Plan[] = [
   {
@@ -49,8 +49,8 @@ export const plans: Plan[] = [
       { label: 'Campanhas de email marketing', value: '1/mês' },
       { label: 'Envios de email marketing', value: '100/mês' }
     ],
-    cta: 'Explorar demonstração',
-    availability: 'Somente demonstração. Recursos e limites planejados, ainda sem operação real. Proposta de assinatura gratuita; eventuais custos de provedores serão informados antes de qualquer ativação.'
+    cta: 'Acessar o painel',
+    availability: 'O acesso ao painel não ativa os canais nem as cotas propostas. Recursos e limites do plano ainda dependem de implementação. Eventuais custos de provedores serão informados antes de qualquer ativação.'
   },
   {
     id: 'essential',
@@ -86,7 +86,7 @@ export const plans: Plan[] = [
       { label: 'Envios de email marketing', value: '1.000/mês' }
     ],
     cta: 'Conhecer proposta',
-    availability: 'Somente demonstração. Recursos e limites planejados. R$ 149/mês é sugestão comercial pendente de validação econômica, não preço vigente. Sem contratação ou ativação de serviço.'
+    availability: 'Plano ainda não disponível para contratação. R$ 149/mês é sugestão comercial pendente de validação econômica, não preço vigente. Conhecer a proposta não ativa serviços.'
   },
   {
     id: 'complete',
@@ -122,6 +122,6 @@ export const plans: Plan[] = [
       { label: 'Envios de email marketing', value: '10.000/mês' }
     ],
     cta: 'Conhecer proposta',
-    availability: 'Somente demonstração. Recursos e limites planejados. R$ 399/mês é sugestão comercial pendente de validação econômica, não preço vigente. Sem contratação ou ativação de serviço.'
+    availability: 'Plano ainda não disponível para contratação. R$ 399/mês é sugestão comercial pendente de validação econômica, não preço vigente. Conhecer a proposta não ativa serviços.'
   }
 ]

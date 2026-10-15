@@ -43,10 +43,25 @@ test('Docs mobile navigation stays available without horizontal overflow', async
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true)
 })
 
+test('a light device cannot override the dark default across public pages', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
+  for (const route of ['/', '/docs', '/agente', '/recuperar-acesso']) {
+    await page.goto(route)
+    await waitForApp(page)
+    await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'dark')
+    await expect(page.locator('html')).toHaveClass(/\bdark\b/)
+    await page.reload()
+    await waitForApp(page)
+    await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'dark')
+  }
+})
+
 test('appearance is shared by public pages and survives reload', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
   await page.goto('/')
   await waitForApp(page)
   await page.getByRole('button', { name: 'Alterar aparência', exact: true }).click()
+  await expect(page.getByRole('radio', { name: 'Escuro', exact: true })).toBeChecked()
   await page.getByRole('radio', { name: 'Claro', exact: true }).check()
   await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'light')
   await page.getByRole('dialog').getByRole('button', { name: 'Fechar', exact: true }).click()
@@ -58,6 +73,24 @@ test('appearance is shared by public pages and survives reload', async ({ page }
   await page.getByRole('button', { name: 'Alterar aparência', exact: true }).click()
   await page.getByRole('radio', { name: 'Escuro', exact: true }).check()
   await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'dark')
+})
+
+test('following the device is opt-in and the explicit system choice survives reload', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.goto('/')
+  await waitForApp(page)
+  await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'dark')
+  await page.getByRole('button', { name: 'Alterar aparência', exact: true }).click()
+  await page.getByRole('radio', { name: 'Sistema', exact: true }).check()
+  await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'light')
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'dark')
+  await page.getByRole('dialog').getByRole('button', { name: 'Fechar', exact: true }).click()
+  await page.reload()
+  await waitForApp(page)
+  await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'dark')
+  await page.emulateMedia({ colorScheme: 'light' })
+  await expect(page.locator('html')).toHaveAttribute('data-interface-theme', 'light')
 })
 
 test('a jornada pública mantém a demonstração separada da API', async ({ page }) => {

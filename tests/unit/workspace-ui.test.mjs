@@ -26,7 +26,8 @@ test('recent navigation stays bounded and never stores query strings or external
 test('only supported theme values persist and onboarding does not invent completion', () => {
   assert.equal(resolveTheme('light'), 'light')
   assert.equal(resolveTheme('dark'), 'dark')
-  assert.equal(resolveTheme('anything'), 'system')
+  assert.equal(resolveTheme('system'), 'system')
+  for (const value of [null, undefined, '', 'anything', 'LIGHT', false, {}, ['light']]) assert.equal(resolveTheme(value), 'dark')
   assert.equal(growthSteps.length, 4)
   assert.equal(growthSteps[0].id, 'connect')
 })

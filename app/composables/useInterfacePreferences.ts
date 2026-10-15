@@ -1,7 +1,8 @@
 import { resolveTheme } from '~/utils/workspace-ui'
 
 export function useInterfacePreferences() {
-  const theme = useState<'light' | 'dark' | 'system'>('interface-theme', () => 'system')
+  // The brand is dark by default. Follow the device only after an explicit choice.
+  const theme = useState<'light' | 'dark' | 'system'>('interface-theme', () => resolveTheme(null))
   const systemDark = useState('interface-system-dark', () => true)
   const initialized = useState('interface-theme-initialized', () => false)
   const effectiveTheme = computed(() => theme.value === 'system' ? (systemDark.value ? 'dark' : 'light') : theme.value)

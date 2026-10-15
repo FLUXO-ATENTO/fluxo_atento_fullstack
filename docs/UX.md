@@ -142,6 +142,15 @@ Nunca esconder a natureza ilustrativa, limitações da evidência, indisponibili
 
 ### Preto e grafite, com leitura confortável
 
+Decisão do proprietário em 15/10/2026: **Escuro é o padrão**, não Sistema.
+Aplicar a mesma regra ao site, Docs/agente, autenticação e aos dois painéis,
+sem redesenhar a paleta original. Claro e Sistema continuam opções explícitas
+no seletor e uma escolha salva é preservada. O sistema operacional em modo claro
+não deve tornar claro um primeiro acesso nem a passagem para a autenticação.
+Preferência ausente/inválida ou storage indisponível usa Escuro; não criar uma
+preferência persistida só por carregar a página. A evidência de publicação deve
+ser registrada separadamente dos testes locais desta correção.
+
 Usar preto/grafite no fundo, superfícies com separação perceptível, texto claro e contraste medido. Evitar neon, halos, brilho contínuo e órbitas decorativas. Cor de estado é discreta e acompanhada de palavra/ícone. Não associar todas as situações a vermelho: mudança pode exigir apenas conferência.
 
 Nuxt UI fornece os controles e seus estados; Motion pode acompanhar a mudança de etapa. Esses são instrumentos de implementação, não assuntos para a copy pública. Tipografia de corpo legível, títulos curtos e hierarquia por tamanho, peso e espaço; fonte monoespaçada somente em detalhes técnicos opcionais. Não reduzir corpo ou contraste para caber texto.

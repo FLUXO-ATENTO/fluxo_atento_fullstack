@@ -2,11 +2,12 @@ export interface WorkspaceTenant {
   id: string
   name: string
   role: 'owner' | 'admin' | 'member'
+  status?: 'active' | 'paused'
   created_at?: string
 }
 
 interface WorkspacePayload {
-  active_tenant: WorkspaceTenant
+  active_tenant: WorkspaceTenant | null
   tenants: WorkspaceTenant[]
   platform_admin: boolean
 }
@@ -37,9 +38,9 @@ export function useWorkspace() {
         }
       })
       const payload = await response.json().catch(() => null) as WorkspacePayload | null
-      if (!response.ok || !payload?.active_tenant) throw new Error('Não foi possível preparar seu espaço agora.')
+      if (!response.ok || !payload || (!payload.active_tenant && payload.platform_admin !== true)) throw new Error('Não foi possível preparar seu espaço agora.')
       if (auth.user.value?.id !== identity) return null
-      activeTenant.value = payload.active_tenant
+      activeTenant.value = payload.active_tenant ?? null
       tenants.value = payload.tenants
       platformAdmin.value = payload.platform_admin === true
       return activeTenant.value
@@ -50,7 +51,7 @@ export function useWorkspace() {
   }
 
   async function ensure() {
-    if (activeTenant.value) return activeTenant.value
+    if (activeTenant.value || platformAdmin.value) return activeTenant.value
     await auth.waitUntilReady()
     return load()
   }

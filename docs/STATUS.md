@@ -27,6 +27,78 @@ Merge e publicação da interface não ativam integrações ou CAPTCHA.
 | Docs/agente | Rotas públicas /docs e /agente incluídas no deploy Netlify do merge | Rever avisos editoriais após publicação; subdomínios, TLS, documentos privados e chat real pendentes |
 | n8n/Portainer | Inventário e interfaces vistos | n8n adiado, sem projeto/pasta/contratação |
 
+## Continuidade local — 16/10/2026 (não publicada)
+
+### Ampliação Superadmin, tenants e suporte — PR para revisão humana
+
+O contrato agora distingue papel global e associação ao tenant na mesma
+identidade. Uma conta Superadmin sem empresa não cria tenant automaticamente;
+o painel global pode criar seu tenant piloto por ação explícita. O painel do
+tenant não oferece atalho para Superadmin. A API recusa identificador de tenant
+forjado e acesso às rotas globais por um administrador de empresa. O teste de
+preview com perfis fictícios cobre Superadmin puro, identidade dupla e tenant
+sem papel global; ele não substitui o aceite com contas reais em HTTPS.
+
+Foram adicionados na branch, **sem migração ou deploy em produção**:
+
+| Área | Implementado no código | Limite deliberado / próximo aceite |
+| --- | --- | --- |
+| Tenants | Cadastro piloto explícito do próprio Superadmin; edição de identificador, estado, plano, trial, tetos e canais pela API global; pausa bloqueia operações e preserva suporte | Equipes/convites dentro de tenant, senha inicial, galerias e múltiplas conexões por canal ainda não existem; os respectivos tetos ficam registrados, mas não são vendidos como enforcement ativo |
+| Planos | Catálogo com nome, preço em centavos, ciclo, limites, trial, recursos e público global ou tenants selecionados; gravação atômica e visibilidade filtrada na página existente do tenant | Catálogo não é contrato nem checkout; recursos futuros selecionados não são ativados automaticamente; preço comercial depende de decisão do proprietário |
+| Pagamentos | Preferência de gateway `nenhum`/Stripe/Mercado Pago persistida sem credenciais | Nenhuma transação é inventada. Extrato consolidado, webhooks, reconciliação, reembolsos e licenciamento efetivo dependem da integração posterior |
+| Chat suporte | Mensagens textuais persistentes por empresa, acessíveis ao tenant e ao Superadmin por rotas separadas, com limite de envio | Anexos, áudio, notificação e indicador de leitura ainda não existem; precisa de migração, deploy da API e teste entre duas contas reais |
+| Segurança | Novas tabelas com RLS forçada e acesso direto do browser revogado; autorização no serviço; limite de conexão também no banco para evitar corrida | Rodar teste PostgreSQL descartável em CI antes de aplicar a migração remota; validar políticas/advisors e rollback |
+
+Validação local realizada antes da pausa solicitada pelo proprietário em 16/10:
+**126/126** testes unitários, checagem de tipos, referências em 27 documentos,
+scanner de 203 arquivos-fonte sem achados, geração pública de 76 rotas com
+scanner do artefato sem achados, **22/22** cenários E2E públicos desktop/mobile
+e navegação da prévia isolada para os três papéis. A geração do dashboard foi
+interrompida a pedido do proprietário; não há resultado final desta geração
+nesta revisão. A nova suíte PostgreSQL descartável não foi executada localmente.
+Testes restantes, CI e aceite de interface/segurança ficam para revisão humana;
+nenhuma dessas evidências equivale a deploy ou validação do Supabase/VPS ao vivo.
+
+Revisão dos [PRs #1–#8](https://github.com/FLUXO-ATENTO/fluxo_atento_fullstack/pulls?q=is%3Apr) incorporada: #1 tratou o artefato Netlify; #2–#3 a primeira experiência; #4–#5 governança e base multitenant; #6 autenticação/integrações e `/agente`; #7 publicação VPS; #8 padrão escuro. As recomendações ainda abertas relevantes são o aceite com duas identidades reais, OAuth Google completo em HTTPS, Turnstile ativo, dados Google/Meta, chat do agente e DNS/TLS do subdomínio. Não foram encontrados comentários de revisão humana que substituam esses critérios. Não há autorização para promoção de papel, cobrança ou publicação sensível direta.
+
+Fontes técnicas para este desenho: [Microsoft: identidade e acesso SaaS](https://learn.microsoft.com/en-us/azure/well-architected/saas/identity-access), [Microsoft: planos de controle multitenant](https://learn.microsoft.com/en-us/azure/architecture/guide/multitenant/considerations/control-planes), [OWASP: segurança multitenant](https://cheatsheetseries.owasp.org/cheatsheets/Multi_Tenant_Security_Cheat_Sheet.html), [Supabase: RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [Stripe: eventos de assinatura](https://docs.stripe.com/billing/subscriptions/webhooks) e [Mercado Pago: webhooks](https://www.mercadopago.com.br/developers/pt/docs/subscriptions/additional-content/your-integrations/notifications/webhooks).
+
+A branch `feat/hero-agent-experience` prepara uma revisão localizada da página
+inicial, da rota `/agente`, da autenticação e do cabeçalho responsivo. O hero tem
+uma única ação principal e demonstra manualmente **sinal → contexto → próxima
+ação**; `/agente` explica o modelo de atuação e informa, sem simulação, que o chat
+continua desconectado. A tela de autenticação mantém um único seletor global de
+aparência. A identidade escura, tipografia, cor laranja e contratos existentes
+foram preservados.
+
+A conferência do padrão cromático confirmou a mesma origem de estilos para site,
+autenticação e dashboard: no estado sem personalização, o fundo é `#090a0b` e o
+laranja de ação é `#eaa176`. O modo inicial continua Escuro. A personalização da
+conta autenticada foi preservada sem qualquer alteração de função ou de dados.
+
+O cabeçalho público foi reduzido a “Como funciona”, “Fale com o agente”, “Entrar”
+e aparência; o botão de suporte é um componente Nuxt UI único, com interação do
+Motion, e também substitui a variação existente no topo do dashboard. A rota
+`/como-funciona` permanece no site principal. A página-fonte `/agente` usa o
+subdomínio apenas quando `NUXT_PUBLIC_AGENT_URL` é configurado após DNS/TLS;
+até lá, o botão leva à rota interna funcional `/agente`. A ativação do
+subdomínio continua pendente e não foi simulada. Motion for Vue
+foi atualizado de `2.6.0` para `2.8.0` e integrado como módulo Nuxt.
+
+Na inspeção do Netlify, o projeto continua com os domínios raiz e `www`, sem
+alias ou registro para `agente.fluxoatento.com.br`. A consulta aos nameservers
+autoritativos retornou `NXDOMAIN`. O histórico do PR #6 confirma que a rota
+`/agente` foi publicada como preparação, enquanto DNS, TLS e chat ficaram
+explicitamente pendentes; portanto, não se trata de propagação de um registro já
+criado. Nenhum DNS, deploy, segredo, permissão ou serviço de produção foi
+alterado nesta continuidade.
+
+Validação local: scanner de 196 arquivos de fonte sem achados; 121 testes
+unitários/contrato; tipos; site com 76 rotas e 174 arquivos públicos; dashboard
+com 36 rotas e 90 arquivos públicos; e 22 cenários E2E em desktop/mobile. Os
+dois artefatos públicos passaram pela inspeção de exposição de segredos. Merge,
+CI remoto, preview e aceite HTTPS continuam separados desta evidência local.
+
 ## Histórico da preparação do PR #6
 
 As seções abaixo descrevem a preparação anterior ao merge. Afirmações de

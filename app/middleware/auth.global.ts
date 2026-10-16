@@ -8,4 +8,9 @@ export default defineNuxtRouteMiddleware(async to => {
   const { user, waitUntilReady } = useAuth()
   await waitUntilReady()
   if (!user.value) return navigateTo({ path: '/login', query: { next: safeReturnPath(to.path, isDashboardApp.value) } }, { replace: true })
+  if (isDashboardApp.value && (to.path === '/' || to.path === '/admin')) {
+    const workspace = useWorkspace()
+    await workspace.ensure()
+    if (to.path === '/' && workspace.platformAdmin.value && !workspace.activeTenant.value) return navigateTo('/admin', { replace: true })
+  }
 })

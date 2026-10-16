@@ -10,7 +10,7 @@ export default defineNuxtPlugin(() => {
   if (stored) user.value = JSON.parse(stored)
   ready.value = true
   const fakeUser = () => ({ id: '11111111-1111-4111-8111-111111111111', email: user.value?.email || 'qa@example.test', user_metadata: { full_name: user.value?.displayName || 'Marina', contact_phone: user.value?.contactPhone || '', fluxo_tour_version: user.value?.tourVersion || 0, fluxo_palette: user.value?.palette } })
-  const token = () => user.value?.email?.startsWith('tenant') ? 'fixture-member' : 'fixture-admin'
+  const token = () => user.value?.email?.startsWith('tenant') ? 'fixture-member' : user.value?.email?.startsWith('dual') ? 'fixture-dual' : 'fixture-admin'
   const persist = () => sessionStorage.setItem('fluxo-preview-profile', JSON.stringify(user.value))
   const auth = {
     getSession: async () => ({ data: { session: user.value ? { access_token: token(), user: fakeUser() } : null }, error: null }),

@@ -7,7 +7,7 @@ let offeredTo = ''
 const steps = [
   { icon: 'i-lucide-building-2', title: 'Seu negócio, no seu espaço', text: 'O nome da empresa aparece no menu lateral. O Superadmin opera a plataforma em uma área separada; este painel cuida da sua empresa.' },
   { icon: 'i-lucide-plug', title: 'Comece pelos seus dados', text: 'Na Home, os primeiros passos orientam a conexão de anúncios, a escolha das fontes e a análise do funil. Uma etapa só é concluída quando existe confirmação real.' },
-  { icon: 'i-lucide-sparkles', title: 'Uma próxima ação clara', text: 'Use a busca para encontrar páginas. “Fale com a IA” abre o painel à direita; ele indica quando a conexão do copiloto ainda não está liberada.' }
+  { icon: 'i-lucide-sparkles', title: 'Uma próxima ação clara', text: 'Use a busca para encontrar páginas. “Fale com o agente” abre o painel à direita; ele indica quando a conexão do especialista ainda não está liberada.' }
 ]
 watch(() => [auth.user.value?.id, activeTenant.value?.id], () => {
   const user = auth.user.value

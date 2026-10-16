@@ -22,7 +22,7 @@ Preview fictício não comprova produção. Estado atual em [STATUS](STATUS.md).
 - [x] Portal Docs pesquisável, regras de atualização e agentes com escopo definido.
 - [x] Docs e rotas legais iniciais; revisão jurídica pendente.
 - [x] Bloqueio de variáveis públicas e varredura de fonte/artefatos.
-- [ ] CI remoto, revisão humana, merge e publicação controlada.
+- [x] CI remoto, aprovação do proprietário, merge do PR #6 e publicação controlada de site/dashboard, conforme [registro](DEPLOYMENT_2026-10-15.md).
 - [ ] Aceite da versão publicada, incluindo mobile, dois temas e perfil real.
 
 ## Antes de receber clientes
@@ -45,7 +45,8 @@ Preview fictício não comprova produção. Estado atual em [STATUS](STATUS.md).
 
 ## Operação
 
-- [ ] Reabrir terminal VPS; auditar firewall, ambiente, versões e bindings.
+- [x] Reabrir terminal e conferir versões/configuração usadas pelo dashboard; retorno da release exercitado.
+- [ ] Concluir auditoria de firewall, ambientes privados e bindings da VPS.
 - [ ] Revisar advisors atuais, grants/RLS, logs e retenção.
 - [ ] Backup externo com restauração e rollback testados.
 - [ ] Testar recebimento de e-mail e pedidos de privacidade.

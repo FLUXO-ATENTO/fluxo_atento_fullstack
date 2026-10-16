@@ -8,6 +8,7 @@ export function useDeployment() {
   const isDashboardApp = computed(() => config.appMode === 'dashboard')
   const marketingUrl = computed(() => config.marketingUrl.replace(/\/$/, ''))
   const dashboardUrl = computed(() => config.dashboardUrl.replace(/\/$/, ''))
+  const agentUrl = computed(() => config.agentUrl.replace(/\/$/, ''))
 
   function dashboardPath(path = '/dashboard') {
     if (!isDashboardApp.value) return path
@@ -27,5 +28,5 @@ export function useDeployment() {
     return `${isDashboardApp.value ? '' : dashboardUrl.value}${route}`
   }
 
-  return { isDashboardApp, marketingUrl, dashboardUrl, dashboardPath, dashboardAccessUrl, dashboardEntryUrl }
+  return { isDashboardApp, marketingUrl, dashboardUrl, agentUrl, dashboardPath, dashboardAccessUrl, dashboardEntryUrl }
 }

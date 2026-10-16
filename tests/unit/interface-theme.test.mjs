@@ -6,6 +6,22 @@ import ts from 'typescript'
 import { computed, ref } from 'vue'
 import { resolveTheme } from '../../app/utils/workspace-ui.ts'
 
+const designCss = readFileSync(new URL('../../app/assets/css/design.css', import.meta.url), 'utf8')
+const nuxtConfig = readFileSync(new URL('../../nuxt.config.js', import.meta.url), 'utf8')
+
+function defaultDesignToken(name) {
+  const root = designCss.match(/:root\s*\{([^}]+)\}/)?.[1] || ''
+  return root.match(new RegExp(`${name}:\\s*([^;]+)`))?.[1]?.trim()
+}
+
+test('site, authentication and dashboard share the approved dark product default', () => {
+  assert.equal(defaultDesignToken('--bg'), '#090a0b')
+  assert.equal(defaultDesignToken('--brand'), '#eaa176')
+  assert.equal(defaultDesignToken('--ui-primary'), 'var(--brand)')
+  assert.equal((nuxtConfig.match(/~\/assets\/css\/design\.css/g) || []).length, 1)
+  assert.match(nuxtConfig, /theme-color', content: '#090a0b'/)
+})
+
 // Exercise the actual composable with Nuxt state and browser preference adapters.
 // No real browser, account, storage, network or production API is involved.
 const source = readFileSync(new URL('../../app/composables/useInterfacePreferences.ts', import.meta.url), 'utf8')

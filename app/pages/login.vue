@@ -60,7 +60,6 @@ async function submit() {
 }
 </script>
 <template>
-  <div class="container auth-preferences"><a :href="isDashboardApp ? marketingUrl : '/'" aria-label="Fluxo Atento — início"><BrandLogo /></a><InterfaceTheme /></div>
   <section class="container auth-layout">
     <div class="auth-intro"><p class="eyebrow">SEU ESPAÇO NO FLUXO ATENTO</p><h1>{{ heading }}</h1><p>Para quem cuida do próprio negócio e quer acompanhar as páginas que seus clientes acessam.</p><div class="auth-trust"><ShieldCheck :size="20" /><p>O exemplo e sua conta são separados. No seu painel, aparecem somente seus dados.</p></div><a :href="isDashboardApp ? marketingUrl + '/exemplo' : '/exemplo'" class="text-link">Prefere conhecer primeiro? Explore o exemplo →</a></div>
     <div class="panel auth-card">

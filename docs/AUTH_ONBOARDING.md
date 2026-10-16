@@ -54,7 +54,13 @@ de permissões; a existência de menus não implementa essa regra.
 A paleta pessoal (marca, Oceano, Botânico, Violeta ou duas cores personalizadas)
 fica nos metadados de apresentação da conta. Ela não muda direitos, alertas
 semânticos, identidade do site ou preferências de outro usuário. Claro/escuro/
-sistema é uma preferência de aparência deste navegador e host.
+sistema é uma preferência de aparência deste navegador e host. O padrão do
+produto é **Escuro**, inclusive no site, entrada guiada, login, recuperação,
+callback, painel da empresa e Superadmin. O modo do dispositivo só influencia
+a aparência quando a pessoa escolhe **Sistema**. Sem preferência salva, com
+valor inválido ou com armazenamento bloqueado, manter Escuro. Preservar escolhas
+explícitas Claro/Sistema já salvas; não apagar preferências para impor a marca.
+Não há cookie compartilhado nem sincronização entre hosts nesta correção.
 
 ## Proteção contra tentativas automatizadas
 

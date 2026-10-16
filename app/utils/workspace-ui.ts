@@ -43,7 +43,7 @@ export function addRecentPage(pages: RecentPage[], page: RecentPage): RecentPage
 }
 
 export function resolveTheme(value: unknown): 'light' | 'dark' | 'system' {
-  return value === 'light' || value === 'dark' ? value : 'system'
+  return value === 'light' || value === 'system' ? value : 'dark'
 }
 
 export const growthSteps = [

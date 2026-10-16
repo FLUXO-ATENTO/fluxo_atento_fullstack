@@ -49,7 +49,7 @@ somente leitura. Os quatro papéis locais e o contrato de delegação estão em
 [AGENT_OPERATIONS](docs/AGENT_OPERATIONS.md). Delegue apenas partes delimitadas
 da tarefa; a existência dos arquivos não inicia agentes nem tarefas recorrentes.
 
-O agente [FLUXO ATENTO](.github/agents/FLUXO%20DE%20CLIENTES%20AGENTE.agent.md)
+O agente [FLUXO ATENTO](.github/agents/FLUXO%20ATENTO.agent.md)
 existente continua sendo a orientação geral da integração GitHub/editor.
 Os TOMLs em `.codex/agents/` são especialistas do Codex e reutilizam estas
 fontes; não substituem esse agente nem configuram execução de IA no CI.

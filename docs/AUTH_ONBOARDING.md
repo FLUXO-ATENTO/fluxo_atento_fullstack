@@ -17,8 +17,10 @@ permanecem históricos; não representam novos testes de OAuth em produção.
 | https://fluxoatento.com.br/exemplo | Demonstração pública sem dados reais |
 
 Senhas pertencem a usuários, não a tenants. Não há senha universal de admin.
-A conta proprietária representa o superadmin Fluxo Atento. Pode existir também
-um tenant piloto Fluxo Atento; usar conta comum separada para testes de cliente.
+A conta proprietária representa o Superadmin Fluxo Atento. Essa identidade pode
+também ser responsável por um tenant piloto **se criar esse vínculo explícito**;
+o papel global, por si só, não concede associação automática nem leitura dos
+dados privados de um tenant. Para testes negativos de cliente, usar outra conta.
 
 ## Fluxo no código desta revisão
 
@@ -38,14 +40,21 @@ público e não é redirecionado ao login.
    nome; login social aproveita os dados disponíveis, sem prometer dados completos.
 2. Nome normalizado alimenta perfil e “Olá”. Sem nome, mostrar “Boas-vindas” e
    orientar completar o perfil, sem chamar qualquer usuário de administrador.
-3. API valida identidade, consulta associações e papel global. A rotina existente
-   provisiona espaço pessoal idempotente se não houver associação. O nome inicial
-   ainda é “Meu espaço”; não inferir razão social do nome da pessoa.
+3. API valida identidade, consulta associações e papel global separadamente.
+   Usuário comum sem associação recebe espaço pessoal idempotente. Superadmin
+   sem vínculo entra apenas no painel global; pode criar seu tenant piloto por
+   ação explícita. O nome inicial ainda é “Meu espaço”; não inferir razão social.
 4. Destino padrão: /admin para papel global confirmado, / para empresa.
    Retornos locais válidos são preservados; externos e tokens em URLs rejeitados.
 5. Sessão é persistida pelo SDK. Troca de identidade/logout limpa dados visíveis.
 6. Painel da empresa não tem alternância nem busca de links para superadmin.
    A autorização real continua no backend mesmo para acesso direto à URL.
+
+O painel global pode apontar para o **próprio** tenant quando a mesma identidade
+possui associação. Isso não é uma troca de papel concedida pelo frontend: cada
+requisição de dados do tenant exige associação verificada; cada rota global
+exige presença em `platform_administrators`. Um tenant não ganha caminho para
+o painel global por possuir papel `owner`/`admin` na sua empresa.
 
 Tour de três passos é introdutório e reabrível. Quatro etapas de negócio só são
 concluídas por evidência real. Templates, módulos e quotas ainda dependem do serviço

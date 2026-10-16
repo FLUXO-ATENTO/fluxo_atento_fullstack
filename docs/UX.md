@@ -28,6 +28,54 @@ Referência de UX para implementação pelo agente principal. Leitura inicial do
 
 Não transformar o retrato acima em status permanente. Ao implementar, atualizar o registro do que foi verificado e manter as limitações próximas das ações afetadas.
 
+### Registro de implementação — 16/10/2026
+
+Na branch `feat/hero-agent-experience`, ainda não publicada, a página inicial passou
+a ter uma única ação principal no hero e uma demonstração contínua de
+**sinal → contexto → próxima ação**. O cenário inicial é `errors`; a pessoa escolhe
+o cenário e a etapa, e o convite ao painel só aparece ao final do fluxo. A
+demonstração permanece identificada como ilustrativa, pausa fora da área visível
+e remove transições quando há preferência por movimento reduzido.
+
+A rota `/agente` ganhou uma página dedicada coerente com as orientações do
+copiloto: separa fato, hipótese e decisão humana, informa que o chat ainda não
+está conectado e não simula resposta de IA. A autenticação mantém somente o
+seletor global e discreto de aparência; Escuro continua sendo o padrão, com
+Claro e Sistema opcionais. No cabeçalho móvel, links textuais ficam no menu para
+evitar competição visual e transbordamento horizontal.
+
+`/como-funciona` continua uma rota normal do site. A implementação de `/agente`
+é a origem interna da página destinada a `agente.fluxoatento.com.br`; o alias,
+DNS e TLS ainda dependem da configuração de produção. O topo compartilhado usa
+um único `UButton` de suporte, “Fale com o agente”, com feedback de pressão pelo
+Motion e destino configurável para o subdomínio. O atalho concorrente de módulos
+foi retirado do topo; “Como funciona”, “Entrar” e aparência permanecem discretos.
+
+O fluxo visual usa Motion for Vue `2.8.0` com integração Nuxt, `AnimatePresence`,
+transição de layout e springs ligados às três etapas. A interação continua
+manual, pode ser reproduzida/pausada, suspende fora da tela e respeita
+`prefers-reduced-motion`; o movimento não cria uma função que o produto não tem.
+
+Validação local desta implementação: 121 testes unitários/contrato, verificação
+de tipos, geração estática de 76 rotas, inspeção do artefato sem padrões privados
+e 22 cenários E2E em desktop/mobile aprovados. Publicação e aceite HTTPS são
+etapas separadas.
+
+Na ampliação posterior desta mesma branch, o painel global mantém sua navegação
+separada do tenant e passa a mostrar Tenants, Planos e Pagamentos. O controle
+de uma empresa explicita o que já é efetivo (pausa operacional e bloqueio de
+novos pedidos de canal) e o que apenas registra uma política para serviços
+futuros (galeria, equipe, provedor por tenant). Planos publicados filtram o
+catálogo no painel da empresa, mas não iniciam cobrança. “Pagamentos” não exibe
+valores fictícios: informa que falta conciliação com gateway.
+
+O botão de suporte existente no topo dos dois painéis abre a mesma janela de
+chat textual, agora vinculada à empresa verificada. No Superadmin há seleção
+explícita da empresa; no tenant, a seleção vem da sessão e não pode ser editada.
+O histórico é carregado ao abrir e atualizado enquanto a janela está visível;
+erro de envio preserva o texto. Anexos/áudio não são apresentados como ativos.
+Verificação local da interface e aceite em produção são registrados em STATUS.
+
 ## 3. Público e tarefa central
 
 O produto se dirige a pessoas que vendem ou recebem clientes pelo site e pelo WhatsApp. Elas precisam reconhecer o que merece atenção, entender o contexto disponível e escolher um próximo passo. Não exigir vocabulário técnico, escolha de módulo, cadastro ou escolha de plano para compreender essa proposta.
@@ -150,6 +198,11 @@ não deve tornar claro um primeiro acesso nem a passagem para a autenticação.
 Preferência ausente/inválida ou storage indisponível usa Escuro; não criar uma
 preferência persistida só por carregar a página. A evidência de publicação deve
 ser registrada separadamente dos testes locais desta correção.
+
+No estado padrão, sem personalização autenticada, todas essas superfícies usam a
+mesma origem em `app/assets/css/design.css`: fundo `#090a0b` e laranja de ação
+`#eaa176`. As preferências de paleta do usuário autenticado continuam disponíveis
+depois do acesso e não alteram esse padrão inicial do produto.
 
 Usar preto/grafite no fundo, superfícies com separação perceptível, texto claro e contraste medido. Evitar neon, halos, brilho contínuo e órbitas decorativas. Cor de estado é discreta e acompanhada de palavra/ícone. Não associar todas as situações a vermelho: mudança pode exigir apenas conferência.
 

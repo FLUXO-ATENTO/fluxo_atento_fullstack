@@ -47,6 +47,22 @@ Erros têm { error: { code, message } }. 401 sessão inválida; 403 origem não 
 404 rota/monitor não disponível; 409 duplicado/limite/pausa; 429 limite temporal; 503 indisponibilidade.
 Não há repetição automática de operações de escrita. Nova tentativa é uma ação explícita.
 
+## Controles de plataforma desta revisão
+
+As novas rotas de administração verificam no servidor o bearer token com
+Supabase Auth e o papel global em `platform_administrators`. A seleção por
+`X-Fluxo-Tenant-Id` depende da associação real do usuário; dados do cliente e
+`user_metadata` não concedem acesso global ou a outro tenant. A migração adiciona
+catálogo, controles por tenant, preferência de gateway e suporte, com RLS forçada,
+sem acesso direto de `anon`/`authenticated` e grants específicos para o servidor.
+
+Pausa do tenant, canais permitidos e limite de conexões são impostos pelo backend
+e/ou banco. Máximo de usuários, armazenamento, dias de teste e recursos do plano
+continuam sendo configuração, não quotas ativas. Gateway é apenas preferência,
+sem cobrança integrada; suporte é textual e isolado por tenant. Isto documenta
+código desta revisão, não implantação ou aceite em produção; não aplique a
+migração em produção sem revisão, plano de reversão e autorização operacional.
+
 ## Configuração e ativação
 
 ### Netlify

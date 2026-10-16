@@ -26,8 +26,9 @@ export const tenantNavigation: WorkspaceGroup[] = [
 export const platformNavigation: WorkspaceGroup[] = [
   { label: 'Plataforma', items: [{ label: 'Visão geral', path: '/dashboard/admin', icon: 'i-lucide-layout-dashboard' }] },
   { label: 'Tenants e licenciamento', items: [
-    { label: 'Clientes e usuários', path: '/dashboard/admin?secao=clientes', icon: 'i-lucide-building-2' },
-    { label: 'Assinatura e financeiro', path: '/dashboard/admin?secao=financeiro', icon: 'i-lucide-credit-card', planned: true }
+    { label: 'Tenants', path: '/dashboard/admin?secao=clientes', icon: 'i-lucide-building-2' },
+    { label: 'Planos', path: '/dashboard/admin?secao=planos', icon: 'i-lucide-list-checks' },
+    { label: 'Pagamentos', path: '/dashboard/admin?secao=financeiro', icon: 'i-lucide-credit-card', planned: true }
   ] },
   { label: 'Configurações', items: [
     { label: 'Personalização', path: '/dashboard/admin?secao=personalizacao', icon: 'i-lucide-palette', planned: true },

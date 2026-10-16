@@ -21,13 +21,29 @@ test('Docs search and deep links preserve a readable article and the common app 
 
 test('public agent and site explain availability and share the same entry without automatic login', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('link', { name: 'Fale com a IA', exact: true }).first()).toHaveAttribute('href', '/agente')
-  await expect(page.getByRole('link', { name: 'Entrar', exact: true }).first()).toHaveAttribute('href', 'https://app.fluxoatento.com.br/login/?next=%2F&origem=site')
+  await expect(page.getByRole('link', { name: 'Fale com o agente', exact: true }).first()).toHaveAttribute('href', '/agente')
+  await expect(page.locator('.header-actions > a[href*="/login/"]')).toHaveAttribute('href', 'https://app.fluxoatento.com.br/login/?next=%2F&origem=site')
+  if ((page.viewportSize()?.width ?? 0) <= 800) {
+    await page.getByRole('button', { name: 'Abrir menu', exact: true }).click()
+    await expect(page.getByRole('navigation', { name: 'Navegação móvel' }).getByRole('link', { name: 'Fale com o agente', exact: true })).toHaveAttribute('href', '/agente')
+  }
   await page.goto('/agente')
   const entry = page.getByRole('link', { name: 'Entrar no meu espaço', exact: true })
   await expect(entry.first()).toHaveAttribute('href', 'https://app.fluxoatento.com.br/login/?next=%2F&origem=agente')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  await expect(page.getByText('O chat ainda não está conectado.', { exact: false })).toBeVisible()
   await expect(page).toHaveURL(/\/agente\/?$/)
+})
+
+test('authentication keeps a single discreet appearance control', async ({ page }) => {
+  await page.goto('/login')
+  await waitForApp(page)
+  const appearance = page.getByRole('button', { name: 'Alterar aparência', exact: true })
+  await expect(appearance).toHaveCount(1)
+  await expect(page.getByRole('radio')).toHaveCount(0)
+  await appearance.click()
+  await expect(page.getByRole('radio', { name: 'Escuro', exact: true })).toBeChecked()
+  await expect(page.getByRole('radio')).toHaveCount(3)
 })
 
 test('Docs mobile navigation stays available without horizontal overflow', async ({ page }) => {
@@ -100,7 +116,14 @@ test('a jornada pública mantém a demonstração separada da API', async ({ pag
   })
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-  await page.getByRole('link', { name: 'Ver o painel de exemplo', exact: true }).click()
+  await page.getByRole('button', { name: 'Ver o fluxo na prática', exact: true }).click()
+  await expect(page.locator('.experience-story')).toBeFocused()
+  await page.getByRole('button', { name: '03 Decida' }).click()
+  await page.getByRole('link', { name: 'Ver este exemplo no painel', exact: true }).click()
+  await expect(page).toHaveURL(/\/exemplo\/?\?scenario=errors$/)
+  const dialog = page.getByRole('dialog')
+  await expect(dialog.getByRole('heading', { name: scenarios[1].signal, exact: true })).toBeVisible()
+  await dialog.getByRole('button', { name: 'Fechar', exact: true }).first().click()
   await expect(page.getByRole('heading', { name: 'O que merece sua atenção?' })).toBeVisible()
   await expect(page.getByText('Sem acessar endereços reais', { exact: true })).toBeVisible()
   expect(monitorRequests).toEqual([])
@@ -113,8 +136,8 @@ for (const scenario of scenarios) {
     await page.getByRole('button', { name: scenario.label, exact: true }).click()
     await expect(page.getByRole('button', { name: scenario.label, exact: true })).toHaveAttribute('aria-pressed', 'true')
     await page.getByRole('button', { name: '03 Decida' }).click()
-    await expect(page.getByRole('link', { name: 'Ver a próxima ação', exact: true })).toHaveAttribute('href', `/exemplo?scenario=${scenario.id}`)
-    await page.getByRole('link', { name: 'Ver a próxima ação', exact: true }).click()
+    await expect(page.getByRole('link', { name: 'Ver este exemplo no painel', exact: true })).toHaveAttribute('href', `/exemplo?scenario=${scenario.id}`)
+    await page.getByRole('link', { name: 'Ver este exemplo no painel', exact: true }).click()
     await expect(page).toHaveURL(new RegExp(`/exemplo/?\\?scenario=${scenario.id}$`))
     const dialog = page.getByRole('dialog')
     await expect(dialog).toBeVisible()

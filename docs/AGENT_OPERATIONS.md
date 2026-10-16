@@ -9,7 +9,7 @@ fontes do produto, sem reproduzir suas especificações nas skills.
 
 | Recurso | Responsabilidade | Escrita |
 | --- | --- | --- |
-| [FLUXO ATENTO](../.github/agents/FLUXO%20DE%20CLIENTES%20AGENTE.agent.md) | Agente geral existente da integração GitHub/editor; mantém orientação de arquitetura, reuso e qualidade | Conforme a tarefa e as permissões da sessão que o utiliza |
+| [FLUXO ATENTO](../.github/agents/FLUXO%20ATENTO.agent.md) | Agente geral existente da integração GitHub/editor; mantém orientação de arquitetura, reuso e qualidade | Conforme a tarefa e as permissões da sessão que o utiliza |
 | [fluxo-delivery](../.agents/skills/fluxo-delivery/SKILL.md) | Método reutilizável para implementar e verificar uma mudança delimitada | Somente arquivos autorizados |
 | [fluxo-review](../.agents/skills/fluxo-review/SKILL.md) | Método reutilizável de revisão e diagnóstico com evidências | Somente leitura |
 | [fluxo-implementation](../.codex/agents/fluxo-implementation.toml) | Executa um recorte de implementação recebido do agente principal usando fluxo-delivery | Somente arquivos atribuídos |

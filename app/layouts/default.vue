@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ArrowUpRight, Layers3, Menu } from '@lucide/vue'
+import { ArrowUpRight, Menu } from '@lucide/vue'
 const menuOpen = ref(false)
 const route = useRoute()
-const { isDashboardApp, dashboardAccessUrl } = useDeployment()
+const { isDashboardApp, marketingUrl, agentUrl, dashboardAccessUrl } = useDeployment()
 watch(() => route.fullPath, () => { menuOpen.value = false })
 </script>
 <template>
@@ -12,16 +12,15 @@ watch(() => route.fullPath, () => { menuOpen.value = false })
       <div class="container header-inner">
         <NuxtLink to="/" aria-label="Fluxo Atento — início"><BrandLogo /></NuxtLink>
         <div class="header-actions">
-          <NuxtLink to="/como-funciona" class="button button-header">Ver demonstração <ArrowUpRight :size="15" /></NuxtLink>
-          <NuxtLink to="/agente" class="text-link header-ai-link"><UIcon name="i-lucide-sparkles" /><span>Fale com a IA</span></NuxtLink>
+          <NuxtLink to="/como-funciona" class="text-link">Como funciona</NuxtLink>
+          <AgentSupportButton :to="agentUrl" />
           <a :href="dashboardAccessUrl('/login')" class="text-link">Entrar</a>
-          <NuxtLink to="/modulos" class="header-icon-link" aria-label="Explorar módulos" title="Explorar módulos"><Layers3 :size="20" /></NuxtLink>
           <ThemeMenu />
           <UModal v-model:open="menuOpen" title="Navegação" description="Explore o Fluxo Atento.">
             <button class="icon-button mobile-menu-button" aria-label="Abrir menu"><Menu :size="22" /></button>
             <template #body><nav class="mobile-navigation" aria-label="Navegação móvel">
               <NuxtLink to="/como-funciona" @click="menuOpen = false">Como funciona <ArrowUpRight :size="18" /></NuxtLink>
-              <NuxtLink to="/agente" @click="menuOpen = false">Fale com a IA · em preparação <ArrowUpRight :size="18" /></NuxtLink>
+              <a :href="agentUrl" @click="menuOpen = false">Fale com o agente <ArrowUpRight :size="18" /></a>
               <NuxtLink to="/planos" @click="menuOpen = false">Planos <ArrowUpRight :size="18" /></NuxtLink>
               <NuxtLink to="/ajuda" @click="menuOpen = false">Central de ajuda <ArrowUpRight :size="18" /></NuxtLink>
               <NuxtLink to="/contato" @click="menuOpen = false">Contato <ArrowUpRight :size="18" /></NuxtLink>
@@ -33,7 +32,7 @@ watch(() => route.fullPath, () => { menuOpen.value = false })
         </div>
       </div>
     </header>
-    <div v-else class="access-theme-bar container"><ThemeMenu /></div>
+    <div v-else class="access-header container"><a :href="marketingUrl" aria-label="Fluxo Atento — início"><BrandLogo /></a><ThemeMenu /></div>
     <main id="conteudo" tabindex="-1"><slot /></main>
     <footer v-if="!isDashboardApp" class="site-footer">
       <div class="container footer-main">

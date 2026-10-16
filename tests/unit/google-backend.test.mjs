@@ -159,6 +159,7 @@ async function fixture(t, options = {}) {
       await googleStore.assertMember(selected, context.userId)
       return { activeTenant: { id: selected, role: memberships.get(`${selected}:${context.userId}`) }, platformAdmin: context.userId === admin }
     },
+    async tenantPolicy() { return { status: 'active', allowed_channels: ['whatsapp_waba', 'email_smtp'], max_connections: null, channel_limits: {} } },
     async list(context, tenantId) { return [{ id: 'monitor-fixture', tenant_id: tenantId, user_id: context.userId }] }
   }
   const server = createServer(createHandler({ store, google, allowedOrigins: [origin] }))

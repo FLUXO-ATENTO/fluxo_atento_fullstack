@@ -9,9 +9,14 @@ $env:NUXT_PUBLIC_APP_MODE = 'dashboard'
 pnpm dev tests/preview --host 127.0.0.1 --port 4174
 ```
 
-Abra `http://127.0.0.1:4174/login`. Use `qa@example.test` e uma senha fictícia para o perfil Superadmin; `tenant@example.test` para testar um usuário sem acesso global. Não use credenciais reais. As mutações da API de preview são rejeitadas; somente preferências fictícias do perfil são guardadas na sessão local.
+Abra `http://127.0.0.1:4174/login`. Use `qa@example.test` para Superadmin sem tenant, `dual@example.test` para Superadmin com vínculo ao tenant e `tenant@example.test` para um usuário sem acesso global; a senha é sempre fictícia. Não use credenciais reais. As mutações da API de preview são rejeitadas; somente preferências fictícias do perfil são guardadas na sessão local.
 
 A configuração de produção não importa este diretório. O banner permanente identifica o ambiente. Validar nesta camada: disposição, teclado, busca, tema, tour, ajuda e navegação. Validar separadamente em homologação: autenticação, autorização real, convites, persistência no Supabase e isolamento entre duas empresas.
+
+O catálogo de planos, regras por tenant, preferência de gateway e conversas de
+suporte têm respostas fictícias de leitura neste preview. Envios e alterações
+continuam recusados por desenho; testar a gravação nas suítes de API/banco e,
+depois, em homologação com dados próprios de teste.
 
 ## Turnstile sem conta real
 

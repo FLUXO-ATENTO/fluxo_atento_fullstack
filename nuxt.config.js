@@ -12,7 +12,7 @@ const dashboardAccessPages = new Set([
 export default defineNuxtConfig({
   compatibilityDate: '2025-09-26',
   devtools: { enabled: false },
-  modules: ['@nuxt/ui'],
+  modules: ['@nuxt/ui', 'motion-v/nuxt'],
   components: [{ path: '~/components', pathPrefix: false }],
   ui: { fonts: false, colorMode: false },
   css: ['~/assets/css/design.css', '~/assets/css/workspace.css', '~/assets/css/interface.css'],
@@ -25,7 +25,7 @@ export default defineNuxtConfig({
           name: 'description',
           content: 'Entenda os sinais, encontre o contexto e descubra o que vale conferir em seguida.'
         },
-        { name: 'theme-color', content: '#0a0a0b' },
+        { name: 'theme-color', content: '#090a0b' },
         { name: 'color-scheme', content: 'dark' },
         { property: 'og:type', content: 'website' },
         { property: 'og:title', content: 'Fluxo Atento — Seu cliente chegou. O próximo passo funcionou?' },
@@ -46,6 +46,8 @@ export default defineNuxtConfig({
       appMode: dashboardApp ? 'dashboard' : 'marketing',
       marketingUrl: process.env.NUXT_PUBLIC_MARKETING_URL || 'https://fluxoatento.com.br',
       dashboardUrl: process.env.NUXT_PUBLIC_DASHBOARD_URL || 'https://app.fluxoatento.com.br',
+      // Use the published preparation page until the dedicated host has DNS and TLS.
+      agentUrl: process.env.NUXT_PUBLIC_AGENT_URL || '/agente',
       // Opt in on public hosts only after /acessar is deployed and accepted on the app.
       dashboardEntryMode: process.env.NUXT_PUBLIC_DASHBOARD_ENTRY_MODE || 'login',
       siteUrl: '',

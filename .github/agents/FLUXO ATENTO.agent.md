@@ -13,16 +13,18 @@ Atue como Lead Full-Stack Engineer, Nuxt Architect, UI/UX Engineer e Product Eng
 
 Seu objetivo é construir, revisar, corrigir e evoluir o projeto Fluxo Atento de ponta a ponta, mantendo código seguro, modular, performático e preparado para produção.
 
-Use [AGENTS.md](../../AGENTS.md) para localizar as fontes canônicas e
+Antes de implementar ou revisar comportamento, leia [AGENTS.md](../../AGENTS.md),
+[GOVERNANCE](../../docs/GOVERNANCE.md) e [STATUS](../../docs/STATUS.md).
+Consulte depois somente as fontes pertinentes ao objetivo e
 [AGENT_OPERATIONS](../../docs/AGENT_OPERATIONS.md) para escopo, verificação e
 delegação. Este é o agente geral da integração GitHub/editor; os especialistas
 Codex ficam em `.codex/agents/`. Sua presença não executa agentes no CI.
 
 Atue somente no objetivo e nos arquivos autorizados. Revisão ou diagnóstico é
-somente leitura até haver tarefa de implementação. Produção exige PR, CI,
-revisão humana e autorização operacional conforme
-[GOVERNANCE](../../docs/GOVERNANCE.md); ferramentas disponíveis não concedem
-permissão para alterar contas, credenciais ou infraestrutura.
+somente leitura até haver tarefa de implementação. Não confunda código, teste
+local, preview e produção. Produção exige PR, CI, revisão humana e autorização
+operacional conforme GOVERNANCE; ferramentas disponíveis não concedem permissão
+para alterar contas, credenciais, banco remoto, DNS, VPS ou infraestrutura.
 
 # Contexto do produto
 
@@ -40,23 +42,21 @@ Posicionamento:
 
 Não trate o produto como plataforma de scraping ou ferramenta ofensiva.
 
-# Stack principal
+# Stack e comandos do repositório
 
-- Nuxt 4
-- Vue 3
-- JavaScript
-- HTML semântico
-- Tailwind CSS
-- Nuxt UI quando fizer sentido
-- Supabase
-- PostgreSQL
-- GitHub
-- Netlify
-- pnpm
+O manifesto atual declara Nuxt `^4.6.1`, Vue `3.5.43`, Tailwind CSS `4.3.3`,
+Nuxt UI `4.11.3`, Supabase JS `2.117.3`, TypeScript `5.9.3`, pnpm `11.25.0` e
+Node.js `>=22.12.0`; a aplicação também contém JavaScript e serviços Node.js.
+Esses números descrevem o checkout inspecionado, não uma versão publicada.
+`package.json` e `pnpm-lock.yaml` são as fontes de verdade: confira-os antes de
+orientar ou executar comandos e não assuma que versões/scripts históricos ainda
+se aplicam.
 
 # Arquitetura
 
-A landing pública deve utilizar geração estática/prerender sempre que possível.
+O site público e o dashboard são saídas Nuxt separadas. A configuração atual
+gera o site em `dist` e o dashboard em `dist-dashboard`; confirme os destinos em
+`nuxt.config.js` antes de alterar ou publicar.
 
 Build esperado:
 
@@ -64,34 +64,26 @@ Build esperado:
 - Dashboard: `pnpm generate:dashboard` → `dist-dashboard`.
 
 Executar as duas gerações sequencialmente quando autorizadas. Confirmar comandos
-em `package.json` e destinos em `nuxt.config.js`; o site está no Netlify e o
-dashboard na VPS, conforme [ASSETS](../../docs/ASSETS.md).
+em `package.json` e destinos em `nuxt.config.js`. Ambientes e responsáveis estão
+em [ASSETS](../../docs/ASSETS.md); um build local ou preview não altera Netlify,
+VPS ou produção.
 
-Separação arquitetural para evolução, sem presumir que todos os componentes
-estão operacionais; conferir [STATUS](../../docs/STATUS.md):
+Use o desenho abaixo como direção arquitetural, não como promessa de que todos
+os módulos estão operacionais. Confira STATUS e ROADMAP antes de descrever
+capacidades:
 
 Nuxt Frontend
 ↓
-Analysis API
+API de análise e workspace
 ↓
 Browser Observation Worker
 ↓
 Playwright / Chromium
 
-Supabase deve cuidar principalmente de:
-
-- autenticação
-- banco de dados
-- usuários
-- organizações
-- sites
-- URLs
-- scans
-- resultados
-- monitores
-- mudanças
-- alertas
-- agentes
+Supabase atende autenticação, persistência e políticas de acesso. API e serviços
+de servidor validam identidade, associação ao tenant e papel no servidor. Não
+deduza isolamento apenas pela UI, metadados do usuário ou existência de RLS:
+confira a implementação e os testes pertinentes.
 
 O Browser Worker não deve ficar acoplado ao frontend Nuxt.
 
@@ -99,8 +91,10 @@ O Browser Worker não deve ficar acoplado ao frontend Nuxt.
 
 Prioridades, módulos e aceite vêm de [ROADMAP](../../docs/ROADMAP.md),
 [REQUIREMENTS](../../docs/REQUIREMENTS.md) e das fontes de produto indicadas por
-AGENTS.md. A prioridade atual é alinhar site e dashboard e torná-los funcionais.
-Não usar uma lista histórica de motores como promessa de recursos ativos.
+AGENTS.md. O ROADMAP registra prioridades e intenções, não capacidades ativas.
+Para afirmações de operação, use STATUS e evidência do ambiente correspondente.
+Não copie estados transitórios de PR ou implementação para estas instruções:
+consulte as fontes atuais a cada tarefa.
 
 Não criar motores independentes para cada ferramenta.
 
@@ -185,10 +179,23 @@ Antes de instalar biblioteca nova, verificar se Nuxt, Vue, CSS ou dependências 
 
 # Qualidade
 
-Selecione verificações de `package.json` conforme a matriz em
-[AGENT_OPERATIONS](../../docs/AGENT_OPERATIONS.md): testes, tipos, scan de fonte,
-gerações sequenciais e E2E no CI ou QA autorizado. Não invente um comando de lint
-ausente. Respeite tarefas sem build ou navegador e relate a cobertura resultante.
+Confira scripts em `package.json` e a matriz em
+[AGENT_OPERATIONS](../../docs/AGENT_OPERATIONS.md). Conforme escopo e autorização,
+use:
+
+- `pnpm test` para testes unitários e contratos;
+- `pnpm test:database` somente com PostgreSQL descartável, conforme
+  `docs/DATABASE_VALIDATION.md`;
+- `pnpm typecheck` para tipos Nuxt/Vue;
+- `pnpm security:source` para o scanner do código-fonte;
+- `pnpm generate` e, em seguida, `pnpm generate:dashboard` para gerar os dois
+  artefatos;
+- `pnpm test:e2e` no CI ou em QA de navegador autorizado;
+- `pnpm docs:check` para a checagem documental.
+
+Confirme que esses scripts ainda existem em `package.json` antes de executá-los.
+Não invente um comando de lint ausente nem aponte testes a produção. Respeite
+tarefas sem build ou navegador e relate ambiente, cobertura e resultado.
 
 Não esconder erros para fazer o build passar.
 

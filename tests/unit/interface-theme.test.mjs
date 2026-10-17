@@ -26,16 +26,18 @@ test('site, authentication and dashboard share the approved dark product default
   assert.match(nuxtConfig, /theme-color', content: '#090a0b'/)
 })
 
-test('authentication keeps the theme choice discreet, compact and accessible', () => {
+test('authentication keeps one discreet theme control without duplicating appearance choices', () => {
   assert.match(defaultLayout, /<ThemeMenu compact \/>/)
-  assert.match(themeMenu, /compact \? 'Tema'/)
-  assert.match(themeMenu, /access-theme-dialog/)
-  assert.match(themeMenu, /v-if="!compact"/)
-  assert.match(interfaceTheme, /'theme-picker-compact': compact/)
+  assert.match(themeMenu, /v-if="compact"/)
+  assert.match(themeMenu, /@click="cycleTheme"/)
+  assert.match(themeMenu, /const nextThemeValue = \{ dark: 'light', light: 'system', system: 'dark' \}/)
+  assert.match(themeMenu, /aria-live="polite"/)
+  assert.doesNotMatch(themeMenu, /access-theme-dialog/)
+  assert.doesNotMatch(themeMenu, /<InterfaceTheme :compact/)
+  assert.match(interfaceTheme, /<fieldset class="theme-picker"><legend>Aparência<\/legend>/)
   assert.match(interfaceTheme, /value: 'system', label: 'Sistema'/)
-  assert.match(interfaceCss, /\.theme-picker-compact label:focus-within/)
-  assert.match(interfaceCss, /\.theme-picker-compact label \{[^}]*min-height:40px/)
-  assert.match(interfaceCss, /\.access-theme-dialog \{[^}]*max-width:min\(320px,calc\(100vw - 2rem\)\)/)
+  assert.doesNotMatch(interfaceCss, /\.theme-picker-compact/)
+  assert.doesNotMatch(interfaceCss, /\.access-theme-dialog/)
 })
 
 // Exercise the actual composable with Nuxt state and browser preference adapters.

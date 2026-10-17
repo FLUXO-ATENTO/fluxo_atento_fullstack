@@ -14,6 +14,8 @@ const error = ref(''); const notice = ref('')
 const fullName = ref('')
 const showPassword = ref(false)
 const enabledProviders = enabledSocialProviders(useRuntimeConfig().public.authProviders)
+const googleEnabled = enabledProviders.includes('google')
+const githubEnabled = enabledProviders.includes('github')
 const captchaEnabled = captchaIsEnabled(useRuntimeConfig().public.turnstileEnabled)
 const captchaSiteKey = String(useRuntimeConfig().public.turnstileSiteKey || '')
 const captchaProof = ref<CaptchaProof | null>(null)
@@ -63,9 +65,9 @@ async function submit() {
   <section class="container auth-layout">
     <div class="auth-intro"><p class="eyebrow">SEU ESPAÇO NO FLUXO ATENTO</p><h1>{{ heading }}</h1><p>Para quem cuida do próprio negócio e quer acompanhar as páginas que seus clientes acessam.</p><div class="auth-trust"><ShieldCheck :size="20" /><p>O exemplo e sua conta são separados. No seu painel, aparecem somente seus dados.</p></div><a :href="isDashboardApp ? marketingUrl + '/exemplo' : '/exemplo'" class="text-link">Prefere conhecer primeiro? Explore o exemplo →</a></div>
     <div class="panel auth-card">
-      <section v-if="mode !== 'recover'" class="social-auth" aria-label="Acesso com uma conta existente">
-        <div class="social-auth-buttons"><button v-for="provider in ([{ id: 'google', name: 'Google' }, { id: 'github', name: 'GitHub' }] as const)" :key="provider.id" type="button" class="button button-secondary" :disabled="busy || !auth.configured || !enabledProviders.includes(provider.id)" aria-describedby="social-auth-note" @click="signInWithProvider(provider.id)"><span>{{ socialBusy === provider.id ? 'Conectando…' : 'Continuar com ' + provider.name }}<small v-if="!enabledProviders.includes(provider.id)">Em configuração</small></span></button></div>
-        <p id="social-auth-note" class="field-help">{{ enabledProviders.length ? 'Use uma conta existente para entrar ou criar seu acesso. Isso não conecta anúncios, Analytics ou repositórios.' : 'Google e GitHub estarão disponíveis após a configuração dos provedores. Por enquanto, utilize e-mail e senha.' }}</p>
+      <section v-if="mode !== 'recover' && (googleEnabled || githubEnabled)" class="social-auth" aria-label="Acesso com uma conta existente">
+        <div class="social-auth-buttons" :class="{ 'social-auth-buttons-single': !githubEnabled }"><GoogleAuthButton v-if="googleEnabled" :disabled="busy || !auth.configured" :loading="socialBusy === 'google'" aria-describedby="social-auth-note" @activate="signInWithProvider('google')" /><button v-if="githubEnabled" type="button" class="button button-secondary" :disabled="busy || !auth.configured" aria-describedby="social-auth-note" @click="signInWithProvider('github')">{{ socialBusy === 'github' ? 'Conectando…' : 'Continuar com GitHub' }}</button></div>
+        <p id="social-auth-note" class="field-help">Use uma conta existente para entrar ou criar seu acesso. Isso não conecta anúncios, Analytics ou repositórios.</p>
         <p v-if="error && socialBusy" role="alert" class="form-error">{{ error }}</p><div class="auth-divider">ou continue com e-mail</div>
       </section>
       <div class="filter-bar"><button :aria-pressed="mode === 'login'" :disabled="busy" @click="setMode('login')">Entrar</button><button :aria-pressed="mode === 'signup'" :disabled="busy" @click="setMode('signup')">Criar conta</button><button :aria-pressed="mode === 'recover'" :disabled="busy" @click="setMode('recover')">Recuperar acesso</button></div>

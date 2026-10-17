@@ -85,6 +85,12 @@ Configuração detalhada, inventário e divisão entre login e dados estão em
 [GOOGLE_SETUP](GOOGLE_SETUP.md). O botão de login e a liberação do provedor de
 dados no superadmin são independentes.
 
+Quando Google está liberado no ambiente, a tela de login mostra o botão
+**“Continuar com o Google”** com o `G` oficial. Ele preserva o mesmo fluxo
+Supabase `signInWithOAuth` e retorno em `/auth/callback`; não cria um segundo
+fluxo de identidade, não adiciona escopos e não expõe tokens. GitHub só aparece
+quando o respectivo provedor também estiver liberado.
+
 Na primeira inspeção de 15/10, a UI Supabase mostrou Google/GitHub desligados.
 Após o proprietário salvar a credencial nova, a releitura confirmou Google
 habilitado e GitHub ainda desligado. Email e confirmação de e-mail continuam

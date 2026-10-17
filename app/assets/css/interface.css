@@ -39,7 +39,7 @@ html[data-interface-theme="light"] .step-number { color:var(--text-muted); }
 .entry-countdown { margin-top:12px;font-size:12px!important; }.entry-actions { display:flex;flex-wrap:wrap;gap:12px;margin:24px 0; }.entry-actions .button { white-space:normal; }.entry-back { margin-bottom:20px; }.agent-introduction>h1 { margin:20px 0; }.agent-introduction>p { margin-block:16px;line-height:1.8; }
 @media(max-width:480px) { .entry-shell { width:calc(100% - 28px);padding-top:16px; }.entry-card { padding:24px 20px; }.header-inner .brand-logo { font-size:17px;gap:6px; }.header-inner .brand-symbol { width:24px; }.header-actions { gap:9px; }.header-ai-link { gap:5px;font-size:11px; }.header-actions .theme-menu-trigger { min-width:36px;min-height:40px; }.header-actions .text-link { font-size:11px; }.header-inner { min-height:68px; }.site-header .container { width:calc(100% - 24px); } }
 .social-auth { padding:24px 28px 0; }
-.social-auth-buttons { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+.social-auth-buttons { display:grid;grid-template-columns:1fr 1fr;gap:10px; }.social-auth-buttons-single { grid-template-columns:1fr; }
 .social-auth-buttons .button { white-space:normal;min-height:48px; }
 .social-auth-buttons small { display:block;font-size:10px;font-weight:400; }
 .social-auth .field-help { margin-top:14px;font-size:11px; }

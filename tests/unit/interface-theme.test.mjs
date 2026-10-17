@@ -7,7 +7,11 @@ import { computed, ref } from 'vue'
 import { resolveTheme } from '../../app/utils/workspace-ui.ts'
 
 const designCss = readFileSync(new URL('../../app/assets/css/design.css', import.meta.url), 'utf8')
+const interfaceCss = readFileSync(new URL('../../app/assets/css/interface.css', import.meta.url), 'utf8')
 const nuxtConfig = readFileSync(new URL('../../nuxt.config.js', import.meta.url), 'utf8')
+const defaultLayout = readFileSync(new URL('../../app/layouts/default.vue', import.meta.url), 'utf8')
+const themeMenu = readFileSync(new URL('../../app/components/workspace/ThemeMenu.vue', import.meta.url), 'utf8')
+const interfaceTheme = readFileSync(new URL('../../app/components/workspace/InterfaceTheme.vue', import.meta.url), 'utf8')
 
 function defaultDesignToken(name) {
   const root = designCss.match(/:root\s*\{([^}]+)\}/)?.[1] || ''
@@ -20,6 +24,18 @@ test('site, authentication and dashboard share the approved dark product default
   assert.equal(defaultDesignToken('--ui-primary'), 'var(--brand)')
   assert.equal((nuxtConfig.match(/~\/assets\/css\/design\.css/g) || []).length, 1)
   assert.match(nuxtConfig, /theme-color', content: '#090a0b'/)
+})
+
+test('authentication keeps the theme choice discreet, compact and accessible', () => {
+  assert.match(defaultLayout, /<ThemeMenu compact \/>/)
+  assert.match(themeMenu, /compact \? 'Tema'/)
+  assert.match(themeMenu, /access-theme-dialog/)
+  assert.match(themeMenu, /v-if="!compact"/)
+  assert.match(interfaceTheme, /'theme-picker-compact': compact/)
+  assert.match(interfaceTheme, /value: 'system', label: 'Sistema'/)
+  assert.match(interfaceCss, /\.theme-picker-compact label:focus-within/)
+  assert.match(interfaceCss, /\.theme-picker-compact label \{[^}]*min-height:40px/)
+  assert.match(interfaceCss, /\.access-theme-dialog \{[^}]*max-width:min\(320px,calc\(100vw - 2rem\)\)/)
 })
 
 // Exercise the actual composable with Nuxt state and browser preference adapters.

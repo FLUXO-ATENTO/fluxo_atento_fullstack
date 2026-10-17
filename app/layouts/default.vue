@@ -32,7 +32,7 @@ watch(() => route.fullPath, () => { menuOpen.value = false })
         </div>
       </div>
     </header>
-    <div v-else class="access-header container"><a :href="marketingUrl" aria-label="Fluxo Atento — início"><BrandLogo /></a><ThemeMenu /></div>
+    <div v-else class="access-header container"><a :href="marketingUrl" aria-label="Fluxo Atento — início"><BrandLogo /></a><ThemeMenu compact /></div>
     <main id="conteudo" tabindex="-1"><slot /></main>
     <footer v-if="!isDashboardApp" class="site-footer">
       <div class="container footer-main">

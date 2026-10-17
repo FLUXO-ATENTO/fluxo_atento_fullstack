@@ -199,6 +199,9 @@ Preferência ausente/inválida ou storage indisponível usa Escuro; não criar u
 preferência persistida só por carregar a página. A evidência de publicação deve
 ser registrada separadamente dos testes locais desta correção.
 
+Nas telas de acesso, o seletor de tema usa o formato compacto (Claro, Escuro e
+Sistema em uma linha, sem texto explicativo longo), com o mesmo comportamento.
+
 No estado padrão, sem personalização autenticada, todas essas superfícies usam a
 mesma origem em `app/assets/css/design.css`: fundo `#090a0b` e laranja de ação
 `#eaa176`. As preferências de paleta do usuário autenticado continuam disponíveis
